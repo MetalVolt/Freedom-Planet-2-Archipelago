@@ -1,1 +1,1 @@
-# FP2ArchipelagoMockup
+# Freedom Planet 2 Archipelago
