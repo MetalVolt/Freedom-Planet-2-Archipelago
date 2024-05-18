@@ -1,0 +1,4 @@
+﻿- Configuring the server address and player name.
+- Episode Unlocks actually doing anything.
+- Proper options (will require a proper AP world rather than the manual hack).
+- EnergyLink?
