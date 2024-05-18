@@ -12,7 +12,12 @@ using System.IO;
 
 namespace FP2Archipelago
 {
-    // TODO: See Currently Missing Functionality.txt
+    // TODO: Make a proper apworld rather than using the manual.
+    // TODO: Maybe implement EnergyLink in the same way the Megaman X games do?
+    // TODO: Fix Time Capsule Access Requirements.
+    // TODO: Fix Shop Sorting.
+    // TODO: Implement proper server address and player slot name configuring.
+    // TODO: Make Episode Unlocks actually do anything.
     [BepInPlugin("FP2Archipelago", "Freedom Planet 2 Archipelago", "0.0.1")]
     public class Plugin : BaseUnityPlugin
     {
