@@ -1,16 +1,63 @@
-﻿using BepInEx;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection.Emit;
+using UnityEngine;
 
-namespace FP2Archipelago.Patchers
+namespace Freedom_Planet_2_Archipelago.Patchers
 {
     // Taken from FP2Lib mostly unmodified https://github.com/Kuborros/FP2Lib/blob/master/FP2Lib/Saves/SavePatches.cs.
     // TODO: Can I use this code?
-    internal class SavePatches
+    internal class FPSaveManagerPatcher
     {
+        // Set the save path to Archipelago Saves.
         static string getSavesPath() => $@"{Paths.GameRootPath}\Archipelago Saves";
 
+        // Force the JSONs to save with indenting.
         static string fancifyJson(UnityEngine.Object obj) => JsonUtility.ToJson(obj, true);
+
+        /// <summary>
+        /// Overwrite the slot number when the game tries to check if a save exists.
+        /// </summary>
+        /// <param name="f">The slot to use instead.</param>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(FPSaveManager), "FileExists")]
+        static void HijackSlotNumberForExistCheck(ref int f) => f = Plugin.APSave.FPSaveManagerSlot;
+
+        /// <summary>
+        /// Overwrite the slot number when the game tries to save.
+        /// </summary>
+        /// <param name="f">The slot to use instead.</param>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(FPSaveManager), "SaveToFile")]
+        static void HijackSlotNumberForSaving(ref int f) => f = Plugin.APSave.FPSaveManagerSlot;
+
+        /// <summary>
+        /// Overwrite the slot number when the game tries to load.
+        /// </summary>
+        /// <param name="f">The slot to use instead.</param>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(FPSaveManager), "LoadFromFile")]
+        static void HijackSlotNumberForLoading(ref int f) => f = Plugin.APSave.FPSaveManagerSlot;
+
+        /// <summary>
+        /// Replaces the Save Manager's Total Star Cards calculation with the amount from the multiworld.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(FPSaveManager), nameof(FPSaveManager.TotalStarCards))]
+        static void HijackStarCardCount(ref int __result) => __result = Plugin.APSave.StarCardCount;
+
+        /// <summary>
+        /// Replaces the Save Manager's Total Logs calculation with the time capsule amount from the multiworld.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(FPSaveManager), nameof(FPSaveManager.TotalLogs))]
+        static void HijackTimeCapsuleCount(ref int __result) => __result = Plugin.APSave.TimeCapsuleCount;
+
+        /// <summary>
+        /// Stops the Save Manager from unequipping items that haven't been acquired in the shop.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(FPSaveManager), nameof(FPSaveManager.SanitizeItemSets))]
+        static bool StopItemSetSanitisation() => false;
 
         [HarmonyTranspiler]
         [HarmonyPatch(typeof(FPSaveManager), "SaveToFile", MethodType.Normal)]

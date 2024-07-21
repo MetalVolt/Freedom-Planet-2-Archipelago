@@ -1,11 +1,10 @@
-﻿namespace FP2Archipelago.Patchers
+﻿namespace Freedom_Planet_2_Archipelago.Patchers
 {
-    internal class MergaBoss
+    internal class PlayerBossMergaPatcher
     {
         /// <summary>
         /// Nulls out the two cutscene values on Merga so that the ending doesn't play.
         /// </summary>
-        /// <param name="___cutsceneOnVictory"></param>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(PlayerBossMerga), "State_KO2")]
         static void DisableEnding(ref FPBaseObject[] ___cutsceneOnVictory)

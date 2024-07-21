@@ -1,12 +1,14 @@
 ﻿using System.Reflection;
+using UnityEngine;
 
-namespace FP2Archipelago.Patchers
+namespace Freedom_Planet_2_Archipelago.Patchers
 {
-    internal class ItemMenu
+    internal class MenuItemSelectPatcher
     {
         /// <summary>
         /// Creates the Item Select Menu, reconstructed from the original code to remove a check that ruins everything.
         /// TODO: This feels stupid.
+        /// TODO: Interacting with the menu when there's no unlocked items breaks.
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(MenuItemSelect), "Start")]
@@ -19,8 +21,8 @@ namespace FP2Archipelago.Patchers
             MenuItemSelect menu = UnityEngine.Object.FindObjectOfType<MenuItemSelect>();
 
             // Set the potions and brave stone unlocked lists.
-            ___potions = GlobalValues.UnlockedPotions;
-            ___amulets = GlobalValues.UnlockedBraveStones;
+            ___potions = Plugin.APSave.UnlockedPotions;
+            ___amulets = Plugin.APSave.UnlockedBraveStones;
 
             // Get the potion count.
             ___ps = FPSaveManager.GetPotionSlots();
@@ -75,7 +77,7 @@ namespace FP2Archipelago.Patchers
 
             // Get and run the Draw Item Slots function.
             MethodInfo function = typeof(MenuItemSelect).GetMethod("DrawItemSlots", BindingFlags.NonPublic | BindingFlags.Instance);
-            function.Invoke(menu, new object[] { ___amuletList, GlobalValues.UnlockedBraveStones });
+            function.Invoke(menu, new object[] { ___amuletList, Plugin.APSave.UnlockedBraveStones });
 
             // Get and run the Draw Potion function.
             function = typeof(MenuItemSelect).GetMethod("DrawPotion", BindingFlags.NonPublic | BindingFlags.Instance);

@@ -2,15 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
-    <AssemblyName>FP2Archipelago</AssemblyName>
-    <Description>My first plugin</Description>
-    <Version>1.0.0</Version>
+    <AssemblyName>Freedom_Planet_2_Archipelago</AssemblyName>
+    <Description>Archipelago support for Freedom Planet 2</Description>
+    <Version>0.0.1</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Archipelago.MultiClient.Net" Version="5.0.6" />
+    <PackageReference Include="Archipelago.MultiClient.Net" Version="6.0.1" />
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.*" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
@@ -27,9 +27,6 @@
     </Reference>
     <Reference Include="Rewired_Core">
       <HintPath>D:\Steam\steamapps\common\Freedom Planet 2\FP2_Data\Managed\Rewired_Core.dll</HintPath>
-    </Reference>
-    <Reference Include="websocket-sharp">
-      <HintPath>D:\Steam\steamapps\common\Freedom Planet 2\BepInEx\plugins\websocket-sharp.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
