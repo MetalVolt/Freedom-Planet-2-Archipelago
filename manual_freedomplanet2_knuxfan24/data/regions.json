@@ -1,0 +1,167 @@
+{
+	"Dragon Valley": 	{
+		"connects_to": [],
+		"requires": [],
+		"starting": true
+	},
+	"Shenlin Park": 	{
+		"connects_to": [],
+		"requires": [],
+		"starting": true
+	},
+	"Tiger Falls": 	{
+		"connects_to": [],
+		"requires": "|Mystery of the Frozen North| OR |Progressive Chapter:1|",
+		"starting": true
+	},
+	"Robot Graveyard": 	{
+		"connects_to": [],
+		"requires": "|Mystery of the Frozen North| OR |Progressive Chapter:1|",
+		"starting": true
+	},
+	"Shade Armory": 	{
+		"connects_to": [],
+		"requires": "|Mystery of the Frozen North| OR |Progressive Chapter:1|",
+		"starting": true
+	},
+	"Snowfields": 	{
+		"connects_to": [],
+		"requires": "|Mystery of the Frozen North| OR |Progressive Chapter:1|",
+		"starting": true
+	},
+	"Avian Museum": 	{
+		"connects_to": [],
+		"requires": "|Sky Pirate Panic| OR |Progressive Chapter:2|",
+		"starting": true
+	},
+	"Airship Sigwada": 	{
+		"connects_to": [],
+		"requires": "|Sky Pirate Panic| OR |Progressive Chapter:2|",
+		"starting": true
+	},
+	"Phoenix Highway": 	{
+		"connects_to": [],
+		"requires": "|Enter the Battlesphere| OR |Progressive Chapter:3|",
+		"starting": true
+	},
+	"Zao Land": 	{
+		"connects_to": [],
+		"requires": "|Enter the Battlesphere| OR |Progressive Chapter:3|",
+		"starting": true
+	},
+	"The Battlesphere": 	{
+		"connects_to": [],
+		"requires": "|Enter the Battlesphere| OR |Progressive Chapter:3|",
+		"starting": true
+	},
+	"Globe Opera 1": 	{
+		"connects_to": [],
+		"requires": "(|Globe Opera| OR |Progressive Chapter:4|) AND |Star Card:7|",
+		"starting": true
+	},
+	"Globe Opera 2": 	{
+		"connects_to": [],
+		"requires": "(|Globe Opera| OR |Progressive Chapter:4|) AND |Star Card:7|",
+		"starting": true
+	},
+	"Auditorium": 	{
+		"connects_to": [],
+		"requires": "(|Globe Opera| OR |Progressive Chapter:4|) AND |Star Card:7|",
+		"starting": true
+	},
+	"Palace Courtyard": 	{
+		"connects_to": [],
+		"requires": "(|Globe Opera| OR |Progressive Chapter:4|) AND |Star Card:7|",
+		"starting": true
+	},
+	"Tidal Gate": 	{
+		"connects_to": [],
+		"requires": "(|Globe Opera| OR |Progressive Chapter:4|) AND |Star Card:7|",
+		"starting": true
+	},
+	"Sky Bridge": 	{
+		"connects_to": [],
+		"requires": "(|Justice in the Sky Paradise| OR |Progressive Chapter:5|) AND |Star Card:7|",
+		"starting": true
+	},
+	"Lightning Tower": 	{
+		"connects_to": [],
+		"requires": "(|Justice in the Sky Paradise| OR |Progressive Chapter:5|) AND |Star Card:7|",
+		"starting": true
+	},
+	"Zulon Jungle": 	{
+		"connects_to": [],
+		"requires": "(|Robot Wars! Snake VS Tarsier| OR |Progressive Chapter:6|) AND |Star Card:7|",
+		"starting": true
+	},
+	"Nalao Lake": 	{
+		"connects_to": [],
+		"requires": "(|Robot Wars! Snake VS Tarsier| OR |Progressive Chapter:6|) AND |Star Card:7|",
+		"starting": true
+	},
+	"Ancestral Forge": 	{
+		"connects_to": [],
+		"requires": "(|Echoes of the Dragon War| OR |Progressive Chapter:7|) AND |Star Card:7|",
+		"starting": true
+	},
+	"Magma Starscape": 	{
+		"connects_to": [],
+		"requires": "(|Echoes of the Dragon War| OR |Progressive Chapter:7|) AND |Star Card:7|",
+		"starting": true
+	},
+	"Diamond Point": 	{
+		"connects_to": [],
+		"requires": "(|Echoes of the Dragon War| OR |Progressive Chapter:7|) AND |Star Card:7|",
+		"starting": true
+	},
+	"Gravity Bubble": 	{
+		"connects_to": [],
+		"requires": "(|Bakunawa| OR |Progressive Chapter:8|) AND |Star Card:18|",
+		"starting": true
+	},
+	"Bakunawa Chase": 	{
+		"connects_to": [],
+		"requires": "(|Bakunawa| OR |Progressive Chapter:8|) AND |Star Card:18|",
+		"starting": true
+	},
+	"Bakunawa Rush": 	{
+		"connects_to": [],
+		"requires": "(|Bakunawa| OR |Progressive Chapter:8|) AND |Star Card:18|",
+		"starting": true
+	},
+	"Refinery Room": 	{
+		"connects_to": [],
+		"requires": "(|Bakunawa| OR |Progressive Chapter:8|) AND |Star Card:18|",
+		"starting": true
+	},
+	"Clockwork Arboretum": 	{
+		"connects_to": [],
+		"requires": "(|Bakunawa| OR |Progressive Chapter:8|) AND |Star Card:18|",
+		"starting": true
+	},
+	"Inversion Dynamo": 	{
+		"connects_to": [],
+		"requires": "(|Bakunawa| OR |Progressive Chapter:8|) AND |Star Card:18|",
+		"starting": true
+	},
+	"Lunar Cannon": 	{
+		"connects_to": [],
+		"requires": "(|Bakunawa| OR |Progressive Chapter:8|) AND |Star Card:18|",
+		"starting": true
+	},
+	"Merga": 	{
+		"connects_to": [],
+		"requires": "(|Bakunawa| OR |Progressive Chapter:8|) AND |Star Card:18|",
+		"starting": true
+	},
+	"Weapon's Core": 	{
+		"connects_to": [],
+		"requires": "(|Bakunawa| OR |Progressive Chapter:8|) AND |Star Card:25| AND |Time Capsule:13|",
+		"starting": true
+	},
+	"Shop": 	{
+		"starting": true,
+		"connects_to": [],
+		"requires": []
+}
+}

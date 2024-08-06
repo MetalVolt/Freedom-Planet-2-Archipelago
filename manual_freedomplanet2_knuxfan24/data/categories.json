@@ -1,0 +1,20 @@
+{
+    "Chapter Unlocks": {
+        "yaml_option": ["individual_chapters"]
+    },
+    "Progressive Chapter Unlocks": {
+        "yaml_option": ["progressive_chapters"]
+    },
+    "Brave Stone": {
+        "yaml_option": ["milla_shop"]
+    },
+    "Potion": {
+        "yaml_option": ["milla_shop"]
+    },
+    "Vinyl": {
+        "yaml_option": ["vinyl_shop"]
+    },
+    "Item Slots": {
+        "yaml_option": ["extra_items"]
+    }
+}

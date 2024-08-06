@@ -1,0 +1,7 @@
+{
+  "$schema": "https://github.com/ManualForArchipelago/Manual/raw/main/schemas/Manual.game.schema.json",
+  "game": "FreedomPlanet2",
+  "creator": "Knuxfan24",
+  "filler_item_name": "Gold Gem",
+  "death_link": false
+}
