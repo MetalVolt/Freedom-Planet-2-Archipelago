@@ -33,7 +33,7 @@ location_table: Dict[str, FP2LocationData] = {
     "Zao Land - Clear": FP2LocationData("Zao Land", 15, "Stage Clear"),
     "Zao Land - Brave Stone": FP2LocationData("Zao Land", 16, "Chest"),
     "Zao Land - Vinyl": FP2LocationData("Zao Land", 17, "Chest"),
-    "The Battlesphere - Clear": FP2LocationData("The Battlesphere 1st Pass", 18, "Stage Clear"),
+    "The Battlesphere - Clear": FP2LocationData("The Battlesphere - 1st Pass", 18, "Stage Clear"),
     "Tiger Falls - Clear": FP2LocationData("Tiger Falls", 19, "Stage Clear"),
     "Tiger Falls - Brave Stone": FP2LocationData("Tiger Falls", 20, "Chest"),
     "Tiger Falls - Vinyl": FP2LocationData("Tiger Falls", 21, "Chest"),
