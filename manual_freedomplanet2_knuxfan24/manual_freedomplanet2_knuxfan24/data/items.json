@@ -1,0 +1,284 @@
+[
+	{
+		"count": "64",
+		"name": "Star Card",
+		"category": ["Star Cards"],
+		"progression": true
+	},
+	{
+		"count": "26",
+		"name": "Time Capsule",
+		"category": ["Time Capsules"],
+		"progression": true
+	},
+	{
+		"count":2,
+		"name": "Extra Item Slot",
+		"category": ["Item Slots"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Extra Potion Slots",
+		"category": ["Item Slots"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Potion - Extra Stock",
+		"category": ["Potion"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Potion - Strong Revivals",
+		"category": ["Potion"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Potion - Cheaper Stocks",
+		"category": ["Potion"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Potion - Healing Strike",
+		"category": ["Potion"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Potion - Attack Up",
+		"category": ["Potion"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Potion - Strong Shields",
+		"category": ["Potion"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Potion - Accelerator",
+		"category": ["Potion"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Potion - Super Feather",
+		"category": ["Potion"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Element Burst",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Max Life Up",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Crystals to Petals",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Powerup Start",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Shadow Guard",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Payback Ring",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Wood Charm",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Earth Charm",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Water Charm",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Fire Charm",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Metal Charm",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "No Stocks",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Expensive Stocks",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Double Damage",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "No Revivals",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "No Guarding",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "No Petals",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Time Limit",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Items To Bombs",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Life Oscillation",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "One Hit KO",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Petal Armor",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Rainbow Charm",
+		"category": ["Brave Stone"],
+		"useful": true
+	},
+	{
+		"count":1,
+		"name": "Sky Pirate Panic",
+		"category": ["Chapter Unlocks"],
+		"progression": true
+	},
+	{
+		"count":1,
+		"name": "Enter the Battlesphere",
+		"category": ["Chapter Unlocks"],
+		"progression": true
+	},
+	{
+		"count":1,
+		"name": "Mystery of the Frozen North",
+		"category": ["Chapter Unlocks"],
+		"progression": true
+	},
+	{
+		"count":1,
+		"name": "Robot Wars! Snake VS Tarsier",
+		"category": ["Chapter Unlocks"],
+		"progression": true
+	},
+	{
+		"count":1,
+		"name": "Echoes of the Dragon War",
+		"category": ["Chapter Unlocks"],
+		"progression": true
+	},
+	{
+		"count":1,
+		"name": "Justice in the Sky Paradise",
+		"category": ["Chapter Unlocks"],
+		"progression": true
+	},
+	{
+		"count":1,
+		"name": "Globe Opera",
+		"category": ["Chapter Unlocks"],
+		"progression": true
+	},
+	{
+		"count":1,
+		"name": "Bakunawa",
+		"category": ["Chapter Unlocks"],
+		"progression": true
+	},
+	{
+		"count":8,
+		"name": "Progressive Chapter",
+		"category": ["Progressive Chapter Unlocks"],
+		"progression": true
+	},
+	{
+		"count":1,
+		"name": "Mirror Trap",
+		"category": ["Trap"],
+		"trap": true
+	},
+	{
+		"count":1,
+		"name": "Moon Gravity Trap",
+		"category": ["Trap"],
+		"trap": true
+	},
+	{
+		"count":1,
+		"name": "Double Gravity Trap",
+		"category": ["Trap"],
+		"trap": true
+	}
+]

@@ -141,8 +141,8 @@ namespace Freedom_Planet_2_Archipelago
         public static float RecievedItemTimer = 0f;
 
         // Set up the values for the connection menu.
-        string serverAddress = "localhost:62746";
-        string slotName = "knux_fp2";
+        string serverAddress = "localhost:38281";
+        string slotName = "MetalFP2";
         string password = "";
 
         // Set up the value for the recieved item text.
@@ -486,6 +486,18 @@ namespace Freedom_Planet_2_Archipelago
             // Check the item we're receiving.
             switch (recievedItem)
             {
+                case "Bakunawa":
+                    FPSaveManager.mapTileReveal[23] = true;
+                    FPSaveManager.mapTileReveal[32] = true;
+                    FPSaveManager.mapTileReveal[24] = true;
+                    FPSaveManager.mapTileReveal[25] = true;
+                    FPSaveManager.mapTileReveal[26] = true;
+                    FPSaveManager.mapTileReveal[27] = true;
+                    FPSaveManager.mapTileReveal[28] = true;
+                    FPSaveManager.mapTileReveal[29] = true;
+                    FPSaveManager.mapTileReveal[30] = true;
+                    break;
+
                 case "Crystals to Petals": APSave.UnlockedBraveStones[7] = true; break;
 
                 case "Double Damage":
@@ -503,6 +515,18 @@ namespace Freedom_Planet_2_Archipelago
 
                 case "Element Burst": APSave.UnlockedBraveStones[4] = true; break;
 
+                case "Echoes of the Dragon War":
+                    FPSaveManager.mapTileReveal[20] = true;
+                    FPSaveManager.mapTileReveal[21] = true;
+                    FPSaveManager.mapTileReveal[22] = true;
+                    break;
+
+                case "Enter the Battlesphere":
+                    FPSaveManager.mapTileReveal[8] = true;
+                    FPSaveManager.mapTileReveal[9] = true;
+                    FPSaveManager.mapTileReveal[10] = true;
+                    break;
+
                 case "Expensive Stocks": 
                     APSave.UnlockedBraveStones[19] = true;
                     SetTrapBraveStone(FPPowerup.EXPENSIVE_STOCKS);
@@ -519,6 +543,14 @@ namespace Freedom_Planet_2_Archipelago
 
                 case "Fire Charm": APSave.UnlockedBraveStones[15] = true; break;
 
+                case "Globe Opera":
+                    FPSaveManager.mapTileReveal[11] = true;
+                    FPSaveManager.mapTileReveal[12] = true;
+                    FPSaveManager.mapTileReveal[13] = true;
+                    FPSaveManager.mapTileReveal[14] = true;
+                    FPSaveManager.mapTileReveal[15] = true;
+                    break;
+
                 // Increment the save manager's total gold gems count and our save's gold gem count.
                 case "Gold Gem":
                     FPSaveManager.totalGoldGems++;
@@ -528,6 +560,11 @@ namespace Freedom_Planet_2_Archipelago
                 case "Items To Bombs":
                     APSave.UnlockedBraveStones[26] = true;
                     SetTrapBraveStone(FPPowerup.ITEMS_TO_BOMBS);
+                    break;
+
+                case "Justice in the Sky Paradise":
+                    FPSaveManager.mapTileReveal[18] = true;
+                    FPSaveManager.mapTileReveal[19] = true;
                     break;
 
                 case "Life Oscillation":
@@ -549,6 +586,13 @@ namespace Freedom_Planet_2_Archipelago
                 case "Moon Gravity Trap":
                     MoonGravityTrapTimer = 1750f;
                     APSave.MoonGravityTrapCount++;
+                    break;
+
+                case "Mystery of the Frozen North":
+                    FPSaveManager.mapTileReveal[4] = true;
+                    FPSaveManager.mapTileReveal[5] = true;
+                    FPSaveManager.mapTileReveal[6] = true;
+                    FPSaveManager.mapTileReveal[7] = true;
                     break;
 
                 case "No Guarding":
@@ -679,7 +723,17 @@ namespace Freedom_Planet_2_Archipelago
 
                 case "Rainbow Charm": APSave.UnlockedBraveStones[17] = true; break;
 
+                case "Robot Wars! Snake VS Tarsier":
+                    FPSaveManager.mapTileReveal[16] = true;
+                    FPSaveManager.mapTileReveal[17] = true;
+                    break;
+
                 case "Shadow Guard": APSave.UnlockedBraveStones[9] = true; break;
+
+                case "Sky Pirate Panic":
+                    FPSaveManager.mapTileReveal[2] = true;
+                    FPSaveManager.mapTileReveal[3] = true;
+                    break;
 
                 // Increment our save's star card count.
                 case "Star Card": APSave.StarCardCount++; break;
@@ -708,7 +762,7 @@ namespace Freedom_Planet_2_Archipelago
         }
 
         /// <summary>
-        /// Applies a Barve Stone trap to the player.
+        /// Applies a Brave Stone trap to the player.
         /// </summary>
         /// <param name="fromStart"></param>
         /// <param name="item"></param>

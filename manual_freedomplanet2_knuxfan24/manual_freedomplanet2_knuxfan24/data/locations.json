@@ -1,0 +1,993 @@
+[
+	{
+		"category": ["Stage Clear"],
+		"requires": [],
+		"name": "Dragon Valley - Clear",
+		"region": "Dragon Valley"
+	},
+	{
+		"name": "Dragon Valley - Brave Stone",
+		"region": "Dragon Valley",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Dragon Valley - Vinyl",
+		"region": "Dragon Valley",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Shenlin Park - Clear",
+		"region": "Shenlin Park",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Shenlin Park - Brave Stone",
+		"region": "Shenlin Park",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Shenlin Park - Vinyl",
+		"region": "Shenlin Park",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Tiger Falls - Clear",
+		"region": "Tiger Falls",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Tiger Falls - Brave Stone",
+		"region": "Tiger Falls",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Tiger Falls - Vinyl",
+		"region": "Tiger Falls",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Robot Graveyard - Clear",
+		"region": "Robot Graveyard",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Robot Graveyard - Vinyl",
+		"region": "Robot Graveyard",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Shade Armory - Clear",
+		"region": "Shade Armory",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"region": "Shade Armory",
+		"name": "Shade Armory - Vinyl",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Snowfields - Clear",
+		"region": "Snowfields",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Avian Museum - Clear",
+		"region": "Avian Museum",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Avian Museum - Brave Stone",
+		"region": "Avian Museum",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Avian Museum - Vinyl",
+		"region": "Avian Museum",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Airship Sigwada - Clear",
+		"region": "Airship Sigwada",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Airship Sigwada - Brave Stone",
+		"region": "Airship Sigwada",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Airship Sigwada - Vinyl",
+		"region": "Airship Sigwada",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Phoenix Highway - Clear",
+		"region": "Phoenix Highway",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Phoenix Highway - Brave Stone",
+		"region": "Phoenix Highway",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"region": "Phoenix Highway",
+		"name": "Phoenix Highway - Vinyl",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Zao Land - Clear",
+		"region": "Zao Land",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Zao Land - Brave Stone",
+		"region": "Zao Land",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Zao Land - Vinyl",
+		"region": "Zao Land",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "The Battlesphere - Clear",
+		"region": "The Battlesphere",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "The Battlesphere - Time Capsule 1",
+		"region": "The Battlesphere",
+		"category": ["Time Capsule"],
+		"requires": []
+	},
+	{
+		"name": "The Battlesphere - Time Capsule 2",
+		"region": "The Battlesphere",
+		"category": ["Time Capsule"],
+		"requires": []
+	},
+	{
+		"name": "The Battlesphere - Time Capsule 3",
+		"region": "The Battlesphere",
+		"category": ["Time Capsule"],
+		"requires": "|Sky Pirate Panic| OR |Progressive Chapter:2|"
+	},
+	{
+		"region": "The Battlesphere",
+		"name": "The Battlesphere - Time Capsule 4",
+		"category": ["Time Capsule"],
+		"requires": "|Sky Pirate Panic| OR |Progressive Chapter:2|"
+	},
+	{
+		"name": "The Battlesphere - Time Capsule 5",
+		"region": "The Battlesphere",
+		"category": ["Time Capsule"],
+		"requires": "|Sky Pirate Panic| OR |Progressive Chapter:2|"
+	},
+	{
+		"region": "The Battlesphere",
+		"name": "The Battlesphere - Time Capsule 6",
+		"category": ["Time Capsule"],
+		"requires": "|Sky Pirate Panic| OR |Progressive Chapter:2|"
+	},
+	{
+		"name": "The Battlesphere - Time Capsule 7",
+		"region": "The Battlesphere",
+		"category": ["Time Capsule"],
+		"requires": []
+	},
+	{
+		"name": "The Battlesphere - Time Capsule 8",
+		"region": "The Battlesphere",
+		"category": ["Time Capsule"],
+		"requires": []
+	},
+	{
+		"region": "The Battlesphere",
+		"name": "The Battlesphere - Time Capsule 9",
+		"category": ["Time Capsule"],
+		"requires": "|Mystery of the Frozen North| OR |Progressive Chapter:1|"
+	},
+	{
+		"region": "The Battlesphere",
+		"name": "The Battlesphere - Time Capsule 10",
+		"category": ["Time Capsule"],
+		"requires": "(|Globe Opera| OR |Progressive Chapter:4|) AND |Star Card:7|"
+	},
+	{
+		"region": "The Battlesphere",
+		"name": "The Battlesphere - Time Capsule 11",
+		"category": ["Time Capsule"],
+		"requires": "(|Robot Wars! Snake VS Tarsier| OR |Progressive Chapter:6|) AND |Star Card:7|"
+	},
+	{
+		"region": "The Battlesphere",
+		"name": "The Battlesphere - Time Capsule 12",
+		"category": ["Time Capsule"],
+		"requires": "(|Justice in the Sky Paradise| OR |Progressive Chapter:5|) AND |Star Card:7|"
+	},
+	{
+		"name": "Globe Opera 1 - Clear",
+		"region": "Globe Opera 1",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Globe Opera 1 - Vinyl",
+		"region": "Globe Opera 1",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Globe Opera 2 - Clear",
+		"region": "Globe Opera 2",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Globe Opera 2 - Vinyl",
+		"region": "Globe Opera 2",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"region": "Auditorium",
+		"name": "Auditorium - Clear",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Palace Courtyard - Clear",
+		"region": "Palace Courtyard",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Palace Courtyard - Vinyl",
+		"region": "Palace Courtyard",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Tidal Gate - Clear",
+		"region": "Tidal Gate",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"region": "Tidal Gate",
+		"name": "Tidal Gate - Vinyl",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Sky Bridge - Clear",
+		"region": "Sky Bridge",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Sky Bridge - Vinyl",
+		"region": "Sky Bridge",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Lightning Tower - Clear",
+		"region": "Lightning Tower",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Lightning Tower - Vinyl",
+		"region": "Lightning Tower",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Zulon Jungle - Clear",
+		"region": "Zulon Jungle",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Zulon Jungle - Vinyl",
+		"region": "Zulon Jungle",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Nalao Lake - Clear",
+		"region": "Nalao Lake",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Nalao Lake - Vinyl",
+		"region": "Nalao Lake",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Ancestral Forge - Clear",
+		"region": "Ancestral Forge",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"region": "Ancestral Forge",
+		"name": "Ancestral Forge - Vinyl",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Magma Starscape - Clear",
+		"region": "Magma Starscape",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"region": "Magma Starscape",
+		"name": "Magma Starscape - Vinyl",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"region": "Diamond Point",
+		"name": "Diamond Point - Clear",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Gravity Bubble - Clear",
+		"region": "Gravity Bubble",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Gravity Bubble - Vinyl",
+		"region": "Gravity Bubble",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Bakunawa Chase - Clear",
+		"region": "Bakunawa Chase",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Bakunawa Rush - Clear",
+		"region": "Bakunawa Rush",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Bakunawa Rush - Vinyl",
+		"region": "Bakunawa Rush",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Refinery Room - Clear",
+		"region": "Refinery Room",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Clockwork Arboretum - Clear",
+		"region": "Clockwork Arboretum",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"region": "Clockwork Arboretum",
+		"name": "Clockwork Arboretum - Vinyl",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Inversion Dynamo - Clear",
+		"region": "Inversion Dynamo",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Inversion Dynamo - Vinyl",
+		"region": "Inversion Dynamo",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Lunar Cannon - Clear",
+		"region": "Lunar Cannon",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Lunar Cannon - Vinyl",
+		"region": "Lunar Cannon",
+		"category": ["Chest"],
+		"requires": []
+	},
+	{
+		"name": "Merga - Clear",
+		"region": "Merga",
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Weapon's Core - Clear",
+		"region": "Weapon's Core",
+		"victory": true,
+		"category": ["Stage Clear"],
+		"requires": []
+	},
+	{
+		"name": "Shop - Element Burst",
+		"region": "Shop",
+		"category": ["Brave Stone"],
+		"requires": []
+	},
+	{
+		"name": "Shop - Crystals To Petals",
+		"region": "Shop",
+		"category": ["Brave Stone"],
+		"requires": []
+	},
+	{
+		"name": "Shop - Petal Armor",
+		"region": "Shop",
+		"category": ["Brave Stone"],
+		"requires": []
+	},
+	{
+		"name": "Shop - Extra Stock",
+		"region": "Shop",
+		"category": ["Potion"],
+		"requires": []
+	},
+	{
+		"name": "Shop - Strong Revivals",
+		"region": "Shop",
+		"category": ["Potion"],
+		"requires": []
+	},
+	{
+		"name": "Shop - Cheaper Stocks",
+		"region": "Shop",
+		"category": ["Potion"],
+		"requires": []
+	},
+	{
+		"name": "Shop - Healing Strike",
+		"region": "Shop",
+		"category": ["Potion"],
+		"requires": []
+	},
+	{
+		"name": "Shop - Attack Up",
+		"region": "Shop",
+		"category": ["Potion"],
+		"requires": []
+	},
+	{
+		"name": "Shop - Strong Shields",
+		"region": "Shop",
+		"category": ["Potion"],
+		"requires": "|Star Card:2|"
+	},
+	{
+		"name": "Shop - Accelerator",
+		"region": "Shop",
+		"category": ["Potion"],
+		"requires": "|Star Card:2|"
+	},
+	{
+		"name": "Shop - Super Feather",
+		"region": "Shop",
+		"category": ["Potion"],
+		"requires": "|Star Card:2|"
+	},
+	{
+		"name": "Shop - Max Life Up",
+		"region": "Shop",
+		"category": ["Brave Stone"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - One Hit KO",
+		"region": "Shop",
+		"category": ["Brave Stone"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Life Oscillation",
+		"region": "Shop",
+		"category": ["Brave Stone"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Items To Bombs",
+		"region": "Shop",
+		"category": ["Brave Stone"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Powerup Start",
+		"region": "Shop",
+		"category": ["Brave Stone"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Shadow Guard",
+		"region": "Shop",
+		"category": ["Brave Stone"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Payback Ring",
+		"region": "Shop",
+		"category": ["Brave Stone"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Wood Charm",
+		"region": "Shop",
+		"category": ["Brave Stone"],
+		"requires": "|Star Card:15|"
+	},
+	{
+		"name": "Shop - Earth Charm",
+		"region": "Shop",
+		"category": ["Brave Stone"],
+		"requires": "|Star Card:15|"
+	},
+	{
+		"name": "Shop - Water Charm",
+		"region": "Shop",
+		"category": ["Brave Stone"],
+		"requires": "|Star Card:15|"
+	},
+	{
+		"name": "Shop - Fire Charm",
+		"region": "Shop",
+		"category": ["Brave Stone"],
+		"requires": "|Star Card:15|"
+	},
+	{
+		"region": "Shop",
+		"name": "Shop - Metal Charm",
+		"category": ["Brave Stone"],
+		"requires": "|Star Card:15|"
+	},
+	{
+		"region": "Shop",
+		"name": "Shop - Rainbow Charm",
+		"category": ["Brave Stone"],
+		"requires": "|Star Card:15|"
+	},
+	{
+		"name": "Shop - Vinyl - Title Screen",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": []
+	},
+	{
+		"name": "Shop - Vinyl - Main Menu",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": []
+	},
+	{
+		"name": "Shop - Vinyl - Basic Tutorial",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": []
+	},
+	{
+		"name": "Shop - Vinyl - Globe Opera 2A",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:14|"
+	},
+	{
+		"name": "Shop - Vinyl - Weapon's Core",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:32|"
+	},
+	{
+		"name": "Shop - Vinyl - Boss - Robot A",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Vinyl - Boss - Robot B",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Vinyl - Boss - Aaa",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Vinyl - Boss - Phoenix Highway",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Vinyl - Boss - Zao Land",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Vinyl - Boss - Arena",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Vinyl - Boss - Captain Kalaw",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:23|"
+	},
+	{
+		"name": "Shop - Vinyl - Boss - Serpentine A",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Vinyl - Boss - Serpentine B",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Vinyl - Boss - Beast One/Two",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:14|"
+	},
+	{
+		"name": "Shop - Vinyl - Boss - Beast Three",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:22|"
+	},
+	{
+		"name": "Shop - Vinyl - Boss - BFF2000",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:22|"
+	},
+	{
+		"name": "Shop - Vinyl - Boss - Diamond Point",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:23|"
+	},
+	{
+		"name": "Shop - Vinyl - Boss - Arboretum",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:28|"
+	},
+	{
+		"name": "Shop - Vinyl - Boss - Merga",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:31|"
+	},
+	{
+		"name": "Shop - Vinyl - Boss - Merga (Pinch)",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:31|"
+	},
+	{
+		"name": "Shop - Vinyl - Boss - Weapon's Core",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:32|"
+	},
+	{
+		"name": "Shop - Vinyl - Stage Clear",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:1|"
+	},
+	{
+		"name": "Shop - Vinyl - Results - Lilac",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:1|"
+	},
+	{
+		"name": "Shop - Vinyl - Results - Carol",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:1|"
+	},
+	{
+		"name": "Shop - Vinyl - Results - Milla",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:1|"
+	},
+	{
+		"name": "Shop - Vinyl - Results - Neera",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:1|"
+	},
+	{
+		"name": "Shop - Vinyl - Bonus Stage",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": []
+	},
+	{
+		"name": "Shop - Vinyl - Speed Gate",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": []
+	},
+	{
+		"name": "Shop - Vinyl - Shopping",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": []
+	},
+	{
+		"name": "Shop - Vinyl - Map - Shang Tu",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": []
+	},
+	{
+		"name": "Shop - Vinyl - Map - Shang Mu",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:2|"
+	},
+	{
+		"name": "Shop - Vinyl - Map - Shuigang",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:2|"
+	},
+	{
+		"name": "Shop - Vinyl - Map - Opera",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Vinyl - Map - Parusa",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:15|"
+	},
+	{
+		"name": "Shop - Vinyl - Map - Floating Island",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:16|"
+	},
+	{
+		"name": "Shop - Vinyl - Map - Volcano",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:16|"
+	},
+	{
+		"name": "Shop - Vinyl - Map - Bakunawa",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:25|"
+	},
+	{
+		"name": "Shop - Vinyl - Singing Water Temple",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:1|"
+	},
+	{
+		"name": "Shop - Vinyl - Royal Palace",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:2|"
+	},
+	{
+		"name": "Shop - Vinyl - Battlesphere Commercial",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Vinyl - Battlesphere Lobby",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Vinyl - Battlesphere Course",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"region": "Shop",
+		"name": "Shop - Vinyl - Captain Kalaw's Theme",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Vinyl - Gallery",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Vinyl - Shuigang",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Vinyl - City Hall",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:16|"
+	},
+	{
+		"name": "Shop - Vinyl - Adventure Square",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:16|"
+	},
+	{
+		"name": "Shop - Vinyl - Paradise Prime",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:17|"
+	},
+	{
+		"name": "Shop - Vinyl - Cutscene - Generic",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:1|"
+	},
+	{
+		"name": "Shop - Vinyl - Cutscene - Call to Arms",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:14|"
+	},
+	{
+		"name": "Shop - Vinyl - Cutscene - Big Mood A",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:15|"
+	},
+	{
+		"name": "Shop - Vinyl - Cutscene - Big Mood B",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:15|"
+	},
+	{
+		"name": "Shop - Vinyl - Cutscene - Heroic",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:24|"
+	},
+	{
+		"name": "Shop - Vinyl - Cutscene - Preparation",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:24|"
+	},
+	{
+		"name": "Shop - Vinyl - Cutscene - Bakunawa",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:24|"
+	},
+	{
+		"name": "Shop - Vinyl - Lilac's Theme",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:31|"
+	},
+	{
+		"name": "Shop - Vinyl - Carol's Theme",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:31|"
+	},
+	{
+		"name": "Shop - Vinyl - Milla's Theme",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:31|"
+	},
+	{
+		"name": "Shop - Vinyl - Neera's Theme",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:31|"
+	},
+	{
+		"name": "Shop - Vinyl - Corazon's Theme",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Vinyl - Serpentine's Theme",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Vinyl - Merga's Theme",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:15|"
+	},
+	{
+		"name": "Shop - Vinyl - Audio Log A",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:11|"
+	},
+	{
+		"name": "Shop - Vinyl - Audio Log B",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:2|"
+	},
+	{
+		"name": "Shop - Vinyl - Audio Log C",
+		"region": "Shop",
+		"category": ["Vinyl"],
+		"requires": "|Star Card:15|"
+	}
+]
