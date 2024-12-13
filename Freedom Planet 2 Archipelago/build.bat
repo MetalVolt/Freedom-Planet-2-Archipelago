@@ -1,2 +1,2 @@
 dotnet build
-copy "C:\Users\Knuxf\Documents\GitHub\Freedom Planet 2 AP\Freedom Planet 2 Archipelago\bin\Debug\net35\Freedom_Planet_2_Archipelago.dll" "D:\Steam\steamapps\common\Freedom Planet 2\BepInEx\plugins\Archipelago"
+copy "bin\Debug\net35\Freedom_Planet_2_Archipelago.dll" "D:\Steam\steamapps\common\Freedom Planet 2\BepInEx\plugins\Archipelago"

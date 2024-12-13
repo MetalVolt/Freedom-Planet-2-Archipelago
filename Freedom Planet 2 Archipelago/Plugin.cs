@@ -8,17 +8,17 @@ using Archipelago.MultiClient.Net.Models;
 using Freedom_Planet_2_Archipelago.Patchers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Freedom_Planet_2_Archipelago
 {
-    // TODO: Auto Equip Negative Brave Stones.
-    // TODO: Item Get Feedback.
+    // TODO: Better Item Get Feedback.
     // TODO: Make the main menu disconnect the player and kick them back to the debug menu?
+    // TODO: Remove the individual chapter items from the manual.
+    // TODO: Transfer over my old music randomiser for the lols?
+    // TODO: Would still love DeathLink to have an "enable survive" option (hell it needs an option in general!), where having it on does the standard revive on the spot option, but having it off force explodes the player.
     public class APSave()
     {
         /// <summary>
@@ -114,6 +114,12 @@ namespace Freedom_Planet_2_Archipelago
         /// Whether or not this location has already been checked by the player.
         /// </summary>
         public bool Checked = false;
+
+        /// <summary>
+        /// Whether or not this location has had a hint sent out for it from the shop.
+        /// TODO: Actually use this.
+        /// </summary>
+        public bool Hinted = false;
     }
 
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
@@ -142,7 +148,7 @@ namespace Freedom_Planet_2_Archipelago
 
         // Set up the values for the connection menu.
         string serverAddress = "localhost:62746";
-        string slotName = "knux_fp2";
+        string slotName = "Knux";
         string password = "";
 
         // Set up the value for the recieved item text.
@@ -209,7 +215,6 @@ namespace Freedom_Planet_2_Archipelago
 
                 // Create the login textboxes.
                 // TODO: These look ugly.
-                // TODO: These can't be interacted with???
                 serverAddress = GUI.TextField(new Rect(150, 70, 150, 20), serverAddress);
                 slotName = GUI.TextField(new Rect(150, 90, 150, 20), slotName);
                 password = GUI.TextField(new Rect(150, 110, 150, 20), password);
@@ -272,7 +277,7 @@ namespace Freedom_Planet_2_Archipelago
                                     System.Threading.Thread.Sleep(1);
 
                                 // DEBUG: Report the data on the item at this location.
-                                //Logger.LogInfo($"Found {Location.Player}'s {Location.Item} for {Location.Game} with flags {Location.Flags} at {Session.Locations.GetLocationNameFromId(Session.Locations.AllLocations[locationIndex])} (location index {Location.Index})");
+                                // Logger.LogInfo($"Found {Location.Player}'s {Location.Item} for {Location.Game} with flags {Location.Flags} at {Session.Locations.GetLocationNameFromId(Session.Locations.AllLocations[locationIndex])} (location index {Location.Index})");
 
                                 // Save this location check.
                                 APSave.Locations[locationIndex] = Location;
@@ -308,9 +313,11 @@ namespace Freedom_Planet_2_Archipelago
                             // Set the recieved item timer to 300 (roughly five seconds?).
                             RecievedItemTimer = 300f;
 
-                            // Set the recieved item message if this item isn't from ourselves.
+                            // Set the recieved item message depending on if we recieved this item from ourselves.
                             if (receivedItemsHelper.PeekItem().Player.Name != Session.Players.GetPlayerName(Session.ConnectionInfo.Slot))
                                 recievedItemMessage = $"Recieved {receivedItemsHelper.PeekItem().ItemName} from {receivedItemsHelper.PeekItem().Player.Name}";
+                            else
+                                recievedItemMessage = $"Found your {receivedItemsHelper.PeekItem().ItemName}";
 
                             RecieveItem(receivedItemsHelper.PeekItem().ItemName);
                             receivedItemsHelper.DequeueItem();
@@ -480,6 +487,7 @@ namespace Freedom_Planet_2_Archipelago
         /// <param name="recievedItem">The name of the item we're receiving.</param>
         private void RecieveItem(string recievedItem, bool fromStart = false)
         {
+            // Only play the sound if we're recieving this item in game rather than upon connect.
             if (!fromStart)
                 FPAudio.PlaySfx(FPAudio.SFX_ITEMGET);
 
