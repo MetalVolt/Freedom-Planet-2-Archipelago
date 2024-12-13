@@ -19,6 +19,7 @@ namespace Freedom_Planet_2_Archipelago
     // TODO: Remove the individual chapter items from the manual.
     // TODO: Transfer over my old music randomiser for the lols?
     // TODO: Would still love DeathLink to have an "enable survive" option (hell it needs an option in general!), where having it on does the standard revive on the spot option, but having it off force explodes the player.
+    // TODO: I just think RingLink would be really cool for the lols.
     public class APSave()
     {
         /// <summary>
