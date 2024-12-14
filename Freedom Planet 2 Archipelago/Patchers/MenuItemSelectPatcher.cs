@@ -8,7 +8,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// <summary>
         /// Creates the Item Select Menu, reconstructed from the original code to remove a check that ruins everything.
         /// TODO: This feels stupid.
-        /// TODO: Interacting with the menu when there's no unlocked items breaks.
+        /// TODO: Interacting with the menu when there's no unlocked items breaks, deequipping things is also wonky.
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(MenuItemSelect), "Start")]

@@ -66,7 +66,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// Sets the sprite and message for the item displayed when opening the chest.
-        /// TODO: Reimplement sprite handling.
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(ItemChest), "Start")]

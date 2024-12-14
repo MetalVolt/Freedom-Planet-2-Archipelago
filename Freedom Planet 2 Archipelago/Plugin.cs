@@ -17,7 +17,6 @@ namespace Freedom_Planet_2_Archipelago
 {
     // TODO: Better Item Get Feedback.
     // TODO: Make the main menu disconnect the player and kick them back to the debug menu?
-    // TODO: Remove the individual chapter items from the manual.
     // TODO: Transfer over my old music randomiser for the lols?
     // TODO: Would still love DeathLink to have an "enable survive" option, where having it on does the standard revive on the spot option, but having it off force explodes the player.
     // TODO: I just think RingLink would be really cool for the lols.
