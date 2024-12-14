@@ -8,6 +8,7 @@ using Archipelago.MultiClient.Net.Models;
 using Freedom_Planet_2_Archipelago.Patchers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -18,7 +19,7 @@ namespace Freedom_Planet_2_Archipelago
     // TODO: Make the main menu disconnect the player and kick them back to the debug menu?
     // TODO: Remove the individual chapter items from the manual.
     // TODO: Transfer over my old music randomiser for the lols?
-    // TODO: Would still love DeathLink to have an "enable survive" option (hell it needs an option in general!), where having it on does the standard revive on the spot option, but having it off force explodes the player.
+    // TODO: Would still love DeathLink to have an "enable survive" option, where having it on does the standard revive on the spot option, but having it off force explodes the player.
     // TODO: I just think RingLink would be really cool for the lols.
     public class APSave()
     {
@@ -155,6 +156,9 @@ namespace Freedom_Planet_2_Archipelago
         // Set up the value for the recieved item text.
         string recievedItemMessage = "";
 
+        // Store our slot data.
+        public static Dictionary<string, object> slotData = [];
+
         /// <summary>
         /// Initial code that runs when BepInEx loads our plugin.
         /// </summary>
@@ -233,9 +237,19 @@ namespace Freedom_Planet_2_Archipelago
                     // Check if we've successfully logged in.
                     if (LoginResult.Successful)
                     {
+                        // Get our slot data.
+                        slotData = Session.DataStorage.GetSlotData();
+
+                        // DEBUG: Print all the key value pairs in the slotdata and their datatypes.
+                        // foreach (var key in slotdata)
+                        //     Console.WriteLine($"{key.Key}: {key.Value} (Type: {key.Value.GetType()})");
+
                         // Set up the DeathLink service.
                         DeathLink = Session.CreateDeathLinkService();
-                        DeathLink.EnableDeathLink();
+
+                        // Enable DeathLink if its flagged in our slot data.
+                        if ((long)slotData["death_link"] == 1)
+                            DeathLink.EnableDeathLink();
 
                         // Check if the save file for this seed doesn't exist.
                         if (!File.Exists($@"{Paths.GameRootPath}\Archipelago Saves\{Session.RoomState.Seed}_Save.json"))
@@ -303,6 +317,14 @@ namespace Freedom_Planet_2_Archipelago
 
                         // Force the game to load from our save.
                         FPSaveManager.LoadFromFile(APSave.FPSaveManagerSlot);
+
+                        // Set the character based on our slot data.
+                        switch ((long)slotData["character"])
+                        {
+                            case 1: FPSaveManager.character = FPCharacterID.CAROL; break;
+                            case 2: FPSaveManager.character = FPCharacterID.MILLA; break;
+                            case 3: FPSaveManager.character = FPCharacterID.NEERA; break;
+                        }
 
                         // Always keep Dragon Valley and Shenlin Park unlocked.
                         FPSaveManager.mapTileReveal[0] = true;
