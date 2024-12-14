@@ -21,6 +21,7 @@ namespace Freedom_Planet_2_Archipelago
     // TODO: Transfer over my old music randomiser for the lols?
     // TODO: Would still love DeathLink to have an "enable survive" option, where having it on does the standard revive on the spot option, but having it off force explodes the player.
     // TODO: I just think RingLink would be really cool for the lols.
+    // TODO: Make the shop stuff check for the settings in the slot data.
     public class APSave()
     {
         /// <summary>
