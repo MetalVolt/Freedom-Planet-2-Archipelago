@@ -5,6 +5,7 @@ using Archipelago.MultiClient.Net;
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Models;
+using Archipelago.MultiClient.Net.Packets;
 using Freedom_Planet_2_Archipelago.Patchers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -19,7 +20,6 @@ namespace Freedom_Planet_2_Archipelago
     // TODO: Make the main menu disconnect the player and kick them back to the debug menu?
     // TODO: Transfer over my old music randomiser for the lols?
     // TODO: Would still love DeathLink to have an "enable survive" option, where having it on does the standard revive on the spot option, but having it off force explodes the player.
-    // TODO: I just think RingLink would be really cool for the lols.
     // TODO: Make the shop stuff check for the settings in the slot data.
     public class APSave()
     {
@@ -148,6 +148,9 @@ namespace Freedom_Planet_2_Archipelago
         public static float MoonGravityTrapTimer = 0f;
         public static float RecievedItemTimer = 0f;
 
+        // Store our slot data.
+        public static Dictionary<string, object> SlotData = [];
+
         // Set up the values for the connection menu.
         string serverAddress = "localhost:62746";
         string slotName = "Knux";
@@ -155,9 +158,6 @@ namespace Freedom_Planet_2_Archipelago
 
         // Set up the value for the recieved item text.
         string recievedItemMessage = "";
-
-        // Store our slot data.
-        public static Dictionary<string, object> slotData = [];
 
         /// <summary>
         /// Initial code that runs when BepInEx loads our plugin.
@@ -238,7 +238,7 @@ namespace Freedom_Planet_2_Archipelago
                     if (LoginResult.Successful)
                     {
                         // Get our slot data.
-                        slotData = Session.DataStorage.GetSlotData();
+                        SlotData = Session.DataStorage.GetSlotData();
 
                         // DEBUG: Print all the key value pairs in the slotdata and their datatypes.
                         // foreach (var key in slotdata)
@@ -248,8 +248,15 @@ namespace Freedom_Planet_2_Archipelago
                         DeathLink = Session.CreateDeathLinkService();
 
                         // Enable DeathLink if its flagged in our slot data.
-                        if ((long)slotData["death_link"] == 1)
+                        if ((long)SlotData["death_link"] == 1)
                             DeathLink.EnableDeathLink();
+
+                        // Set up the RingLink tag and packet checker.
+                        if ((long)SlotData["ring_link"] == 1)
+                        {
+                            Session.ConnectionInfo.UpdateConnectionOptions([.. Session.ConnectionInfo.Tags, .. new string[1] { "RingLink" }]);
+                            Session.Socket.PacketReceived += Socket_RingLinkPacket_Recieved;
+                        }
 
                         // Check if the save file for this seed doesn't exist.
                         if (!File.Exists($@"{Paths.GameRootPath}\Archipelago Saves\{Session.RoomState.Seed}_Save.json"))
@@ -319,7 +326,7 @@ namespace Freedom_Planet_2_Archipelago
                         FPSaveManager.LoadFromFile(APSave.FPSaveManagerSlot);
 
                         // Set the character based on our slot data.
-                        switch ((long)slotData["character"])
+                        switch ((long)SlotData["character"])
                         {
                             case 1: FPSaveManager.character = FPCharacterID.CAROL; break;
                             case 2: FPSaveManager.character = FPCharacterID.MILLA; break;
@@ -458,6 +465,45 @@ namespace Freedom_Planet_2_Archipelago
 
             // Write the Recieved Item text at the bottom center of the screen.
             GUI.Label(new(0, 0, 608, 32) { center = new Vector2(Screen.width / 2, Screen.height - 8) }, recievedItemMessage, centeredStyle);
+        }
+
+        /// <summary>
+        /// Process a packet. This is only used for the RingLink integration.
+        /// </summary>
+        /// <param name="packet">The packet being recieved from the Multiworld.</param>
+        private void Socket_RingLinkPacket_Recieved(ArchipelagoPacketBase packet)
+        {
+            switch (packet)
+            {
+                case BouncedPacket bouncedPacket when bouncedPacket.Tags.Contains("RingLink"):
+                    // Get the value from the RingLink.
+                    int ringLinkValue = bouncedPacket.Data["amount"].ToObject<int>();
+
+                    // Look for the player object.
+                    FPPlayer player = UnityEngine.Object.FindObjectOfType<FPPlayer>();
+
+                    // Edit the player's crystal counts if they exist.
+                    if (player != null)
+                    {
+                        player.totalCrystals += ringLinkValue;
+                        if (player.totalCrystals < 0)
+                            player.totalCrystals = 0;
+
+                        player.crystals -= ringLinkValue;
+                        if (player.crystals > player.extraLifeCost)
+                            player.crystals = player.extraLifeCost;
+                    }
+
+                    // If the player doesn't exist (because a stage isn't active for instance), then just apply the RingLink straight to the save.
+                    else
+                    {
+                        FPSaveManager.totalCrystals += ringLinkValue;
+                        if (FPSaveManager.totalCrystals < 0)
+                            FPSaveManager.totalCrystals = 0;
+                    }
+
+                    break;
+            }
         }
 
         /// <summary>

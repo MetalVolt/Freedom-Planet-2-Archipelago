@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using Archipelago.MultiClient.Net.Packets;
+using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace Freedom_Planet_2_Archipelago.Patchers

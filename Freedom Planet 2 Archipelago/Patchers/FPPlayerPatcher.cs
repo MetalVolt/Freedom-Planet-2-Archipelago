@@ -309,7 +309,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         static void SendDeathLink(string reason, bool checkHealth)
         {
             // If DeathLink is disabled, then don't run any of this code.
-            if ((long)Plugin.slotData["death_link"] != 1)
+            if ((long)Plugin.SlotData["death_link"] != 1)
                 return;
 
             // Check if we can actually send a DeathLink.

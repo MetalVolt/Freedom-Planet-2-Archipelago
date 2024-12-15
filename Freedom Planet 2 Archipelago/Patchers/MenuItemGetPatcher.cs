@@ -1,4 +1,7 @@
-﻿namespace Freedom_Planet_2_Archipelago.Patchers
+﻿using Archipelago.MultiClient.Net.Packets;
+using System.Collections.Generic;
+
+namespace Freedom_Planet_2_Archipelago.Patchers
 {
     internal class MenuItemGetPatcher
     {
@@ -135,6 +138,28 @@
 
                 // Mark this location as checked.
                 location.Checked = true;
+            }
+        }
+
+        /// <summary>
+        /// Removes 100 Rings upon buying a Vinyl, if RingLink is enabled.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(MenuItemGet), "Start")]
+        static void Test(ref FPPowerup ___powerup)
+        {
+            // Check that this is a Vinyl and that our slot data has the ring_link flag.
+            if (___powerup == FPPowerup.NONE && (long)Plugin.SlotData["ring_link"] == 1)
+            {
+                // Create a RingLink packet.
+                BouncePacket RingLinkPacket = new()
+                {
+                    Tags = ["RingLink"],
+                    Data = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { "amount", -100 } }
+                };
+
+                // Send the packet to the server.
+                Plugin.Session.Socket.SendPacket(RingLinkPacket);
             }
         }
     }

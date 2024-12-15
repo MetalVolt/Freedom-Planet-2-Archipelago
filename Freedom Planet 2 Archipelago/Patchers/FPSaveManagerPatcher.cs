@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Archipelago.MultiClient.Net.Packets;
+using System.Collections.Generic;
 using System.Reflection.Emit;
 using UnityEngine;
 
@@ -140,5 +141,26 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             return codes;
         }
 
+        /// <summary>
+        /// Sends out a Ring upon the AddCrystal function firing, if RingLink is enabled.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(FPSaveManager), "AddCrystal")]
+        static void RingLinkCrystalAdd()
+        {
+            // Check if our slot data has the ring_link tag.
+            if ((long)Plugin.SlotData["ring_link"] == 1)
+            {
+                // Create a RingLink packet.
+                BouncePacket RingLinkPacket = new()
+                {
+                    Tags = ["RingLink"],
+                    Data = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { "amount", 1 } }
+                };
+
+                // Send the packet to the server.
+                Plugin.Session.Socket.SendPacket(RingLinkPacket);
+            }
+        }
     }
 }
