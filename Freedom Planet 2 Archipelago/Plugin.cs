@@ -161,6 +161,8 @@ namespace Freedom_Planet_2_Archipelago
         public static List<AudioClip> Music;
         public static bool OnlyCustomMusic;
         public static AudioClip[] CustomInvincibility = [];
+        public static AudioClip[] CustomClear = [];
+        public static AudioClip[] Custom1UP = [];
 
         // Set up the values for sending a RingLink packet out.
         public static float RingLinkTimer = 0f;

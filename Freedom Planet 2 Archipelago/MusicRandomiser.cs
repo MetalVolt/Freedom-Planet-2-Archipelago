@@ -5,10 +5,9 @@ using UnityEngine;
 
 namespace Freedom_Planet_2_Archipelago
 {
-    // TODO: Try and find a way to make the music randomiser not need the Jukebox menu opening before it begins to work.
+    // TODO: Try and find a way to make the music randomiser not need the Jukebox menu opening before it begins to work. If I want to throw out using the base game music I could just do it on start up.
     // TODO: More formats for the custom music?
     // TODO: If the custom music hits an issue, then the game hangs indefinitely, fix this in some way.
-    // TODO: Randomising Jingles would be cool, but the game uses two functions for it and I seem to struggle to hook the one I need.
     class MusicRandomiser
     {
         // A list of songs that the music randomiser shouldn't choose or change.
@@ -16,6 +15,56 @@ namespace Freedom_Planet_2_Archipelago
 
         // The text file that specifies custom song loop points.
         static readonly string[] CustomSongLoops = File.ReadAllLines($@"{Paths.GameRootPath}\mod_overrides\Archipelago\music\loop_points.txt");
+
+        /// <summary>
+        /// Swaps out a call for one of the game's normal jingles to one of our custom ones.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(FPAudio), "PlayJingle", new Type[] { typeof(int) })]
+        static bool PlayCustomJingle(ref int bgmID, ref FPAudio ___audioRef)
+        {
+            // Set up an audio clip.
+            AudioClip clip = null;
+
+            // Select the clip based on the ID that the function recieved.
+            switch (bgmID)
+            {
+                // Invincibility.
+                case 0:
+                    if (Plugin.CustomInvincibility.Length == 0)
+                        clip = ___audioRef.jingleInvincibility;
+                    else
+                        clip = Plugin.CustomInvincibility[Plugin.Randomiser.Next(0, Plugin.CustomInvincibility.Length)];
+                    break;
+
+                // Stage Clear.
+                case 1:
+                    if (Plugin.CustomInvincibility.Length == 0)
+                        clip = ___audioRef.jingleStageComplete;
+                    else
+                        clip = Plugin.CustomClear[Plugin.Randomiser.Next(0, Plugin.CustomClear.Length)];
+                    break;
+
+                // Game Over (unused?).
+                case 2:
+                    clip = ___audioRef.jingleGameOver;
+                    break;
+
+                // 1UP.
+                case 3:
+                    if (Plugin.Custom1UP.Length == 0)
+                        clip = ___audioRef.jingle1up;
+                    else
+                        clip = Plugin.Custom1UP[Plugin.Randomiser.Next(0, Plugin.Custom1UP.Length)];
+                    break;
+            }
+            
+            // Play the chosen clip using the OTHER PlayJingle function.
+            FPAudio.PlayJingle(clip);
+
+            // Stop the original copy of this function from running.
+            return false;
+        }
 
         /// <summary>
         /// Randomises the music that the game should play.
@@ -177,8 +226,10 @@ namespace Freedom_Planet_2_Archipelago
                     foreach (string oggFile in customTracks)
                         Plugin.Music.Add(AudioClip.Create($"imported_{Path.GetFileNameWithoutExtension(oggFile)}", 1, 2, 44100, true));
 
-                    // Get the custom invincibility and power sneaker jingles.
+                    // Get the custom jingles.
                     Plugin.CustomInvincibility = GetJingles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\invincibility");
+                    Plugin.CustomClear = GetJingles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\clear");
+                    Plugin.Custom1UP = GetJingles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\1up");
                 }
             }
         }
@@ -190,6 +241,10 @@ namespace Freedom_Planet_2_Archipelago
         /// <returns>An array of audio clips.</returns>
         private static AudioClip[] GetJingles(string directory)
         {
+            // Return an empty array if the specified directory doesn't exist.
+            if (!Directory.Exists(directory))
+                return [];
+
             // Find all the OGG files in the given directory.
             string[] jingles = Directory.GetFiles(directory, "*.ogg");
 
@@ -222,7 +277,7 @@ namespace Freedom_Planet_2_Archipelago
         }
 
         /// <summary>
-        /// Plays a custom Invincibility jingle.
+        /// Makes the game actually play the Invincibility jingle.
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(ItemBox), "Action_Invincibility")]
@@ -231,13 +286,8 @@ namespace Freedom_Planet_2_Archipelago
             // Stop any actively playing jingles.
             FPAudio.StopJingle();
 
-            // Check that we actually have any custom invincibility themes to use and play one if so.
-            if (Plugin.CustomInvincibility.Length != 0)
-                FPAudio.PlayJingle(Plugin.CustomInvincibility[Plugin.Randomiser.Next(0, Plugin.CustomInvincibility.Length)]);
-
-            // If we don't have any custom invincibility themes, then just play the unused one.
-            else
-                FPAudio.PlayJingle(FPAudio.JINGLE_INVINCIBILITY);
+            // Tell the game to play the Invincibility jingle.
+            FPAudio.PlayJingle(FPAudio.JINGLE_INVINCIBILITY);
         }
 
         /// <summary>
