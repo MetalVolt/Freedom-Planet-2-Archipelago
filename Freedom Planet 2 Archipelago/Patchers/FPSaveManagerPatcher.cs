@@ -142,7 +142,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         }
 
         /// <summary>
-        /// Sends out a Ring upon the AddCrystal function firing, if RingLink is enabled.
+        /// Increments our RingLink value and sets the send timer, if RingLink is enabled.
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(FPSaveManager), "AddCrystal")]
@@ -151,15 +151,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // Check if our slot data has the ring_link tag.
             if ((long)Plugin.SlotData["ring_link"] == 1)
             {
-                // Create a RingLink packet.
-                BouncePacket RingLinkPacket = new()
-                {
-                    Tags = ["RingLink"],
-                    Data = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { "amount", 1 } }
-                };
+                // Increment our RingLink value by 1.
+                Plugin.RingLinkValue++;
 
-                // Send the packet to the server.
-                Plugin.Session.Socket.SendPacket(RingLinkPacket);
+                // Set the RingLink timer to 10.
+                Plugin.RingLinkTimer = 10f;
             }
         }
     }

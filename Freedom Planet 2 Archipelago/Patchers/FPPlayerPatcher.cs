@@ -17,7 +17,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         public static bool hasBufferedDeathLink = false;
 
         /// <summary>
-        /// Handles resetting the DeathLink flag and receiving buffered ones.
+        /// Handles resetting the DeathLink flag.
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(FPPlayer), "Start")]
@@ -25,25 +25,41 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         {
             // Reenable the DeathLink flag.
             canSendDeathLink = true;
+        }
 
-            // Check if we have a buffered DeathLink waiting to fire.
-            if (hasBufferedDeathLink)
+        /// <summary>
+        /// Recieves a DeathLink.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(FPPlayer), "Update")]
+        static void RecieveDeathLink()
+        {
+            // Check that the stage has finished loading and that we have a DeathLink waiting.
+            if (FPStage.objectsRegistered && hasBufferedDeathLink)
             {
-                // Disable the DeathLink flag so we don't send one ourself.
+                // Turn off our can send flag so we don't send a DeathLink of our own.
                 canSendDeathLink = false;
 
-                // Get the player.
+                // Find the player.
                 FPPlayer player = UnityEngine.Object.FindObjectOfType<FPPlayer>();
 
-                // Remove the player's invincibility, guard and health.
-                player.invincibilityTime = 0;
-                player.guardTime = 0;
-                player.health = 0;
+                // If the DeathLink slot value is just enable, then force run the player's crush action.
+                if ((long)Plugin.SlotData["death_link"] == 1)
+                    player.Action_Crush();
 
-                // Damage the player.
-                player.Action_Hurt();
+                // If the DeathLink slot value is enable_survive, then kill the player normally.
+                if ((long)Plugin.SlotData["death_link"] == 2)
+                {
+                    // Remove the player's invincibility, guard and health.
+                    player.invincibilityTime = 0;
+                    player.guardTime = 0;
+                    player.health = 0;
 
-                // Disabled the buffered DeathLink flag.
+                    // Damage the player.
+                    player.Action_Hurt();
+                }
+
+                // Turn our buffered flag back off.
                 hasBufferedDeathLink = false;
             }
         }
@@ -309,7 +325,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         static void SendDeathLink(string reason, bool checkHealth)
         {
             // If DeathLink is disabled, then don't run any of this code.
-            if ((long)Plugin.SlotData["death_link"] != 1)
+            if ((long)Plugin.SlotData["death_link"] == 0)
                 return;
 
             // Check if we can actually send a DeathLink.

@@ -16,11 +16,10 @@ using UnityEngine.SceneManagement;
 
 namespace Freedom_Planet_2_Archipelago
 {
-    // TODO: Better Item Get Feedback.
+    // TODO: Better Item Get Feedback, it at least scales now.
     // TODO: Make the main menu disconnect the player and kick them back to the debug menu?
-    // TODO: Transfer over my old music randomiser for the lols?
-    // TODO: Would still love DeathLink to have an "enable survive" option, where having it on does the standard revive on the spot option, but having it off force explodes the player.
-    // TODO: Make the shop stuff check for the settings in the slot data.
+    // TODO: Make the shop stuff actually check for the settings in the slot data.
+    // TODO: RingLink packet sending causes stutters, try to fix that.
     public class APSave()
     {
         /// <summary>
@@ -133,8 +132,6 @@ namespace Freedom_Planet_2_Archipelago
 
         // Set up the information for DeathLinks.
         public static DeathLinkService DeathLink;
-        public static string LastDeathLinkCause;
-        public static string LastDeathLinkResponsible;
 
         // Set up our APSave.
         public static APSave APSave;
@@ -159,11 +156,22 @@ namespace Freedom_Planet_2_Archipelago
         // Set up the value for the recieved item text.
         string recievedItemMessage = "";
 
+        // Variables for the Music Randomiser.
+        public static System.Random Randomiser = new();
+        public static List<AudioClip> Music;
+        public static bool OnlyCustomMusic;
+        public static AudioClip[] CustomInvincibility = [];
+
+        // Set up the values for sending a RingLink packet out.
+        public static float RingLinkTimer = 0f;
+        public static int RingLinkValue = 0;
+
         /// <summary>
         /// Initial code that runs when BepInEx loads our plugin.
         /// </summary>
         private void Awake()
         {
+
             // Load the Stage Debug Menu to act as a connector menu.
             SceneManager.LoadScene("StageDebugMenu");
 
@@ -199,6 +207,10 @@ namespace Freedom_Planet_2_Archipelago
 
             // Patch the Menu Classic class, used to stop map tiles from revealing at the wrong time.
             harmony.PatchAll(typeof(MenuClassicPatcher));
+
+            // Enable the Music Randomiser.
+            harmony.PatchAll(typeof(MusicRandomiser));
+            OnlyCustomMusic = Config.Bind("Music Randomiser", "Only Use Custom Music", true, "Whether or not to only use custom music tracks.").Value;
         }
 
         /// <summary>
@@ -206,6 +218,13 @@ namespace Freedom_Planet_2_Archipelago
         /// </summary>
         private void OnGUI()
         {
+            // Handle setting the matrix for a resized window.
+            float DesignWidth = 640.0f;
+            float DesignHeight = 360.0f;
+            float resX = (float)(Screen.width) / DesignWidth;
+            float resY = (float)(Screen.height) / DesignHeight;
+            GUI.matrix = Matrix4x4.TRS(new Vector3(0, 0, 0), Quaternion.identity, new Vector3(resX, resY, 1));
+
             // Check if we're on the Stage Debug Menu scene.
             if (SceneManager.GetActiveScene().name == "StageDebugMenu")
             {
@@ -241,14 +260,14 @@ namespace Freedom_Planet_2_Archipelago
                         SlotData = Session.DataStorage.GetSlotData();
 
                         // DEBUG: Print all the key value pairs in the slotdata and their datatypes.
-                        // foreach (var key in slotdata)
-                        //     Console.WriteLine($"{key.Key}: {key.Value} (Type: {key.Value.GetType()})");
+                        foreach (var key in SlotData)
+                            Console.WriteLine($"{key.Key}: {key.Value} (Type: {key.Value.GetType()})");
 
                         // Set up the DeathLink service.
                         DeathLink = Session.CreateDeathLinkService();
 
                         // Enable DeathLink if its flagged in our slot data.
-                        if ((long)SlotData["death_link"] == 1)
+                        if ((long)SlotData["death_link"] != 0)
                             DeathLink.EnableDeathLink();
 
                         // Set up the RingLink tag and packet checker.
@@ -391,31 +410,16 @@ namespace Freedom_Planet_2_Archipelago
                         // Set up the listener for handling DeathLinks.
                         DeathLink.OnDeathLinkReceived += (deathLinkHelper) =>
                         {
-                            // Get the cause and source of the DeathLink.
-                            LastDeathLinkCause = deathLinkHelper.Cause;
-                            LastDeathLinkResponsible = deathLinkHelper.Source;
+                            // Present the cause and source of the DeathLink.
+                            // TODO: Test how this message appears for different games, I'm not sure if all of them give a cause. SA2 also puts the player name IN the cause.
+                            recievedItemMessage = $@"{deathLinkHelper.Cause} [{deathLinkHelper.Source}]";
+                            RecievedItemTimer = 300f;
 
                             // Stop the player from being able to send a DeathLink out.
                             FPPlayerPatcher.canSendDeathLink = false;
-                            
-                            // Find the actual player object.
-                            FPPlayer player = UnityEngine.Object.FindObjectOfType<FPPlayer>();
 
-                            // Check that the player has been found.
-                            if (player != null)
-                            {
-                                // Remove the player's invincibility, guard and health.
-                                player.invincibilityTime = 0;
-                                player.guardTime = 0;
-                                player.health = 0;
-
-                                // Damage the player.
-                                player.Action_Hurt();
-                            }
-
-                            // If we haven't found the player, then set the buffered flag.
-                            else
-                                FPPlayerPatcher.hasBufferedDeathLink = true;
+                            // Set the flag to tell the player patcher that a DeathLink is awaiting.
+                            FPPlayerPatcher.hasBufferedDeathLink = true;
                         };
 
                         // Hide the cursor again.
@@ -449,7 +453,7 @@ namespace Freedom_Planet_2_Archipelago
             }
 
             // Set up the GUI stuff for the Recieved Item text.
-            // TODO: This is really meant to be temporary, it looks ugly and doesn't scale.
+            // TODO: This is really meant to be temporary, it looks ugly.
 
             // Create the style for the Recieved Item text.
             GUIStyle centeredStyle = new(GUI.skin.label) { alignment = TextAnchor.UpperCenter };
@@ -458,13 +462,13 @@ namespace Freedom_Planet_2_Archipelago
             centeredStyle.normal.textColor = UnityEngine.Color.black;
 
             // Write the Recieved Item text at the bottom center of the screen, offset by one pixel.
-            GUI.Label(new(0, 0, 608, 32) { center = new Vector2((Screen.width / 2) + 1, (Screen.height - 8) + 1) }, recievedItemMessage, centeredStyle);
+            GUI.Label(new(0, 0, 608, 32) { center = new Vector2((640 / 2) + 1, (360 - 8) + 1) }, recievedItemMessage, centeredStyle);
 
             // Set the style's colour to white.
             centeredStyle.normal.textColor = UnityEngine.Color.white;
 
             // Write the Recieved Item text at the bottom center of the screen.
-            GUI.Label(new(0, 0, 608, 32) { center = new Vector2(Screen.width / 2, Screen.height - 8) }, recievedItemMessage, centeredStyle);
+            GUI.Label(new(0, 0, 608, 32) { center = new Vector2(640 / 2, 360 - 8) }, recievedItemMessage, centeredStyle);
         }
 
         /// <summary>
@@ -476,6 +480,10 @@ namespace Freedom_Planet_2_Archipelago
             switch (packet)
             {
                 case BouncedPacket bouncedPacket when bouncedPacket.Tags.Contains("RingLink"):
+                    // Ignore the packet if we're the one who sent it.
+                    if (bouncedPacket.Data["source"].ToObject<int>() == Session.ConnectionInfo.Slot)
+                        return;
+
                     // Get the value from the RingLink.
                     int ringLinkValue = bouncedPacket.Data["amount"].ToObject<int>();
 
@@ -492,6 +500,41 @@ namespace Freedom_Planet_2_Archipelago
                         player.crystals -= ringLinkValue;
                         if (player.crystals > player.extraLifeCost)
                             player.crystals = player.extraLifeCost;
+
+                        // Check if this RingLink value is a negative number.
+                        if (ringLinkValue < 0)
+                        {
+                            // Check if the player has a shield.
+                            if (player.shieldHealth > 0)
+                            {
+                                // Play the approriate sound effect for the shield.
+                                if (player.shieldHealth > 1)
+                                    FPAudio.PlaySfx(player.sfxShieldHit);
+                                else
+                                    FPAudio.PlaySfx(player.sfxShieldBreak);
+
+                                // Reduce the player's shield health.
+                                player.shieldHealth -= 1;
+
+                                // Create the shield hit flash.
+                                ShieldHit shieldHit2 = (ShieldHit)FPStage.CreateStageObject(ShieldHit.classID, player.position.x, player.position.y);
+                                shieldHit2.SetParentObject(player);
+                                shieldHit2.remainingDuration = 60f - Mathf.Min((float)player.shieldHealth * 3f, 30f);
+                            }
+
+                            // Check if the player has health to lose (a RingLink should never kill).
+                            else if (player.health > 0)
+                            {
+                                // Play the damage sound effect.
+                                FPAudio.PlaySfx(player.sfxHurt);
+
+                                // Either remove health a health petal, or floor the health down to 0.
+                                if (player.health > 0.5f)
+                                    player.health -= 0.5f;
+                                else
+                                    player.health = 0;
+                            }
+                        }
                     }
 
                     // If the player doesn't exist (because a stage isn't active for instance), then just apply the RingLink straight to the save.
@@ -527,6 +570,38 @@ namespace Freedom_Planet_2_Archipelago
 
                 // Clear the recieved item message.
                 recievedItemMessage = "";
+            }
+
+            // Check if the RingLink timer is going and decrement it if so.
+            if (RingLinkTimer > 0f)
+                RingLinkTimer -= FPStage.deltaTime;
+
+            // Check if the RingLink timer has gone below 0.
+            else if (RingLinkTimer < 0f)
+            {
+                // Set the timer to 0 so this check doesn't refire.
+                RingLinkTimer = 0f;
+
+                // Calculate our epoch time.
+                TimeSpan epochTimeSpan = DateTime.UtcNow - new DateTime(1970, 1, 1);
+
+                // Create a RingLink packet.
+                BouncePacket RingLinkPacket = new()
+                {
+                    Tags = ["RingLink"],
+                    Data = new Dictionary<string, Newtonsoft.Json.Linq.JToken>
+                    {
+                        { "source", Plugin.Session.ConnectionInfo.Slot },
+                        { "time", (long)epochTimeSpan.TotalSeconds },
+                        { "amount", RingLinkValue }
+                    }
+                };
+
+                // Send the packet to the server.
+                Session.Socket.SendPacketAsync(RingLinkPacket);
+
+                // Reset the RingLink value.
+                RingLinkValue = 0;
             }
         }
 
