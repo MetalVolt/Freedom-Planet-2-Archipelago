@@ -20,6 +20,7 @@ namespace Freedom_Planet_2_Archipelago
     // TODO: Make the main menu disconnect the player and kick them back to the debug menu?
     // TODO: Make the shop stuff actually check for the settings in the slot data.
     // TODO: RingLink packet sending causes stutters, try to fix that.
+    // TODO: Move the DeathLink and ItemRecieve handlers out of the Awake block.
     public class APSave()
     {
         /// <summary>
@@ -76,6 +77,11 @@ namespace Freedom_Planet_2_Archipelago
         /// The locations that exist in FP2 for this multiworld.
         /// </summary>
         public Location[] Locations;
+
+        /// <summary>
+        /// The individual chapter unlocks.
+        /// </summary>
+        public bool[] UnlockedChapters { get; set; } = new bool[8];
     }
 
     public class Location
@@ -136,9 +142,6 @@ namespace Freedom_Planet_2_Archipelago
         // Set up our APSave.
         public static APSave APSave;
 
-        // Set up a value to track the chapter unlocks for receiving.
-        public static int ChapterUnlocks = 0;
-
         // Set up the timers for the various traps.
         public static float DoubleGravityTrapTimer = 0f;
         public static float MirrorTrapTimer = 0f;
@@ -173,7 +176,6 @@ namespace Freedom_Planet_2_Archipelago
         /// </summary>
         private void Awake()
         {
-
             // Load the Stage Debug Menu to act as a connector menu.
             SceneManager.LoadScene("StageDebugMenu");
 
@@ -209,6 +211,9 @@ namespace Freedom_Planet_2_Archipelago
 
             // Patch the Menu Classic class, used to stop map tiles from revealing at the wrong time.
             harmony.PatchAll(typeof(MenuClassicPatcher));
+
+            // Patch the Menu World Map Confirm class, used to stop the player from selecting locked stages (still makes the sound and kills the UI for a frame).
+            harmony.PatchAll(typeof(MenuWorldMapConfirmPatcher));
 
             // Enable the Music Randomiser.
             harmony.PatchAll(typeof(MusicRandomiser));
@@ -264,6 +269,57 @@ namespace Freedom_Planet_2_Archipelago
                         // DEBUG: Print all the key value pairs in the slotdata and their datatypes.
                         foreach (var key in SlotData)
                             Console.WriteLine($"{key.Key}: {key.Value} (Type: {key.Value.GetType()})");
+
+                        // Reveal all the map tiles.
+                        // Dragon Valley and Shenlin Park.
+                        FPSaveManager.mapTileReveal[0] = true;
+                        FPSaveManager.mapTileReveal[1] = true;
+
+                        // Mystery of the Frozen North.
+                        FPSaveManager.mapTileReveal[4] = true;
+                        FPSaveManager.mapTileReveal[5] = true;
+                        FPSaveManager.mapTileReveal[6] = true;
+                        FPSaveManager.mapTileReveal[7] = true;
+
+                        // Sky Pirate Panic.
+                        FPSaveManager.mapTileReveal[2] = true;
+                        FPSaveManager.mapTileReveal[3] = true;
+
+                        // Enter the Battlesphere.
+                        FPSaveManager.mapTileReveal[8] = true;
+                        FPSaveManager.mapTileReveal[9] = true;
+                        FPSaveManager.mapTileReveal[10] = true;
+
+                        // Globe Opera.
+                        FPSaveManager.mapTileReveal[11] = true;
+                        FPSaveManager.mapTileReveal[12] = true;
+                        FPSaveManager.mapTileReveal[13] = true;
+                        FPSaveManager.mapTileReveal[14] = true;
+                        FPSaveManager.mapTileReveal[15] = true;
+
+                        // Justice in the Sky Paradise.
+                        FPSaveManager.mapTileReveal[18] = true;
+                        FPSaveManager.mapTileReveal[19] = true;
+
+                        // Robot Wars! Snake VS Tarsier.
+                        FPSaveManager.mapTileReveal[16] = true;
+                        FPSaveManager.mapTileReveal[17] = true;
+
+                        // Echoes of the Dragon War.
+                        FPSaveManager.mapTileReveal[20] = true;
+                        FPSaveManager.mapTileReveal[21] = true;
+                        FPSaveManager.mapTileReveal[22] = true;
+
+                        // Bakunawa.
+                        FPSaveManager.mapTileReveal[23] = true;
+                        FPSaveManager.mapTileReveal[32] = true;
+                        FPSaveManager.mapTileReveal[24] = true;
+                        FPSaveManager.mapTileReveal[25] = true;
+                        FPSaveManager.mapTileReveal[26] = true;
+                        FPSaveManager.mapTileReveal[27] = true;
+                        FPSaveManager.mapTileReveal[28] = true;
+                        FPSaveManager.mapTileReveal[29] = true;
+                        FPSaveManager.mapTileReveal[30] = true;
 
                         // Set up the DeathLink service.
                         DeathLink = Session.CreateDeathLinkService();
@@ -361,6 +417,9 @@ namespace Freedom_Planet_2_Archipelago
                         // Set up the listener for items getting recieved.
                         Session.Items.ItemReceived += (receivedItemsHelper) =>
                         {
+                            // DEBUG: Print that this helper was fired.
+                            Console.WriteLine($"Item recieved helper fired for {receivedItemsHelper.PeekItem().ItemName} from {receivedItemsHelper.PeekItem().Player.Name}.");
+
                             // Set the recieved item timer to 300 (roughly five seconds?).
                             RecievedItemTimer = 300f;
 
@@ -752,80 +811,13 @@ namespace Freedom_Planet_2_Archipelago
                 // Unlock certain levels on the map.
                 case "Progressive Chapter":
                     // Always keep Dragon Valley and Shenlin Park unlocked.
-                    FPSaveManager.mapTileReveal[0] = true;
-                    FPSaveManager.mapTileReveal[1] = true;
-
-                    // Increment the Chapter Unlock count.
-                    ChapterUnlocks++;
-
-                    // Unlock Mystery of the Frozen North.
-                    if (ChapterUnlocks >= 1)
+                    for (int chapterIndex = 0; chapterIndex < APSave.UnlockedChapters.Length; chapterIndex++)
                     {
-                        FPSaveManager.mapTileReveal[4] = true;
-                        FPSaveManager.mapTileReveal[5] = true;
-                        FPSaveManager.mapTileReveal[6] = true;
-                        FPSaveManager.mapTileReveal[7] = true;
-                    }
-
-                    // Unlock Sky Pirate Panic.
-                    if (ChapterUnlocks >= 2)
-                    {
-                        FPSaveManager.mapTileReveal[2] = true;
-                        FPSaveManager.mapTileReveal[3] = true;
-                    }
-
-                    // Unlock Enter the Battlesphere.
-                    if (ChapterUnlocks >= 3)
-                    {
-                        FPSaveManager.mapTileReveal[8] = true;
-                        FPSaveManager.mapTileReveal[9] = true;
-                        FPSaveManager.mapTileReveal[10] = true;
-                    }
-
-                    // Unlock Globe Opera.
-                    if (ChapterUnlocks >= 4)
-                    {
-                        FPSaveManager.mapTileReveal[11] = true;
-                        FPSaveManager.mapTileReveal[12] = true;
-                        FPSaveManager.mapTileReveal[13] = true;
-                        FPSaveManager.mapTileReveal[14] = true;
-                        FPSaveManager.mapTileReveal[15] = true;
-                    }
-
-                    // Unlock Justice in the Sky Paradise.
-                    if (ChapterUnlocks >= 5)
-                    {
-                        FPSaveManager.mapTileReveal[18] = true;
-                        FPSaveManager.mapTileReveal[19] = true;
-                    }
-
-                    // Unlock Robot Wars! Snake VS Tarsier.
-                    if (ChapterUnlocks >= 6)
-                    {
-                        FPSaveManager.mapTileReveal[16] = true;
-                        FPSaveManager.mapTileReveal[17] = true;
-                    }
-
-                    // Unlock Echoes of the Dragon War.
-                    if (ChapterUnlocks >= 7)
-                    {
-                        FPSaveManager.mapTileReveal[20] = true;
-                        FPSaveManager.mapTileReveal[21] = true;
-                        FPSaveManager.mapTileReveal[22] = true;
-                    }
-
-                    // Unlock Bakunawa.
-                    if (ChapterUnlocks >= 8)
-                    {
-                        FPSaveManager.mapTileReveal[23] = true;
-                        FPSaveManager.mapTileReveal[32] = true;
-                        FPSaveManager.mapTileReveal[24] = true;
-                        FPSaveManager.mapTileReveal[25] = true;
-                        FPSaveManager.mapTileReveal[26] = true;
-                        FPSaveManager.mapTileReveal[27] = true;
-                        FPSaveManager.mapTileReveal[28] = true;
-                        FPSaveManager.mapTileReveal[29] = true;
-                        FPSaveManager.mapTileReveal[30] = true;
+                        if (!APSave.UnlockedChapters[chapterIndex])
+                        {
+                            APSave.UnlockedChapters[chapterIndex] = true;
+                            break;
+                        }
                     }
                     break;
 
@@ -849,6 +841,15 @@ namespace Freedom_Planet_2_Archipelago
                 case "Water Charm": APSave.UnlockedBraveStones[14] = true; break;
 
                 case "Wood Charm": APSave.UnlockedBraveStones[12] = true; break;
+
+                case "Mystery of the Frozen North": APSave.UnlockedChapters[0] = true; break;
+                case "Sky Pirate Panic": APSave.UnlockedChapters[1] = true; break;
+                case "Enter the Battlesphere": APSave.UnlockedChapters[2] = true; break;
+                case "Globe Opera": APSave.UnlockedChapters[3] = true; break;
+                case "Justice in the Sky Paradise": APSave.UnlockedChapters[4] = true; break;
+                case "Robot Wars! Snake VS Tarsier": APSave.UnlockedChapters[5] = true; break;
+                case "Echoes of the Dragon War": APSave.UnlockedChapters[6] = true; break;
+                case "Bakunawa": APSave.UnlockedChapters[7] = true; break;
 
                 // Warn that the given item is not yet handled on the client.
                 default: Logger.LogWarning($"Item type '{recievedItem}' not yet handled!"); break;

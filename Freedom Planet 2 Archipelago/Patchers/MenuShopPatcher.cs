@@ -29,7 +29,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
             // Send out the hints for the items that are unlocked.
             // TODO: Make this only send if the item has: A) Not being recieved. B) Not already been hinted for.
-                // While the settings on the ScoutLocationAsync function take care of the latter, it still scouts again it, locking the game up until its done.
+                // While the settings on the ScoutLocationAsync function take care of the latter, it still scouts it again, locking the game up until its done.
             if (isItemShop)
             {
                 Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Element Burst").Index]);

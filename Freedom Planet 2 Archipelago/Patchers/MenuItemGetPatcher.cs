@@ -146,20 +146,16 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MenuItemGet), "Start")]
-        static void Test(ref FPPowerup ___powerup)
+        static void DeductRingLink(ref FPPowerup ___powerup)
         {
             // Check that this is a Vinyl and that our slot data has the ring_link flag.
             if (___powerup == FPPowerup.NONE && (long)Plugin.SlotData["ring_link"] == 1)
             {
-                // Create a RingLink packet.
-                BouncePacket RingLinkPacket = new()
-                {
-                    Tags = ["RingLink"],
-                    Data = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { "amount", -100 } }
-                };
+                // Set our RingLink value to -100.
+                Plugin.RingLinkValue = -100;
 
-                // Send the packet to the server.
-                Plugin.Session.Socket.SendPacket(RingLinkPacket);
+                // Set the RingLink timer to 10.
+                Plugin.RingLinkTimer = 10f;
             }
         }
     }

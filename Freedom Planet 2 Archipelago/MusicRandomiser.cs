@@ -230,6 +230,9 @@ namespace Freedom_Planet_2_Archipelago
                     Plugin.CustomInvincibility = GetJingles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\invincibility");
                     Plugin.CustomClear = GetJingles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\clear");
                     Plugin.Custom1UP = GetJingles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\1up");
+
+                    // Print how much custom music has been loaded.
+                    Console.WriteLine($"Custom music has been loaded.\r\n\t{Plugin.Music.Count} songs.\r\n\t{Plugin.CustomInvincibility.Length} invincibility jingles.\r\n\t{Plugin.CustomClear.Length} clear jingles.\r\n\t{Plugin.Custom1UP.Length} 1UP jingles.");
                 }
             }
         }

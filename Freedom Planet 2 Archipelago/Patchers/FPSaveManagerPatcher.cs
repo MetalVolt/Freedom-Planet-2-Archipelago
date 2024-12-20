@@ -1,19 +1,18 @@
-﻿using Archipelago.MultiClient.Net.Packets;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection.Emit;
 using UnityEngine;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {
-    // Taken from FP2Lib mostly unmodified https://github.com/Kuborros/FP2Lib/blob/master/FP2Lib/Saves/SavePatches.cs.
+    // Parts of this were taken from FP2Lib mostly unmodified https://github.com/Kuborros/FP2Lib/blob/master/FP2Lib/Saves/SavePatches.cs (besides some formatting changes to fit my style).
     // TODO: Can I use this code?
     internal class FPSaveManagerPatcher
     {
         // Set the save path to Archipelago Saves.
-        static string getSavesPath() => $@"{Paths.GameRootPath}\Archipelago Saves";
+        static string GetSavesPath() => $@"{Paths.GameRootPath}\Archipelago Saves";
 
         // Force the JSONs to save with indenting.
-        static string fancifyJson(UnityEngine.Object obj) => JsonUtility.ToJson(obj, true);
+        static string FancifyJson(UnityEngine.Object obj) => JsonUtility.ToJson(obj, true);
 
         /// <summary>
         /// Overwrite the slot number when the game tries to check if a save exists.
@@ -64,15 +63,12 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         [HarmonyPatch(typeof(FPSaveManager), "SaveToFile", MethodType.Normal)]
         static IEnumerable<CodeInstruction> PatchJsonStyle(IEnumerable<CodeInstruction> instructions, ILGenerator il)
         {
-            List<CodeInstruction> codes = new List<CodeInstruction>(instructions);
+            List<CodeInstruction> codes = new(instructions);
 
             for (var i = 1; i < codes.Count; i++)
-            {
                 if (codes[i].opcode == OpCodes.Call && (codes[i - 1].opcode == OpCodes.Ldloc_0 || codes[i - 1].opcode == OpCodes.Ldloc_1) && codes[i - 2].opcode == OpCodes.Stfld)
-                {
-                    codes[i] = Transpilers.EmitDelegate(fancifyJson);
-                }
-            }
+                    codes[i] = Transpilers.EmitDelegate(FancifyJson);
+
             return codes;
         }
 
@@ -81,15 +77,12 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         [HarmonyPatch(typeof(FPSaveManager), "SaveToFile", MethodType.Normal)]
         static IEnumerable<CodeInstruction> PatchSaveWrite(IEnumerable<CodeInstruction> instructions, ILGenerator il)
         {
-            List<CodeInstruction> codes = new List<CodeInstruction>(instructions);
+            List<CodeInstruction> codes = new(instructions);
 
             for (var i = 1; i < codes.Count; i++)
-            {
                 if (codes[i].opcode == OpCodes.Call && codes[i - 1].opcode == OpCodes.Ldc_I4_0 && codes[i - 2].opcode == OpCodes.Dup)
-                {
-                    codes[i] = Transpilers.EmitDelegate(getSavesPath);
-                }
-            }
+                    codes[i] = Transpilers.EmitDelegate(GetSavesPath);
+
             return codes;
         }
 
@@ -97,15 +90,12 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         [HarmonyPatch(typeof(FPSaveManager), "LoadFromFile", MethodType.Normal)]
         static IEnumerable<CodeInstruction> PatchSaveLoad(IEnumerable<CodeInstruction> instructions, ILGenerator il)
         {
-            List<CodeInstruction> codes = new List<CodeInstruction>(instructions);
+            List<CodeInstruction> codes = new(instructions);
 
             for (var i = 1; i < codes.Count; i++)
-            {
                 if (codes[i].opcode == OpCodes.Call && codes[i - 1].opcode == OpCodes.Ldc_I4_0 && codes[i - 2].opcode == OpCodes.Dup)
-                {
-                    codes[i] = Transpilers.EmitDelegate(getSavesPath);
-                }
-            }
+                    codes[i] = Transpilers.EmitDelegate(GetSavesPath);
+
             return codes;
         }
 
@@ -113,15 +103,12 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         [HarmonyPatch(typeof(FPSaveManager), "DeleteFile", MethodType.Normal)]
         static IEnumerable<CodeInstruction> PatchSaveDelete(IEnumerable<CodeInstruction> instructions, ILGenerator il)
         {
-            List<CodeInstruction> codes = new List<CodeInstruction>(instructions);
+            List<CodeInstruction> codes = new(instructions);
 
             for (var i = 1; i < codes.Count; i++)
-            {
                 if (codes[i].opcode == OpCodes.Call && codes[i - 1].opcode == OpCodes.Ldc_I4_0 && codes[i - 2].opcode == OpCodes.Dup)
-                {
-                    codes[i] = Transpilers.EmitDelegate(getSavesPath);
-                }
-            }
+                    codes[i] = Transpilers.EmitDelegate(GetSavesPath);
+
             return codes;
         }
 
@@ -129,15 +116,12 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         [HarmonyPatch(typeof(MenuFile), "GetFileInfo", MethodType.Normal)]
         static IEnumerable<CodeInstruction> PatchFileInfo(IEnumerable<CodeInstruction> instructions, ILGenerator il)
         {
-            List<CodeInstruction> codes = new List<CodeInstruction>(instructions);
+            List<CodeInstruction> codes = new(instructions);
 
             for (var i = 1; i < codes.Count; i++)
-            {
                 if (codes[i].opcode == OpCodes.Call && codes[i - 1].opcode == OpCodes.Ldc_I4_0 && codes[i - 2].opcode == OpCodes.Dup)
-                {
-                    codes[i] = Transpilers.EmitDelegate(getSavesPath);
-                }
-            }
+                    codes[i] = Transpilers.EmitDelegate(GetSavesPath);
+
             return codes;
         }
 

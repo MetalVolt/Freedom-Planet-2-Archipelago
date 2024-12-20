@@ -8,7 +8,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// <summary>
         /// Creates the Item Select Menu, reconstructed from the original code to remove a check that ruins everything.
         /// TODO: This feels stupid.
-        /// TODO: Interacting with the menu when there's no unlocked items breaks, deequipping things is also wonky.
+        /// TODO: Opening and closing the menu seems to deequip everything?
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(MenuItemSelect), "Start")]
@@ -17,6 +17,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                                   ref GameObject ___pfEquipSlot, ref GameObject ___itemWindow, ref GameObject ___bottle, ref FPHudDigit ___pfPowerupIcon,
                                   ref Vector2 ___itemSlotSpacing, ref SpriteRenderer ___itemFolder, ref FPPowerup[] ___amuletList)
         {
+            // Set the empty slot to "unlocked" to avoid the menu being completely empty and thus breaking.
+            Plugin.APSave.UnlockedPotions[0] = true;
+            Plugin.APSave.UnlockedBraveStones[0] = true;
+
             // Get a reference to this menu.
             MenuItemSelect menu = UnityEngine.Object.FindObjectOfType<MenuItemSelect>();
 
