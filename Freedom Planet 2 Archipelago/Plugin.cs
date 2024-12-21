@@ -122,7 +122,6 @@ namespace Freedom_Planet_2_Archipelago
 
         /// <summary>
         /// Whether or not this location has had a hint sent out for it from the shop.
-        /// TODO: Actually use this.
         /// </summary>
         public bool Hinted = false;
     }
