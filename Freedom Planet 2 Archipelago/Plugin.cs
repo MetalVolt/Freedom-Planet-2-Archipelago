@@ -17,10 +17,8 @@ using UnityEngine.SceneManagement;
 namespace Freedom_Planet_2_Archipelago
 {
     // TODO: Better Item Get Feedback, it at least scales now.
-    // TODO: Make the main menu disconnect the player and kick them back to the debug menu?
-    // TODO: Make the shop stuff actually check for the settings in the slot data.
     // TODO: RingLink packet sending causes stutters, try to fix that.
-    // TODO: Move the DeathLink and ItemRecieve handlers out of the Awake block.
+    // TODO: Move the DeathLink and ItemRecieve handlers out of the Awake block, it feels kinda messy in there.
     public class APSave()
     {
         /// <summary>
@@ -216,8 +214,11 @@ namespace Freedom_Planet_2_Archipelago
             harmony.PatchAll(typeof(MenuWorldMapConfirmPatcher));
 
             // Enable the Music Randomiser.
-            harmony.PatchAll(typeof(MusicRandomiser));
-            OnlyCustomMusic = Config.Bind("Music Randomiser", "Only Use Custom Music", true, "Whether or not to only use custom music tracks.").Value;
+            if (Config.Bind("Music Randomiser", "Enable Music Randomiser", true, "Whether or not to use the music randomiser.").Value)
+            {
+                harmony.PatchAll(typeof(MusicRandomiser));
+                OnlyCustomMusic = Config.Bind("Music Randomiser", "Only Use Custom Music", true, "Whether or not to only use custom music tracks.").Value;
+            }
         }
 
         /// <summary>
@@ -383,7 +384,7 @@ namespace Freedom_Planet_2_Archipelago
                             }
 
                             // Write the save to a JSON for future loads.
-                            File.WriteAllText($@"{Paths.GameRootPath}\Archipelago Saves\{Session.RoomState.Seed}_Save.json", JsonConvert.SerializeObject(APSave, Formatting.Indented));
+                            SaveAPFile();
                         }
 
                         // Check if the save file exists.
@@ -562,6 +563,31 @@ namespace Freedom_Planet_2_Archipelago
                         if (player.crystals > player.extraLifeCost)
                             player.crystals = player.extraLifeCost;
 
+                        // Give a 1UP if the player has enough crystals (copy and pasted from the original source).
+                        if (player.crystals < 1)
+                        {
+                            player.crystals = player.extraLifeCost;
+
+                            if (player.lives < 9)
+                                player.lives++;
+
+                            CrystalBonus crystalBonus = (CrystalBonus)FPStage.CreateStageObject(CrystalBonus.classID, 292f, -64f);
+                            crystalBonus.animator.Play("HUD_Add");
+                            crystalBonus.duration = 40f;
+
+                            InvincibilityStar invincibilityStar = (InvincibilityStar)FPStage.CreateStageObject(InvincibilityStar.classID, -100f, -100f);
+                            invincibilityStar.parentObject = player;
+                            invincibilityStar.distance = 320f;
+                            invincibilityStar.descend = true;
+                            InvincibilityStar invincibilityStar2 = (InvincibilityStar)FPStage.CreateStageObject(InvincibilityStar.classID, -100f, -100f);
+                            invincibilityStar2.parentObject = player;
+                            invincibilityStar2.rotation = 180f;
+                            invincibilityStar2.distance = 320f;
+                            invincibilityStar2.descend = true;
+
+                            FPAudio.PlayJingle(3);
+                        }
+
                         // Check if this RingLink value is a negative number.
                         if (ringLinkValue < 0)
                         {
@@ -589,9 +615,9 @@ namespace Freedom_Planet_2_Archipelago
                                 // Play the damage sound effect.
                                 FPAudio.PlaySfx(player.sfxHurt);
 
-                                // Either remove health a health petal, or floor the health down to 0.
-                                if (player.health > 0.5f)
-                                    player.health -= 0.5f;
+                                // Either remove a health petal, or floor the health down to 0.
+                                if (player.health >  1f)
+                                    player.health -= 1f;
                                 else
                                     player.health = 0;
                             }
@@ -859,7 +885,7 @@ namespace Freedom_Planet_2_Archipelago
             FPSaveManager.SaveToFile(APSave.FPSaveManagerSlot);
 
             // Update our AP Save.
-            File.WriteAllText($@"{Paths.GameRootPath}\Archipelago Saves\{Session.RoomState.Seed}_Save.json", JsonConvert.SerializeObject(APSave, Formatting.Indented));
+            SaveAPFile();
         }
 
         /// <summary>
@@ -972,5 +998,10 @@ namespace Freedom_Planet_2_Archipelago
             // Return a sprite from our texture.
             return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 1);
         }
+
+        /// <summary>
+        /// Saves our AP file.
+        /// </summary>
+        public static void SaveAPFile() => File.WriteAllText($@"{Paths.GameRootPath}\Archipelago Saves\{Session.RoomState.Seed}_Save.json", JsonConvert.SerializeObject(APSave, Formatting.Indented));
     }
 }

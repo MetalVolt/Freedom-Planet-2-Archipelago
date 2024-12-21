@@ -21,11 +21,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(FPPlayer), "Start")]
-        static void Start()
-        {
-            // Reenable the DeathLink flag.
-            canSendDeathLink = true;
-        }
+        static void Start() => canSendDeathLink = true;
 
         /// <summary>
         /// Recieves a DeathLink.

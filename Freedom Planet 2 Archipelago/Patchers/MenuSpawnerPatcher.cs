@@ -17,5 +17,20 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             else
                 return true;
         }
+
+        /// <summary>
+        /// Redirects the main menu to the debug menu.
+        /// TODO: I'd like this to disconnect the player, but I can't seem to find a way to do that?
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(MenuSpawner), "Start")]
+        static void ReturnToConnectMenu()
+        {
+            if (SceneManager.GetActiveScene().name == "MainMenu")
+            {
+                // Load the Stage Debug Menu to act as a connector menu.
+                SceneManager.LoadScene("StageDebugMenu");
+            }
+        }
     }
 }

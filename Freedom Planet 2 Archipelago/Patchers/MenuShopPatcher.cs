@@ -1,6 +1,4 @@
-﻿using Archipelago.MultiClient.Net.Packets;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using UnityEngine;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
@@ -16,7 +14,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// Send out the hints for the avaliable shop items.
-        /// TODO: This'll probably break if the locations don't exist.
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(MenuShop), "Start")]
@@ -28,171 +25,193 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 isItemShop = false;
 
             // Send out the hints for the items that are unlocked.
-            // TODO: Make this only send if the item has: A) Not being recieved. B) Not already been hinted for.
-                // While the settings on the ScoutLocationAsync function take care of the latter, it still scouts it again, locking the game up until its done.
-            if (isItemShop)
+            if (isItemShop && (long)Plugin.SlotData["milla_shop"] == 1)
             {
-                Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Element Burst").Index]);
-                Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Crystals To Petals").Index]);
-                Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Petal Armor").Index]);
-                Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Extra Stock").Index]);
-                Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Strong Revivals").Index]);
-                Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Cheaper Stocks").Index]);
-                Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Healing Strike").Index]);
-                Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Attack Up").Index]);
+                SendHint("Shop - Element Burst");
+                SendHint("Shop - Crystals To Petals");
+                SendHint("Shop - Petal Armor");
+                SendHint("Shop - Extra Stock");
+                SendHint("Shop - Strong Revivals");
+                SendHint("Shop - Cheaper Stocks");
+                SendHint("Shop - Healing Strike");
+                SendHint("Shop - Attack Up");
 
                 if (FPSaveManager.TotalStarCards() >= 2)
                 {
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Strong Shields").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Accelerator").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Super Feather").Index]);
+                    SendHint("Shop - Strong Shields");
+                    SendHint("Shop - Accelerator");
+                    SendHint("Shop - Super Feather");
                 }
 
                 if (FPSaveManager.TotalStarCards() >= 11)
                 {
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Max Life Up").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - One Hit KO").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Life Oscillation").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Items To Bombs").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Powerup Start").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Shadow Guard").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Payback Ring").Index]);
+                    SendHint("Shop - Max Life Up");
+                    SendHint("Shop - One Hit KO");
+                    SendHint("Shop - Life Oscillation");
+                    SendHint("Shop - Items To Bombs");
+                    SendHint("Shop - Powerup Start");
+                    SendHint("Shop - Shadow Guard");
+                    SendHint("Shop - Payback Ring");
                 }
 
                 if (FPSaveManager.TotalStarCards() >= 15)
                 {
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Wood Charm").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Earth Charm").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Water Charm").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Fire Charm").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Metal Charm").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Rainbow Charm").Index]);
+                    SendHint("Shop - Wood Charm");
+                    SendHint("Shop - Earth Charm");
+                    SendHint("Shop - Water Charm");
+                    SendHint("Shop - Fire Charm");
+                    SendHint("Shop - Metal Charm");
+                    SendHint("Shop - Rainbow Charm");
                 }
             }
-            else
+            
+            if (!isItemShop && (long)Plugin.SlotData["vinyl_shop"] == 1)
             {
-                Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Title Screen").Index]);
-                Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Main Menu").Index]);
-                Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Basic Tutorial").Index]);
-                Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Bonus Stage").Index]);
-                Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Speed Gate").Index]);
-                Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Shopping").Index]);
-                Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Map - Shang Tu").Index]);
+                SendHint("Shop - Vinyl - Title Screen");
+                SendHint("Shop - Vinyl - Main Menu");
+                SendHint("Shop - Vinyl - Basic Tutorial");
+                SendHint("Shop - Vinyl - Bonus Stage");
+                SendHint("Shop - Vinyl - Speed Gate");
+                SendHint("Shop - Vinyl - Shopping");
+                SendHint("Shop - Vinyl - Map - Shang Tu");
 
                 if (FPSaveManager.TotalStarCards() >= 1)
                 {
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Stage Clear").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Results - Lilac").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Results - Carol").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Results - Milla").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Results - Neera").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Singing Water Temple").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Cutscene - Generic").Index]);
+                    SendHint("Shop - Vinyl - Stage Clear");
+                    SendHint("Shop - Vinyl - Results - Lilac");
+                    SendHint("Shop - Vinyl - Results - Carol");
+                    SendHint("Shop - Vinyl - Results - Milla");
+                    SendHint("Shop - Vinyl - Results - Neera");
+                    SendHint("Shop - Vinyl - Singing Water Temple");
+                    SendHint("Shop - Vinyl - Cutscene - Generic");
                 }
 
                 if (FPSaveManager.TotalStarCards() >= 2)
                 {
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Map - Shang Mu").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Map - Shuigang").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Royal Palace").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Audio Log B").Index]);
+                    SendHint("Shop - Vinyl - Map - Shang Mu");
+                    SendHint("Shop - Vinyl - Map - Shuigang");
+                    SendHint("Shop - Vinyl - Royal Palace");
+                    SendHint("Shop - Vinyl - Audio Log B");
                 }
 
                 if (FPSaveManager.TotalStarCards() >= 11)
                 {
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Boss - Robot A").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Boss - Robot B").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Boss - Aaa").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Boss - Phoenix Highway").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Boss - Zao Land").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Boss - Arena").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Boss - Serpentine A").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Boss - Serpentine B").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Map - Opera").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Battlesphere Commercial").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Battlesphere Lobby").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Battlesphere Course").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Captain Kalaw's Theme").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Gallery").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Shuigang").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Corazon's Theme").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Serpentine's Theme").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Audio Log A").Index]);
+                    SendHint("Shop - Vinyl - Boss - Robot A");
+                    SendHint("Shop - Vinyl - Boss - Robot B");
+                    SendHint("Shop - Vinyl - Boss - Aaa");
+                    SendHint("Shop - Vinyl - Boss - Phoenix Highway");
+                    SendHint("Shop - Vinyl - Boss - Zao Land");
+                    SendHint("Shop - Vinyl - Boss - Arena");
+                    SendHint("Shop - Vinyl - Boss - Serpentine A");
+                    SendHint("Shop - Vinyl - Boss - Serpentine B");
+                    SendHint("Shop - Vinyl - Map - Opera");
+                    SendHint("Shop - Vinyl - Battlesphere Commercial");
+                    SendHint("Shop - Vinyl - Battlesphere Lobby");
+                    SendHint("Shop - Vinyl - Battlesphere Course");
+                    SendHint("Shop - Vinyl - Captain Kalaw's Theme");
+                    SendHint("Shop - Vinyl - Gallery");
+                    SendHint("Shop - Vinyl - Shuigang");
+                    SendHint("Shop - Vinyl - Corazon's Theme");
+                    SendHint("Shop - Vinyl - Serpentine's Theme");
+                    SendHint("Shop - Vinyl - Audio Log A");
                 }
 
                 if (FPSaveManager.TotalStarCards() >= 14)
                 {
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Globe Opera 2A").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Boss - Beast One/Two").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Cutscene - Call to Arms").Index]);
+                    SendHint("Shop - Vinyl - Globe Opera 2A");
+                    SendHint("Shop - Vinyl - Boss - Beast One/Two");
+                    SendHint("Shop - Vinyl - Cutscene - Call to Arms");
                 }
 
                 if (FPSaveManager.TotalStarCards() >= 15)
                 {
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Map - Parusa").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Cutscene - Big Mood A").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Cutscene - Big Mood B").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Merga's Theme").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Audio Log C").Index]);
+                    SendHint("Shop - Vinyl - Map - Parusa");
+                    SendHint("Shop - Vinyl - Cutscene - Big Mood A");
+                    SendHint("Shop - Vinyl - Cutscene - Big Mood B");
+                    SendHint("Shop - Vinyl - Merga's Theme");
+                    SendHint("Shop - Vinyl - Audio Log C");
                 }
 
                 if (FPSaveManager.TotalStarCards() >= 16)
                 {
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Map - Floating Island").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Map - Volcano").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - City Hall").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Adventure Square").Index]);
+                    SendHint("Shop - Vinyl - Map - Floating Island");
+                    SendHint("Shop - Vinyl - Map - Volcano");
+                    SendHint("Shop - Vinyl - City Hall");
+                    SendHint("Shop - Vinyl - Adventure Square");
                 }
 
                 if (FPSaveManager.TotalStarCards() >= 17)
                 {
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Paradise Prime").Index]);
+                    SendHint("Shop - Vinyl - Paradise Prime");
                 }
 
                 if (FPSaveManager.TotalStarCards() >= 22)
                 {
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Boss - Beast Three").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Boss - BFF2000").Index]);
+                    SendHint("Shop - Vinyl - Boss - Beast Three");
+                    SendHint("Shop - Vinyl - Boss - BFF2000");
                 }
 
                 if (FPSaveManager.TotalStarCards() >= 23)
                 {
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Boss - Captain Kalaw").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Boss - Diamond Point").Index]);
+                    SendHint("Shop - Vinyl - Boss - Captain Kalaw");
+                    SendHint("Shop - Vinyl - Boss - Diamond Point");
                 }
 
                 if (FPSaveManager.TotalStarCards() >= 24)
                 {
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Cutscene - Heroic").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Cutscene - Preparation").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Cutscene - Bakunawa").Index]);
+                    SendHint("Shop - Vinyl - Cutscene - Heroic");
+                    SendHint("Shop - Vinyl - Cutscene - Preparation");
+                    SendHint("Shop - Vinyl - Cutscene - Bakunawa");
                 }
 
                 if (FPSaveManager.TotalStarCards() >= 25)
                 {
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Map - Bakunawa").Index]);
+                    SendHint("Shop - Vinyl - Map - Bakunawa");
                 }
 
                 if (FPSaveManager.TotalStarCards() >= 28)
                 {
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Boss - Arboretum").Index]);
+                    SendHint("Shop - Vinyl - Boss - Arboretum");
                 }
 
                 if (FPSaveManager.TotalStarCards() >= 31)
                 {
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Boss - Merga").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Boss - Merga (Pinch)").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Lilac's Theme").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Carol's Theme").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Milla's Theme").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Neera's Theme").Index]);
+                    SendHint("Shop - Vinyl - Boss - Merga");
+                    SendHint("Shop - Vinyl - Boss - Merga (Pinch)");
+                    SendHint("Shop - Vinyl - Lilac's Theme");
+                    SendHint("Shop - Vinyl - Carol's Theme");
+                    SendHint("Shop - Vinyl - Milla's Theme");
+                    SendHint("Shop - Vinyl - Neera's Theme");
                 }
 
                 if (FPSaveManager.TotalStarCards() >= 32)
                 {
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Weapon's Core").Index]);
-                    Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounceOnce, [Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Boss - Weapon's Core").Index]);
+                    SendHint("Shop - Vinyl - Weapon's Core");
+                    SendHint("Shop - Vinyl - Boss - Weapon's Core");
                 }
+            }
+        }
+
+        /// <summary>
+        /// Sends out a hint for an item if it hasn't already been hinted for.
+        /// </summary>
+        /// <param name="item">The name of the item to hint for.</param>
+        private static void SendHint(string item)
+        {
+            // Get the item we're looking for from the locations array.
+            Location itemLocation = Array.Find(Plugin.APSave.Locations, location => location.Name == item);
+
+            // Check that this location hasn't already been hinted.
+            if (!itemLocation.Hinted)
+            {
+                // Scout the location.
+                Plugin.Session.Locations.ScoutLocationsAsync(locationInfoPacket => { }, Archipelago.MultiClient.Net.Enums.HintCreationPolicy.CreateAndAnnounce, itemLocation.Index);
+
+                // Mark the location as hinted.
+                itemLocation.Hinted = true;
+
+                // Force the plugin to save our AP file.
+                Plugin.SaveAPFile();
             }
         }
 
@@ -204,12 +223,12 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         static void ReduceAllItemPrices(ref FPPowerup[] ___itemsForSale, ref int[] ___itemCosts)
         {
             // If this is the Vinyl Shop, then loop through each item cost and set them to 100.
-            if (___itemsForSale[0] == FPPowerup.NONE)
+            if (___itemsForSale[0] == FPPowerup.NONE && (long)Plugin.SlotData["vinyl_shop"] == 1)
                 for (int costIndex = 0; costIndex < ___itemCosts.Length; costIndex++)
                     ___itemCosts[costIndex] = 100;
 
             // If this is Milla's Shop, then loop through each item cost and set them to 1.
-            else
+            if (___itemsForSale[1] != FPPowerup.NONE && (long)Plugin.SlotData["milla_shop"] == 1)
                 for (int costIndex = 0; costIndex < ___itemCosts.Length; costIndex++)
                     ___itemCosts[costIndex] = 1;
         }
@@ -236,6 +255,9 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // If this is Milla's Shop, then handle the Brave Stones and Potions.
             if (isItemShop)
             {
+                if ((long)Plugin.SlotData["milla_shop"] != 1)
+                    return;
+
                 // Loop through each item that is currently visible.
                 for (int itemIndex = 0; itemIndex < 8; itemIndex++)
                 {
@@ -284,6 +306,9 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // If this is the Vinyl Shop, then handle the Vinyls.
             else
             {
+                if ((long)Plugin.SlotData["vinyl_shop"] != 1)
+                    return;
+
                 // Loop through each vinyl that is currently visible.
                 for (int vinylIndex = 0; vinylIndex < 8; vinylIndex++)
                 {
