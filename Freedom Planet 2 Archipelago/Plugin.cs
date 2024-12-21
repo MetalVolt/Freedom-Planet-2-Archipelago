@@ -18,7 +18,6 @@ namespace Freedom_Planet_2_Archipelago
 {
     // TODO: Better Item Get Feedback, it at least scales now.
     // TODO: RingLink packet sending causes stutters, try to fix that.
-    // TODO: Move the DeathLink and ItemRecieve handlers out of the Awake block, it feels kinda messy in there.
     public class APSave()
     {
         /// <summary>
@@ -62,12 +61,12 @@ namespace Freedom_Planet_2_Archipelago
         public int TimeCapsuleCount;
 
         /// <summary>
-        /// The brave stones that have been recieved from the server.
+        /// The brave stones that have been received from the server.
         /// </summary>
         public bool[] UnlockedBraveStones { get; set; } = new bool[29];
 
         /// <summary>
-        /// The potions that have been recieved from the server.
+        /// The potions that have been received from the server.
         /// </summary>
         public bool[] UnlockedPotions { get; set; } = new bool[9];
 
@@ -143,7 +142,7 @@ namespace Freedom_Planet_2_Archipelago
         public static float DoubleGravityTrapTimer = 0f;
         public static float MirrorTrapTimer = 0f;
         public static float MoonGravityTrapTimer = 0f;
-        public static float RecievedItemTimer = 0f;
+        public static float NotifyMessageTimer = 0f;
 
         // Store our slot data.
         public static Dictionary<string, object> SlotData = [];
@@ -153,8 +152,8 @@ namespace Freedom_Planet_2_Archipelago
         string slotName = "Knux";
         string password = "";
 
-        // Set up the value for the recieved item text.
-        string recievedItemMessage = "";
+        // Set up the value for the received item text.
+        string NotifyMessage = "";
 
         // Variables for the Music Randomiser.
         public static System.Random Randomiser = new();
@@ -332,8 +331,14 @@ namespace Freedom_Planet_2_Archipelago
                         if ((long)SlotData["ring_link"] == 1)
                         {
                             Session.ConnectionInfo.UpdateConnectionOptions([.. Session.ConnectionInfo.Tags, .. new string[1] { "RingLink" }]);
-                            Session.Socket.PacketReceived += Socket_RingLinkPacket_Recieved;
+                            Session.Socket.PacketReceived += Socket_RingLinkPacket_Received;
                         }
+
+                        // Set up the listener for items getting received.
+                        Session.Items.ItemReceived += Socket_ReceiveItem;
+
+                        // Set up the listener for handling DeathLinks.
+                        DeathLink.OnDeathLinkReceived += Socket_ReceiveDeathLink;
 
                         // Check if the save file for this seed doesn't exist.
                         if (!File.Exists($@"{Paths.GameRootPath}\Archipelago Saves\{Session.RoomState.Seed}_Save.json"))
@@ -413,28 +418,7 @@ namespace Freedom_Planet_2_Archipelago
                         // Always keep Dragon Valley and Shenlin Park unlocked.
                         FPSaveManager.mapTileReveal[0] = true;
                         FPSaveManager.mapTileReveal[1] = true;
-
-                        // Set up the listener for items getting recieved.
-                        Session.Items.ItemReceived += (receivedItemsHelper) =>
-                        {
-                            // DEBUG: Print that this helper was fired.
-                            Console.WriteLine($"Item recieved helper fired for {receivedItemsHelper.PeekItem().ItemName} from {receivedItemsHelper.PeekItem().Player.Name}.");
-
-                            // Set the recieved item timer to 300 (roughly five seconds?).
-                            RecievedItemTimer = 300f;
-
-                            // Set the recieved item message depending on if we recieved this item from ourselves.
-                            if (receivedItemsHelper.PeekItem().Player.Name != Session.Players.GetPlayerName(Session.ConnectionInfo.Slot))
-                                recievedItemMessage = $"Recieved {receivedItemsHelper.PeekItem().ItemName} from {receivedItemsHelper.PeekItem().Player.Name}";
-                            else
-                                recievedItemMessage = $"Found your {receivedItemsHelper.PeekItem().ItemName}";
-
-                            RecieveItem(receivedItemsHelper.PeekItem().ItemName);
-                            receivedItemsHelper.DequeueItem();
-                        };
                         
-                        // TODO: Rehandle this. Maybe loop through the items, get the count of stuff and then go from there?
-
                         // Set up values to check our extra item slots and gold gems.
                         int serverDoubleGravityTrapCount = 0;
                         int serverExtraItemSlots = 0;
@@ -444,7 +428,7 @@ namespace Freedom_Planet_2_Archipelago
                         int serverStarCardCount = 0;
                         int serverTimeCapsuleCount = 0;
 
-                        // Loop through each item the server has sent and recieve it.
+                        // Loop through each item the server has sent and receive it.
                         foreach (ItemInfo item in Session.Items.AllItemsReceived)
                         {
                             // Split the item's name.
@@ -461,27 +445,12 @@ namespace Freedom_Planet_2_Archipelago
                                 case "Star Card": serverStarCardCount = StartItemCheck(serverStarCardCount, APSave.StarCardCount, itemName); break;
                                 case "Time Capsule": serverTimeCapsuleCount = StartItemCheck(serverTimeCapsuleCount, APSave.TimeCapsuleCount, itemName); break;
 
-                                default: RecieveItem(itemName, true); break;
+                                default: ReceiveItem(itemName, true); break;
                             }
 
                             // Remove this item from the queue.
                             Session.Items.DequeueItem();
                         }
-
-                        // Set up the listener for handling DeathLinks.
-                        DeathLink.OnDeathLinkReceived += (deathLinkHelper) =>
-                        {
-                            // Present the cause and source of the DeathLink.
-                            // TODO: Test how this message appears for different games, I'm not sure if all of them give a cause. SA2 also puts the player name IN the cause.
-                            recievedItemMessage = $@"{deathLinkHelper.Cause} [{deathLinkHelper.Source}]";
-                            RecievedItemTimer = 300f;
-
-                            // Stop the player from being able to send a DeathLink out.
-                            FPPlayerPatcher.canSendDeathLink = false;
-
-                            // Set the flag to tell the player patcher that a DeathLink is awaiting.
-                            FPPlayerPatcher.hasBufferedDeathLink = true;
-                        };
 
                         // Hide the cursor again.
                         Cursor.visible = false;
@@ -513,30 +482,66 @@ namespace Freedom_Planet_2_Archipelago
                 }
             }
 
-            // Set up the GUI stuff for the Recieved Item text.
+            // Set up the GUI stuff for the notify message text.
             // TODO: This is really meant to be temporary, it looks ugly.
 
-            // Create the style for the Recieved Item text.
+            // Create the style for the notify message text.
             GUIStyle centeredStyle = new(GUI.skin.label) { alignment = TextAnchor.UpperCenter };
 
             // Set the style's colour to black for the drop shadow.
             centeredStyle.normal.textColor = UnityEngine.Color.black;
 
-            // Write the Recieved Item text at the bottom center of the screen, offset by one pixel.
-            GUI.Label(new(0, 0, 608, 32) { center = new Vector2((640 / 2) + 1, (360 - 8) + 1) }, recievedItemMessage, centeredStyle);
+            // Write the notify message text at the bottom center of the screen, offset by one pixel.
+            GUI.Label(new(0, 0, 608, 32) { center = new Vector2((640 / 2) + 1, (360 - 8) + 1) }, NotifyMessage, centeredStyle);
 
             // Set the style's colour to white.
             centeredStyle.normal.textColor = UnityEngine.Color.white;
 
-            // Write the Recieved Item text at the bottom center of the screen.
-            GUI.Label(new(0, 0, 608, 32) { center = new Vector2(640 / 2, 360 - 8) }, recievedItemMessage, centeredStyle);
+            // Write the notify message text at the bottom center of the screen.
+            GUI.Label(new(0, 0, 608, 32) { center = new Vector2(640 / 2, 360 - 8) }, NotifyMessage, centeredStyle);
+        }
+
+        private void Socket_ReceiveDeathLink(DeathLink deathLinkHelper)
+        {
+            // Present the cause and source of the DeathLink.
+            // TODO: Test how this message appears for different games, I'm not sure if all of them give a cause. SA2 also puts the player name IN the cause.
+            NotifyMessage = $@"{deathLinkHelper.Cause} [{deathLinkHelper.Source}]";
+            NotifyMessageTimer = 300f;
+
+            // Stop the player from being able to send a DeathLink out.
+            FPPlayerPatcher.canSendDeathLink = false;
+
+            // Set the flag to tell the player patcher that a DeathLink is awaiting.
+            FPPlayerPatcher.hasBufferedDeathLink = true;
+        }
+
+        /// <summary>
+        /// Receives an item from the multiworld.
+        /// </summary>
+        /// <param name="receivedItemsHelper">The helper handling the item receive.</param>
+        private void Socket_ReceiveItem(Archipelago.MultiClient.Net.Helpers.ReceivedItemsHelper receivedItemsHelper)
+        {
+            // DEBUG: Print that this helper was fired.
+            Console.WriteLine($"Item received helper fired for {receivedItemsHelper.PeekItem().ItemName} from {receivedItemsHelper.PeekItem().Player.Name}.");
+
+            // Set the notify message timer to 300 (roughly five seconds?).
+            NotifyMessageTimer = 300f;
+
+            // Set the notify message depending on if we received this item from ourselves.
+            if (receivedItemsHelper.PeekItem().Player.Name != Session.Players.GetPlayerName(Session.ConnectionInfo.Slot))
+                NotifyMessage = $"Received {receivedItemsHelper.PeekItem().ItemName} from {receivedItemsHelper.PeekItem().Player.Name}";
+            else
+                NotifyMessage = $"Found your {receivedItemsHelper.PeekItem().ItemName}";
+
+            ReceiveItem(receivedItemsHelper.PeekItem().ItemName);
+            receivedItemsHelper.DequeueItem();
         }
 
         /// <summary>
         /// Process a packet. This is only used for the RingLink integration.
         /// </summary>
-        /// <param name="packet">The packet being recieved from the Multiworld.</param>
-        private void Socket_RingLinkPacket_Recieved(ArchipelagoPacketBase packet)
+        /// <param name="packet">The packet being received from the Multiworld.</param>
+        private void Socket_RingLinkPacket_Received(ArchipelagoPacketBase packet)
         {
             switch (packet)
             {
@@ -644,18 +649,18 @@ namespace Freedom_Planet_2_Archipelago
             if (SceneManager.GetActiveScene().name == "Cutscene_BattlesphereCapsule")
                 SceneManager.LoadScene("ArenaMenu");
 
-            // Check if the Recieved Item timer is going and decrement it if so.
-            if (RecievedItemTimer > 0f)
-                RecievedItemTimer -= FPStage.deltaTime;
+            // Check if the notify message timer is going and decrement it if so.
+            if (NotifyMessageTimer > 0f)
+                NotifyMessageTimer -= FPStage.deltaTime;
 
-            // Check if the Recieved Item timer has gone below 0.
-            else if (RecievedItemTimer < 0f)
+            // Check if the notify message timer has gone below 0.
+            else if (NotifyMessageTimer < 0f)
             {
                 // Set the timer to 0 so this check doesn't refire.
-                RecievedItemTimer = 0f;
+                NotifyMessageTimer = 0f;
 
-                // Clear the recieved item message.
-                recievedItemMessage = "";
+                // Clear the notify message message.
+                NotifyMessage = "";
             }
 
             // Check if the RingLink timer is going and decrement it if so.
@@ -700,12 +705,12 @@ namespace Freedom_Planet_2_Archipelago
                 serverValue++;
 
                 // Inform that we've skipped giving this item.
-                Logger.LogInfo($"Skipped giving {itemName} as it was already recieved.");
+                Logger.LogInfo($"Skipped giving {itemName} as it was already received.");
             }
 
-            // If we don't have less of this item than the save reports, then recieve it.
+            // If we don't have less of this item than the save reports, then receive it.
             else
-                RecieveItem(itemName, true);
+                ReceiveItem(itemName, true);
 
             // Return the value the server's given.
             return serverValue;
@@ -714,15 +719,15 @@ namespace Freedom_Planet_2_Archipelago
         /// <summary>
         /// Handles receiving an item from the multiworld.
         /// </summary>
-        /// <param name="recievedItem">The name of the item we're receiving.</param>
-        private void RecieveItem(string recievedItem, bool fromStart = false)
+        /// <param name="ReceivedItem">The name of the item we're receiving.</param>
+        private void ReceiveItem(string ReceivedItem, bool fromStart = false)
         {
             // Only play the sound if we're recieving this item in game rather than upon connect.
             if (!fromStart)
                 FPAudio.PlaySfx(FPAudio.SFX_ITEMGET);
 
             // Check the item we're receiving.
-            switch (recievedItem)
+            switch (ReceivedItem)
             {
                 case "Crystals to Petals": APSave.UnlockedBraveStones[7] = true; break;
 
@@ -877,7 +882,7 @@ namespace Freedom_Planet_2_Archipelago
                 case "Bakunawa": APSave.UnlockedChapters[7] = true; break;
 
                 // Warn that the given item is not yet handled on the client.
-                default: Logger.LogWarning($"Item type '{recievedItem}' not yet handled!"); break;
+                default: Logger.LogWarning($"Item type '{ReceivedItem}' not yet handled!"); break;
             }
 
             // Force the game to save.
@@ -897,7 +902,7 @@ namespace Freedom_Planet_2_Archipelago
             // Actually find the player.
             FPPlayer player = UnityEngine.Object.FindObjectOfType<FPPlayer>();
 
-            // Check that the player exists and we haven't recieved this item when loading the file.
+            // Check that the player exists and we haven't Received this item when loading the file.
             if (player != null)
             {
                 // Set up a new array that is 1 element longer than the existing powers array.

@@ -26,7 +26,7 @@ namespace Freedom_Planet_2_Archipelago
             // Set up an audio clip.
             AudioClip clip = null;
 
-            // Select the clip based on the ID that the function recieved.
+            // Select the clip based on the ID that the function received.
             switch (bgmID)
             {
                 // Invincibility.

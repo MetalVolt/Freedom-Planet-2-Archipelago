@@ -24,11 +24,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         static void Start() => canSendDeathLink = true;
 
         /// <summary>
-        /// Recieves a DeathLink.
+        /// Receives a DeathLink.
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(FPPlayer), "Update")]
-        static void RecieveDeathLink()
+        static void ReceiveDeathLink()
         {
             // Check that the stage has finished loading and that we have a DeathLink waiting.
             if (FPStage.objectsRegistered && hasBufferedDeathLink)
