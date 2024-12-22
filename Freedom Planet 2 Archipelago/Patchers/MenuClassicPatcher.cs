@@ -72,7 +72,6 @@
         static void CheckForStageLocks(ref MenuClassicTile[] ___stages, ref MenuText ___textLocation, ref MenuText ___textRecord, ref int ___currentTile)
         {
             // Undo the edit to Weapons Core if we meet the Star Card requirement.
-            // TODO: Does this work?
             if (Plugin.APSave.StarCardCount >= 32 && ___stages[30].starCardRequirement == 32)
                 ___stages[30].starCardRequirement = 0;
 

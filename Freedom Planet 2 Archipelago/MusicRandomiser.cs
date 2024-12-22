@@ -2,10 +2,10 @@
 using System.IO;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Freedom_Planet_2_Archipelago
 {
-    // TODO: Try and find a way to make the music randomiser not need the Jukebox menu opening before it begins to work. If I want to throw out using the base game music I could just do it on start up.
     // TODO: More formats for the custom music?
     // TODO: If the custom music hits an issue, then the game hangs indefinitely, fix this in some way.
     class MusicRandomiser
@@ -14,7 +14,7 @@ namespace Freedom_Planet_2_Archipelago
         static readonly List<string> BlacklistedSongs = ["M_Clear", "M_ClearSilent", "M_Invincibility", "M_SpeedGate"];
 
         // The text file that specifies custom song loop points.
-        static readonly string[] CustomSongLoops = File.ReadAllLines($@"{Paths.GameRootPath}\mod_overrides\Archipelago\music\loop_points.txt");
+        static string[] CustomSongLoops = [];
 
         /// <summary>
         /// Swaps out a call for one of the game's normal jingles to one of our custom ones.
@@ -192,48 +192,47 @@ namespace Freedom_Planet_2_Archipelago
         }
 
         /// <summary>
-        /// Populates the music list by hijacking the Jukebox.
+        /// Populates the music list.
         /// </summary>
         [HarmonyPrefix]
-        [HarmonyPatch(typeof(MenuJukebox), "Start")]
+        [HarmonyPatch(typeof(MenuSpawner), "Start")]
         static void LookForMusic()
         {
-            // Check if we've already gotten a list of music.
-            if (Plugin.Music == null)
+            // Check if we haven't already gotten a list of music and that we're on the debug menu scene.
+            if (Plugin.Music == null && SceneManager.GetActiveScene().name == "StageDebugMenu")
             {
-                // If we haven't, then find the Jukebox menu. 
-                MenuJukebox jukebox = UnityEngine.Object.FindObjectOfType<MenuJukebox>();
+                // Initialise the music list.
+                Plugin.Music = [];
 
-                // Check we actually found a menu.
-                if (jukebox != null)
-                {
-                    // Initialise the music list.
-                    Plugin.Music = [];
+                // If the music directory doesn't exist, then return.
+                if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\music"))
+                    return;
 
-                    // Set the path where the custom music is located.
-                    string[] customTracks = Directory.GetFiles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\music", "*.ogg");
+                // Set the path where the custom music is located.
+                string[] customTracks = Directory.GetFiles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\music", "*.ogg");
 
-                    // If the user hasn't selected to only use custom music (or no custom music exists) then loop through each song in the Jukebox, if it isn't null, then add it to our list.
-                    if (!Plugin.OnlyCustomMusic || customTracks.Length == 0)
-                        foreach (AudioClip song in jukebox.music)
-                            if (song != null)
-                                Plugin.Music.Add(song);
+                // If there wasn't any music, then also return.
+                if (customTracks.Length == 0)
+                    return;
 
-                    // Inform the user that we're finding custom music.
-                    Console.WriteLine("Finding custom music, game may hang for a short while.");
+                // Inform the user that we're finding custom music.
+                Console.WriteLine("Finding custom music, game may hang for a short while.");
 
-                    // Loop through each OGG file in the mod overrides folder and create a placeholder audio clip for it.
-                    foreach (string oggFile in customTracks)
-                        Plugin.Music.Add(AudioClip.Create($"imported_{Path.GetFileNameWithoutExtension(oggFile)}", 1, 2, 44100, true));
+                // Loop through each OGG file in the mod overrides folder and create a placeholder audio clip for it.
+                foreach (string oggFile in customTracks)
+                    Plugin.Music.Add(AudioClip.Create($"imported_{Path.GetFileNameWithoutExtension(oggFile)}", 1, 2, 44100, true));
 
-                    // Get the custom jingles.
-                    Plugin.CustomInvincibility = GetJingles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\invincibility");
-                    Plugin.CustomClear = GetJingles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\clear");
-                    Plugin.Custom1UP = GetJingles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\1up");
+                // Get the custom jingles.
+                Plugin.CustomInvincibility = GetJingles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\invincibility");
+                Plugin.CustomClear = GetJingles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\clear");
+                Plugin.Custom1UP = GetJingles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\1up");
 
-                    // Print how much custom music has been loaded.
-                    Console.WriteLine($"Custom music has been loaded.\r\n\t{Plugin.Music.Count} songs.\r\n\t{Plugin.CustomInvincibility.Length} invincibility jingles.\r\n\t{Plugin.CustomClear.Length} clear jingles.\r\n\t{Plugin.Custom1UP.Length} 1UP jingles.");
-                }
+                // Print how much custom music has been loaded.
+                Console.WriteLine($"Custom music has been loaded.\r\n\t{Plugin.Music.Count} songs.\r\n\t{Plugin.CustomInvincibility.Length} invincibility jingles.\r\n\t{Plugin.CustomClear.Length} clear jingles.\r\n\t{Plugin.Custom1UP.Length} 1UP jingles.");
+
+                // Check that the custom loop points file exists and read the values if so.
+                if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\music\loop_points.txt"))
+                    CustomSongLoops = File.ReadAllLines($@"{Paths.GameRootPath}\mod_overrides\Archipelago\music\loop_points.txt");
             }
         }
 

@@ -158,7 +158,6 @@ namespace Freedom_Planet_2_Archipelago
         // Variables for the Music Randomiser.
         public static System.Random Randomiser = new();
         public static List<AudioClip> Music;
-        public static bool OnlyCustomMusic;
         public static AudioClip[] CustomInvincibility = [];
         public static AudioClip[] CustomClear = [];
         public static AudioClip[] Custom1UP = [];
@@ -213,10 +212,7 @@ namespace Freedom_Planet_2_Archipelago
 
             // Enable the Music Randomiser.
             if (Config.Bind("Music Randomiser", "Enable Music Randomiser", true, "Whether or not to use the music randomiser.").Value)
-            {
                 harmony.PatchAll(typeof(MusicRandomiser));
-                OnlyCustomMusic = Config.Bind("Music Randomiser", "Only Use Custom Music", true, "Whether or not to only use custom music tracks.").Value;
-            }
         }
 
         /// <summary>
@@ -929,8 +925,6 @@ namespace Freedom_Planet_2_Archipelago
 
         /// <summary>
         /// Returns a sprite icon for the given location.
-        /// TODO: Character specific Powerup Start sprites.
-        /// TODO: AP Progression/Trap(?) sprites.
         /// TODO: Can we find a way to just pull FP2's actual sprites rather than having them as seperate files? I feel like that's not the best approach in the long term.
         /// </summary>
         /// <param name="location">The location this sprite is for.</param>
@@ -946,6 +940,12 @@ namespace Freedom_Planet_2_Archipelago
             // Load the Archipelago logo.
             texture.LoadImage(File.ReadAllBytes($@"{apPath}\ap_logo.png"));
 
+            // If this is a progression item or trap, then use the approriate sprite.
+            if (location.Flags == ItemFlags.Advancement)
+                texture.LoadImage(File.ReadAllBytes($@"{apPath}\ap_logo_progression.png"));
+            if (location.Flags == ItemFlags.Trap)
+                texture.LoadImage(File.ReadAllBytes($@"{apPath}\ap_logo_trap.png"));
+
             // If this icon is not for Freedom Planet 2, then check if one exists for this game and icon combination, if so, load it.
             if (location.Game != "Manual_FreedomPlanet2_Knuxfan24")
             {
@@ -958,41 +958,41 @@ namespace Freedom_Planet_2_Archipelago
             {
                 switch (location.Item)
                 {
-                    case "Gold Gem":                 texture.LoadImage(File.ReadAllBytes($@"{apPath}\gold_gem.png"));              break;
-                    case "Star Card":                texture.LoadImage(File.ReadAllBytes($@"{apPath}\star_card.png"));             break;
-                    case "Time Capsule":             texture.LoadImage(File.ReadAllBytes($@"{apPath}\time_capsule.png"));          break;
-                    case "Potion - Extra Stock":     texture.LoadImage(File.ReadAllBytes($@"{apPath}\extra_stocks.png"));          break;
-                    case "Potion - Strong Revivals": texture.LoadImage(File.ReadAllBytes($@"{apPath}\strong_revives.png"));        break;
-                    case "Potion - Cheaper Stocks":  texture.LoadImage(File.ReadAllBytes($@"{apPath}\cheap_stocks.png"));          break;
-                    case "Potion - Healing Strike":  texture.LoadImage(File.ReadAllBytes($@"{apPath}\healing_strike.png"));        break;
-                    case "Potion - Attack Up":       texture.LoadImage(File.ReadAllBytes($@"{apPath}\attack_up.png"));             break;
-                    case "Potion - Strong Shields":  texture.LoadImage(File.ReadAllBytes($@"{apPath}\strong_shields.png"));        break;
-                    case "Potion - Accelerator":     texture.LoadImage(File.ReadAllBytes($@"{apPath}\accelerator.png"));           break;
-                    case "Potion - Super Feather":   texture.LoadImage(File.ReadAllBytes($@"{apPath}\super_feather.png"));         break;
-                    case "Element Burst":            texture.LoadImage(File.ReadAllBytes($@"{apPath}\element_burst.png"));         break;
-                    case "Max Life Up":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\max_life_up.png"));           break;
-                    case "Crystals to Petals":       texture.LoadImage(File.ReadAllBytes($@"{apPath}\crystals_to_petals.png"));    break;
-                    case "Powerup Start":            texture.LoadImage(File.ReadAllBytes($@"{apPath}\power_start_lilac.png"));     break;
-                    case "Shadow Guard":             texture.LoadImage(File.ReadAllBytes($@"{apPath}\shadow_guard.png"));          break;
-                    case "Payback Ring":             texture.LoadImage(File.ReadAllBytes($@"{apPath}\payback_ring.png"));          break;
-                    case "Wood Charm":               texture.LoadImage(File.ReadAllBytes($@"{apPath}\wood_charm.png"));            break;
-                    case "Earth Charm":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\earth_charm.png"));           break;
-                    case "Water Charm":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\water_charm.png"));           break;
-                    case "Fire Charm":               texture.LoadImage(File.ReadAllBytes($@"{apPath}\fire_charm.png"));            break;
-                    case "Metal Charm":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\metal_charm.png"));           break;
-                    case "No Stocks":                texture.LoadImage(File.ReadAllBytes($@"{apPath}\no_stocks.png"));             break;
-                    case "Expensive Stocks":         texture.LoadImage(File.ReadAllBytes($@"{apPath}\expensive_stocks.png"));      break;
-                    case "Double Damage":            texture.LoadImage(File.ReadAllBytes($@"{apPath}\double_damage.png"));         break;
-                    case "No Revivals":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\no_revives.png"));            break;
-                    case "No Guarding":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\no_guarding.png"));           break;
-                    case "No Petals":                texture.LoadImage(File.ReadAllBytes($@"{apPath}\no_petals.png"));             break;
-                    case "Time Limit":               texture.LoadImage(File.ReadAllBytes($@"{apPath}\time_limit.png"));            break;
-                    case "Items To Bombs":           texture.LoadImage(File.ReadAllBytes($@"{apPath}\items_to_bombs.png"));        break;
-                    case "Life Oscillation":         texture.LoadImage(File.ReadAllBytes($@"{apPath}\life_oscillation.png"));      break;
-                    case "One Hit KO":               texture.LoadImage(File.ReadAllBytes($@"{apPath}\one_hit_ko.png"));            break;
-                    case "Petal Armor":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\petal_armour.png"));          break;
-                    case "Rainbow Charm":            texture.LoadImage(File.ReadAllBytes($@"{apPath}\rainbow_charm.png"));         break;
-                    default:                         Console.WriteLine($"Item {location.Item} currently has no sprite definied."); break;
+                    case "Gold Gem":                 texture.LoadImage(File.ReadAllBytes($@"{apPath}\gold_gem.png"));                                                break;
+                    case "Star Card":                texture.LoadImage(File.ReadAllBytes($@"{apPath}\star_card.png"));                                               break;
+                    case "Time Capsule":             texture.LoadImage(File.ReadAllBytes($@"{apPath}\time_capsule.png"));                                            break;
+                    case "Potion - Extra Stock":     texture.LoadImage(File.ReadAllBytes($@"{apPath}\extra_stocks.png"));                                            break;
+                    case "Potion - Strong Revivals": texture.LoadImage(File.ReadAllBytes($@"{apPath}\strong_revives.png"));                                          break;
+                    case "Potion - Cheaper Stocks":  texture.LoadImage(File.ReadAllBytes($@"{apPath}\cheap_stocks.png"));                                            break;
+                    case "Potion - Healing Strike":  texture.LoadImage(File.ReadAllBytes($@"{apPath}\healing_strike.png"));                                          break;
+                    case "Potion - Attack Up":       texture.LoadImage(File.ReadAllBytes($@"{apPath}\attack_up.png"));                                               break;
+                    case "Potion - Strong Shields":  texture.LoadImage(File.ReadAllBytes($@"{apPath}\strong_shields.png"));                                          break;
+                    case "Potion - Accelerator":     texture.LoadImage(File.ReadAllBytes($@"{apPath}\accelerator.png"));                                             break;
+                    case "Potion - Super Feather":   texture.LoadImage(File.ReadAllBytes($@"{apPath}\super_feather.png"));                                           break;
+                    case "Element Burst":            texture.LoadImage(File.ReadAllBytes($@"{apPath}\element_burst.png"));                                           break;
+                    case "Max Life Up":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\max_life_up.png"));                                             break;
+                    case "Crystals to Petals":       texture.LoadImage(File.ReadAllBytes($@"{apPath}\crystals_to_petals.png"));                                      break;
+                    case "Powerup Start":            texture.LoadImage(File.ReadAllBytes($@"{apPath}\power_start_{FPPlayerPatcher.GetPlayer().ToLower()}.png"));     break;
+                    case "Shadow Guard":             texture.LoadImage(File.ReadAllBytes($@"{apPath}\shadow_guard.png"));                                            break;
+                    case "Payback Ring":             texture.LoadImage(File.ReadAllBytes($@"{apPath}\payback_ring.png"));                                            break;
+                    case "Wood Charm":               texture.LoadImage(File.ReadAllBytes($@"{apPath}\wood_charm.png"));                                              break;
+                    case "Earth Charm":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\earth_charm.png"));                                             break;
+                    case "Water Charm":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\water_charm.png"));                                             break;
+                    case "Fire Charm":               texture.LoadImage(File.ReadAllBytes($@"{apPath}\fire_charm.png"));                                              break;
+                    case "Metal Charm":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\metal_charm.png"));                                             break;
+                    case "No Stocks":                texture.LoadImage(File.ReadAllBytes($@"{apPath}\no_stocks.png"));                                               break;
+                    case "Expensive Stocks":         texture.LoadImage(File.ReadAllBytes($@"{apPath}\expensive_stocks.png"));                                        break;
+                    case "Double Damage":            texture.LoadImage(File.ReadAllBytes($@"{apPath}\double_damage.png"));                                           break;
+                    case "No Revivals":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\no_revives.png"));                                              break;
+                    case "No Guarding":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\no_guarding.png"));                                             break;
+                    case "No Petals":                texture.LoadImage(File.ReadAllBytes($@"{apPath}\no_petals.png"));                                               break;
+                    case "Time Limit":               texture.LoadImage(File.ReadAllBytes($@"{apPath}\time_limit.png"));                                              break;
+                    case "Items To Bombs":           texture.LoadImage(File.ReadAllBytes($@"{apPath}\items_to_bombs.png"));                                          break;
+                    case "Life Oscillation":         texture.LoadImage(File.ReadAllBytes($@"{apPath}\life_oscillation.png"));                                        break;
+                    case "One Hit KO":               texture.LoadImage(File.ReadAllBytes($@"{apPath}\one_hit_ko.png"));                                              break;
+                    case "Petal Armor":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\petal_armour.png"));                                            break;
+                    case "Rainbow Charm":            texture.LoadImage(File.ReadAllBytes($@"{apPath}\rainbow_charm.png"));                                           break;
+                    default:                         Console.WriteLine($"Item {location.Item} currently has no sprite definied.");                                   break;
                 }
             }
 

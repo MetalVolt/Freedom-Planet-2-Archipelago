@@ -26,6 +26,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         [HarmonyPatch(typeof(MenuSpawner), "Start")]
         static void ReturnToConnectMenu()
         {
+            // Check if we've been sent to the main menu for whatever reason.
             if (SceneManager.GetActiveScene().name == "MainMenu")
             {
                 // Load the Stage Debug Menu to act as a connector menu.

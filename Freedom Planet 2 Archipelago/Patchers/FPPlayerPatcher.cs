@@ -354,7 +354,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// Get the name of the active character.
         /// </summary>
         /// <returns>The character name.</returns>
-        private static string GetPlayer()
+        public static string GetPlayer()
         {
             switch (FPSaveManager.character)
             {
