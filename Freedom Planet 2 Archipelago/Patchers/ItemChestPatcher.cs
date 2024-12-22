@@ -1,9 +1,28 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {
     internal class ItemChestPatcher
     {
+        /// <summary>
+        /// Stupid hack used to find and steal an initialised ItemLabel from a Dragon Valley chest.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(ItemChest), "Start")]
+        static void FetchItemLabel(ref ItemLabel ___label)
+        {
+            // Check that this chest has an initialised label and that our plugin doesn't.
+            if (___label != null && Plugin.ItemLabelTemplate == null)
+            {
+                // Copy this chest's label onto the plugin one.
+                Plugin.ItemLabelTemplate = ___label;
+
+                // Boot the player out to the classic menu.
+                SceneManager.LoadScene("ClassicMenu");
+            }
+        }
+
         /// <summary>
         /// Gets the location at a chest.
         /// </summary>
@@ -87,7 +106,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     ___labelMessage += $"{location.Player}'s ";
 
                 // End the label message.
-                ___labelMessage += $"{location.Item}.";
+                ___labelMessage += $"{location.Item}";
 
                 // Set the item's sprite.
                 ___itemSprite = Plugin.GetItemSprite(location);

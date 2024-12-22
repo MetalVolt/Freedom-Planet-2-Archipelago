@@ -10,6 +10,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="resources\ap_logo.png" />
+    <None Remove="resources\ap_logo_progression.png" />
+    <None Remove="resources\ap_logo_trap.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="resources\ap_logo.png" />
+    <EmbeddedResource Include="resources\ap_logo_progression.png" />
+    <EmbeddedResource Include="resources\ap_logo_trap.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Archipelago.MultiClient.Net" Version="6.3.1" />
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.*" />

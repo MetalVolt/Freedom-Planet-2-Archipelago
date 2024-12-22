@@ -11,13 +11,14 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Freedom_Planet_2_Archipelago
 {
-    // TODO: Better Item Get Feedback, it at least scales now.
     // TODO: RingLink packet sending causes stutters, try to fix that.
+    // TODO: RingLink packet sending and release collecting can "crash" the game (it keeps running, but the item receiving seems to die). Track this issue down and sort it.
     public class APSave()
     {
         /// <summary>
@@ -142,7 +143,6 @@ namespace Freedom_Planet_2_Archipelago
         public static float DoubleGravityTrapTimer = 0f;
         public static float MirrorTrapTimer = 0f;
         public static float MoonGravityTrapTimer = 0f;
-        public static float NotifyMessageTimer = 0f;
 
         // Store our slot data.
         public static Dictionary<string, object> SlotData = [];
@@ -166,11 +166,25 @@ namespace Freedom_Planet_2_Archipelago
         public static float RingLinkTimer = 0f;
         public static int RingLinkValue = 0;
 
+        // Set up the ItemLabel references.
+        public static ItemLabel ItemLabelTemplate = null;
+        public static ItemLabel ItemLabelSpawner = null;
+
+        // Set up the sprites for the AP items.
+        static byte[] APLogo;
+        static byte[] APLogo_Progression;
+        static byte[] APLogo_Trap;
+
         /// <summary>
         /// Initial code that runs when BepInEx loads our plugin.
         /// </summary>
         private void Awake()
         {
+            // Get the sprites for the AP items.
+            APLogo = GetAPSprite("Freedom_Planet_2_Archipelago.resources.ap_logo.png");
+            APLogo_Progression = GetAPSprite("Freedom_Planet_2_Archipelago.resources.ap_logo_progression.png");
+            APLogo_Trap = GetAPSprite("Freedom_Planet_2_Archipelago.resources.ap_logo_trap.png");
+
             // Load the Stage Debug Menu to act as a connector menu.
             SceneManager.LoadScene("StageDebugMenu");
 
@@ -209,6 +223,9 @@ namespace Freedom_Planet_2_Archipelago
 
             // Patch the Menu World Map Confirm class, used to stop the player from selecting locked stages (still makes the sound and kills the UI for a frame).
             harmony.PatchAll(typeof(MenuWorldMapConfirmPatcher));
+
+            // Patch the Item Label class, used to extend the Item Label's background.
+            harmony.PatchAll(typeof(ItemLabelPatcher));
 
             // Enable the Music Randomiser.
             if (Config.Bind("Music Randomiser", "Enable Music Randomiser", true, "Whether or not to use the music randomiser.").Value)
@@ -370,7 +387,7 @@ namespace Freedom_Planet_2_Archipelago
                                 Logger.LogInfo($"Getting information for location {Location.Name} with an index of {Location.Index}.");
 
                                 // Scout the location for the player, item, flags and game.
-                                Session.Locations.ScoutLocationsAsync(locationInfoPacket => { Location.Player = Session.Players.GetPlayerName(locationInfoPacket[Location.Index].Player); Location.Item = locationInfoPacket[Location.Index].ItemName; Location.Flags = locationInfoPacket[Location.Index].Flags; Location.Game = locationInfoPacket[Location.Index].ItemGame; }, new long[1] { Session.Locations.AllLocations[locationIndex] });
+                                Session.Locations.ScoutLocationsAsync(locationInfoPacket => { Location.Player = Session.Players.GetPlayerName(locationInfoPacket[Location.Index].Player); Location.Item = locationInfoPacket[Location.Index].ItemName; Location.Flags = locationInfoPacket[Location.Index].Flags; Location.Game = locationInfoPacket[Location.Index].ItemGame; }, [Session.Locations.AllLocations[locationIndex]]);
 
                                 // Twiddle our thumbs waiting for the async operation to finish.
                                 while (Location.Player == "" || Location.Item == "" || Location.Game == "")
@@ -460,8 +477,8 @@ namespace Freedom_Planet_2_Archipelago
                         // Set the speed of the transition.
                         transition.transitionSpeed = 48f;
 
-                        // Set the transition to load the Classic Mode Menu.
-                        transition.sceneToLoad = "ClassicMenu";
+                        // Set the transition to load Dragon Valley so we can steal the ItemLabel from a Chest there.
+                        transition.sceneToLoad = "DragonValley";
 
                         // Set the transition to pure black.
                         transition.SetTransitionColor(0f, 0f, 0f);
@@ -477,38 +494,26 @@ namespace Freedom_Planet_2_Archipelago
                     }
                 }
             }
-
-            // Set up the GUI stuff for the notify message text.
-            // TODO: This is really meant to be temporary, it looks ugly.
-
-            // Create the style for the notify message text.
-            GUIStyle centeredStyle = new(GUI.skin.label) { alignment = TextAnchor.UpperCenter };
-
-            // Set the style's colour to black for the drop shadow.
-            centeredStyle.normal.textColor = UnityEngine.Color.black;
-
-            // Write the notify message text at the bottom center of the screen, offset by one pixel.
-            GUI.Label(new(0, 0, 608, 32) { center = new Vector2((640 / 2) + 1, (360 - 8) + 1) }, NotifyMessage, centeredStyle);
-
-            // Set the style's colour to white.
-            centeredStyle.normal.textColor = UnityEngine.Color.white;
-
-            // Write the notify message text at the bottom center of the screen.
-            GUI.Label(new(0, 0, 608, 32) { center = new Vector2(640 / 2, 360 - 8) }, NotifyMessage, centeredStyle);
         }
 
+        /// <summary>
+        /// Receives a DeathLink from the multiworld.
+        /// </summary>
+        /// <param name="deathLinkHelper">The helper handling the DeathLink receive.</param>
         private void Socket_ReceiveDeathLink(DeathLink deathLinkHelper)
         {
             // Present the cause and source of the DeathLink.
             // TODO: Test how this message appears for different games, I'm not sure if all of them give a cause. SA2 also puts the player name IN the cause.
             NotifyMessage = $@"{deathLinkHelper.Cause} [{deathLinkHelper.Source}]";
-            NotifyMessageTimer = 300f;
 
             // Stop the player from being able to send a DeathLink out.
             FPPlayerPatcher.canSendDeathLink = false;
 
             // Set the flag to tell the player patcher that a DeathLink is awaiting.
             FPPlayerPatcher.hasBufferedDeathLink = true;
+
+            // Spawn the label to shwo the player.
+            SpawnItemLabel();
         }
 
         /// <summary>
@@ -520,17 +525,18 @@ namespace Freedom_Planet_2_Archipelago
             // DEBUG: Print that this helper was fired.
             Console.WriteLine($"Item received helper fired for {receivedItemsHelper.PeekItem().ItemName} from {receivedItemsHelper.PeekItem().Player.Name}.");
 
-            // Set the notify message timer to 300 (roughly five seconds?).
-            NotifyMessageTimer = 300f;
-
             // Set the notify message depending on if we received this item from ourselves.
             if (receivedItemsHelper.PeekItem().Player.Name != Session.Players.GetPlayerName(Session.ConnectionInfo.Slot))
                 NotifyMessage = $"Received {receivedItemsHelper.PeekItem().ItemName} from {receivedItemsHelper.PeekItem().Player.Name}";
             else
                 NotifyMessage = $"Found your {receivedItemsHelper.PeekItem().ItemName}";
 
+            // Handle actually receiving the item.
             ReceiveItem(receivedItemsHelper.PeekItem().ItemName);
             receivedItemsHelper.DequeueItem();
+
+            // Spawn the label to shwo the player.
+            SpawnItemLabel();
         }
 
         /// <summary>
@@ -637,6 +643,43 @@ namespace Freedom_Planet_2_Archipelago
         }
 
         /// <summary>
+        /// Creates the ItemLabel to tell the user than an item/DeathLink has come in.
+        /// TODO: This appears behind some stuff (like the shop), can I fix that?
+        /// </summary>
+        private void SpawnItemLabel()
+        {
+            // Check that our label template actually exists before trying to instantiate it.
+            if (ItemLabelTemplate == null)
+                return;
+
+            // If the ItemLabelSpawner already exists, destroy it.
+            ItemLabelSpawner?.RequestDestroy();
+
+            // Instantiate the ItemLabelSpawner by copying our template to it.
+            ItemLabelSpawner = UnityEngine.Object.Instantiate(ItemLabelTemplate);
+
+            // Set the message on the ItemLabel to our NotifyMessage.
+            ItemLabelSpawner.itemName = NotifyMessage;
+
+            // Clear NotifyMessage.
+            NotifyMessage = string.Empty;
+
+            // Set up the listener for the ItemLabel expiring.
+            ItemLabelSpawner.ItemLabelExpired += ItemLabelExpired;
+        }
+
+        /// <summary>
+        /// Listener for our ItemLabel expiring.
+        /// </summary>
+        /// <param name="itemLabel"></param>
+        private void ItemLabelExpired(ItemLabel itemLabel)
+        {
+            ItemLabelSpawner.ItemLabelExpired -= ItemLabelExpired;
+            if (ItemLabelTemplate == ItemLabelSpawner)
+                ItemLabelSpawner = null;
+        }
+
+        /// <summary>
         /// Code that runs every frame.
         /// </summary>
         private void Update()
@@ -644,20 +687,6 @@ namespace Freedom_Planet_2_Archipelago
             // If the active scene is the Battlesphere Time Capsule cutscene, then boot the player out to the arena menu instead.
             if (SceneManager.GetActiveScene().name == "Cutscene_BattlesphereCapsule")
                 SceneManager.LoadScene("ArenaMenu");
-
-            // Check if the notify message timer is going and decrement it if so.
-            if (NotifyMessageTimer > 0f)
-                NotifyMessageTimer -= FPStage.deltaTime;
-
-            // Check if the notify message timer has gone below 0.
-            else if (NotifyMessageTimer < 0f)
-            {
-                // Set the timer to 0 so this check doesn't refire.
-                NotifyMessageTimer = 0f;
-
-                // Clear the notify message message.
-                NotifyMessage = "";
-            }
 
             // Check if the RingLink timer is going and decrement it if so.
             if (RingLinkTimer > 0f)
@@ -678,7 +707,7 @@ namespace Freedom_Planet_2_Archipelago
                     Tags = ["RingLink"],
                     Data = new Dictionary<string, Newtonsoft.Json.Linq.JToken>
                     {
-                        { "source", Plugin.Session.ConnectionInfo.Slot },
+                        { "source", Session.ConnectionInfo.Slot },
                         { "time", (long)epochTimeSpan.TotalSeconds },
                         { "amount", RingLinkValue }
                     }
@@ -718,7 +747,7 @@ namespace Freedom_Planet_2_Archipelago
         /// <param name="ReceivedItem">The name of the item we're receiving.</param>
         private void ReceiveItem(string ReceivedItem, bool fromStart = false)
         {
-            // Only play the sound if we're recieving this item in game rather than upon connect.
+            // Only play the sound if we're receiving this item in game rather than upon connect.
             if (!fromStart)
                 FPAudio.PlaySfx(FPAudio.SFX_ITEMGET);
 
@@ -836,7 +865,6 @@ namespace Freedom_Planet_2_Archipelago
 
                 // Unlock certain levels on the map.
                 case "Progressive Chapter":
-                    // Always keep Dragon Valley and Shenlin Park unlocked.
                     for (int chapterIndex = 0; chapterIndex < APSave.UnlockedChapters.Length; chapterIndex++)
                     {
                         if (!APSave.UnlockedChapters[chapterIndex])
@@ -891,8 +919,7 @@ namespace Freedom_Planet_2_Archipelago
         /// <summary>
         /// Applies a Barve Stone trap to the player.
         /// </summary>
-        /// <param name="fromStart"></param>
-        /// <param name="item"></param>
+        /// <param name="item">The Brave Stone to equip.</param>
         private static void SetTrapBraveStone(FPPowerup item)
         {
             // Actually find the player.
@@ -938,61 +965,38 @@ namespace Freedom_Planet_2_Archipelago
             Texture2D texture = new(32, 32);
 
             // Load the Archipelago logo.
-            texture.LoadImage(File.ReadAllBytes($@"{apPath}\ap_logo.png"));
+            texture.LoadImage(APLogo);
 
             // If this is a progression item or trap, then use the approriate sprite.
             if (location.Flags == ItemFlags.Advancement)
-                texture.LoadImage(File.ReadAllBytes($@"{apPath}\ap_logo_progression.png"));
+                texture.LoadImage(APLogo_Progression);
             if (location.Flags == ItemFlags.Trap)
-                texture.LoadImage(File.ReadAllBytes($@"{apPath}\ap_logo_trap.png"));
+                texture.LoadImage(APLogo_Trap);
 
             // If this icon is not for Freedom Planet 2, then check if one exists for this game and icon combination, if so, load it.
             if (location.Game != "Manual_FreedomPlanet2_Knuxfan24")
             {
-                if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\{location.Game}\{location.Item}.png"))
+                if (File.Exists($@"{apPath}\{location.Game}\{location.Item}.png"))
                     texture.LoadImage(File.ReadAllBytes($@"{apPath}\{location.Game}\{location.Item}.png"));
             }
 
-            // If this icon IS for Freedom Planet 2, then look through the sprites and find this item's.
+            // If this is a Freedom Planet 2 item, then check the AP folder itself for the sprite.
+            // Power Up Start is handled differently, as it appears differently depending on the player character.
             else
             {
-                switch (location.Item)
+                if (location.Item != "Powerup Start")
                 {
-                    case "Gold Gem":                 texture.LoadImage(File.ReadAllBytes($@"{apPath}\gold_gem.png"));                                                break;
-                    case "Star Card":                texture.LoadImage(File.ReadAllBytes($@"{apPath}\star_card.png"));                                               break;
-                    case "Time Capsule":             texture.LoadImage(File.ReadAllBytes($@"{apPath}\time_capsule.png"));                                            break;
-                    case "Potion - Extra Stock":     texture.LoadImage(File.ReadAllBytes($@"{apPath}\extra_stocks.png"));                                            break;
-                    case "Potion - Strong Revivals": texture.LoadImage(File.ReadAllBytes($@"{apPath}\strong_revives.png"));                                          break;
-                    case "Potion - Cheaper Stocks":  texture.LoadImage(File.ReadAllBytes($@"{apPath}\cheap_stocks.png"));                                            break;
-                    case "Potion - Healing Strike":  texture.LoadImage(File.ReadAllBytes($@"{apPath}\healing_strike.png"));                                          break;
-                    case "Potion - Attack Up":       texture.LoadImage(File.ReadAllBytes($@"{apPath}\attack_up.png"));                                               break;
-                    case "Potion - Strong Shields":  texture.LoadImage(File.ReadAllBytes($@"{apPath}\strong_shields.png"));                                          break;
-                    case "Potion - Accelerator":     texture.LoadImage(File.ReadAllBytes($@"{apPath}\accelerator.png"));                                             break;
-                    case "Potion - Super Feather":   texture.LoadImage(File.ReadAllBytes($@"{apPath}\super_feather.png"));                                           break;
-                    case "Element Burst":            texture.LoadImage(File.ReadAllBytes($@"{apPath}\element_burst.png"));                                           break;
-                    case "Max Life Up":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\max_life_up.png"));                                             break;
-                    case "Crystals to Petals":       texture.LoadImage(File.ReadAllBytes($@"{apPath}\crystals_to_petals.png"));                                      break;
-                    case "Powerup Start":            texture.LoadImage(File.ReadAllBytes($@"{apPath}\power_start_{FPPlayerPatcher.GetPlayer().ToLower()}.png"));     break;
-                    case "Shadow Guard":             texture.LoadImage(File.ReadAllBytes($@"{apPath}\shadow_guard.png"));                                            break;
-                    case "Payback Ring":             texture.LoadImage(File.ReadAllBytes($@"{apPath}\payback_ring.png"));                                            break;
-                    case "Wood Charm":               texture.LoadImage(File.ReadAllBytes($@"{apPath}\wood_charm.png"));                                              break;
-                    case "Earth Charm":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\earth_charm.png"));                                             break;
-                    case "Water Charm":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\water_charm.png"));                                             break;
-                    case "Fire Charm":               texture.LoadImage(File.ReadAllBytes($@"{apPath}\fire_charm.png"));                                              break;
-                    case "Metal Charm":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\metal_charm.png"));                                             break;
-                    case "No Stocks":                texture.LoadImage(File.ReadAllBytes($@"{apPath}\no_stocks.png"));                                               break;
-                    case "Expensive Stocks":         texture.LoadImage(File.ReadAllBytes($@"{apPath}\expensive_stocks.png"));                                        break;
-                    case "Double Damage":            texture.LoadImage(File.ReadAllBytes($@"{apPath}\double_damage.png"));                                           break;
-                    case "No Revivals":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\no_revives.png"));                                              break;
-                    case "No Guarding":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\no_guarding.png"));                                             break;
-                    case "No Petals":                texture.LoadImage(File.ReadAllBytes($@"{apPath}\no_petals.png"));                                               break;
-                    case "Time Limit":               texture.LoadImage(File.ReadAllBytes($@"{apPath}\time_limit.png"));                                              break;
-                    case "Items To Bombs":           texture.LoadImage(File.ReadAllBytes($@"{apPath}\items_to_bombs.png"));                                          break;
-                    case "Life Oscillation":         texture.LoadImage(File.ReadAllBytes($@"{apPath}\life_oscillation.png"));                                        break;
-                    case "One Hit KO":               texture.LoadImage(File.ReadAllBytes($@"{apPath}\one_hit_ko.png"));                                              break;
-                    case "Petal Armor":              texture.LoadImage(File.ReadAllBytes($@"{apPath}\petal_armour.png"));                                            break;
-                    case "Rainbow Charm":            texture.LoadImage(File.ReadAllBytes($@"{apPath}\rainbow_charm.png"));                                           break;
-                    default:                         Console.WriteLine($"Item {location.Item} currently has no sprite definied.");                                   break;
+                    if (File.Exists($@"{apPath}\{location.Item}.png"))
+                        texture.LoadImage(File.ReadAllBytes($@"{apPath}\{location.Item}.png"));
+                    else
+                        Console.WriteLine($"Item {location.Item} currently has no sprite definied.");
+                }
+                else
+                {
+                    if (File.Exists($@"{apPath}\{location.Item} ({FPPlayerPatcher.GetPlayer()}).png"))
+                        texture.LoadImage(File.ReadAllBytes($@"{apPath}\{location.Item} ({FPPlayerPatcher.GetPlayer()}).png"));
+                    else
+                        Console.WriteLine($"Item {location.Item} currently has no sprite definied.");
                 }
             }
 
@@ -1007,5 +1011,22 @@ namespace Freedom_Planet_2_Archipelago
         /// Saves our AP file.
         /// </summary>
         public static void SaveAPFile() => File.WriteAllText($@"{Paths.GameRootPath}\Archipelago Saves\{Session.RoomState.Seed}_Save.json", JsonConvert.SerializeObject(APSave, Formatting.Indented));
+    
+        /// <summary>
+        /// Gets the sprites for the Archipelago logo from the DLL.
+        /// </summary>
+        /// <param name="spriteName">The name of the resource to load.</param>
+        /// <returns>The bytes that make up the resource.</returns>
+        static byte[] GetAPSprite(string spriteName)
+        {
+            // Load the resource into a stream.
+            Stream sprite = Assembly.GetExecutingAssembly().GetManifestResourceStream(spriteName);
+
+            // Create a binary reader from this stream.
+            BinaryReader reader = new(sprite);
+
+            // Read the length of the stream into a byte array and return it.
+            return reader.ReadBytes((int)sprite.Length);
+        }
     }
 }
