@@ -77,12 +77,9 @@ namespace Freedom_Planet_2_Archipelago
             // Check that the play music function has a bgm assigned.
             if (bgmMusic != null)
             {
-                // Check that we've actually gotten a list of music. If we haven't, then inform the user and return.
-                if (Plugin.Music == null)
-                {
-                    Console.WriteLine($"No music has been read, please open the Jukebox menu to populate the music list.");
+                // Check that we've actually gotten a list of music. If we haven't, then return.
+                if (Plugin.Music == null || Plugin.Music.Count == 0)
                     return;
-                }
 
                 // Check if the track the game called for is on the blacklist.
                 if (!BlacklistedSongs.Contains(bgmMusic.name))
