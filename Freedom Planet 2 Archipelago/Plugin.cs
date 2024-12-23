@@ -180,6 +180,16 @@ namespace Freedom_Planet_2_Archipelago
         /// </summary>
         private void Awake()
         {
+            // Create the custom content directories if they doesn't already exist.
+            if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\music"))
+                Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\music");
+            if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\1up"))
+                Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\1up");
+            if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\clear"))
+                Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\clear");
+            if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\invincibility"))
+                Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\invincibility");
+
             // Get the sprites for the AP items.
             APLogo = GetAPSprite("Freedom_Planet_2_Archipelago.resources.ap_logo.png");
             APLogo_Progression = GetAPSprite("Freedom_Planet_2_Archipelago.resources.ap_logo_progression.png");
