@@ -189,6 +189,8 @@ namespace Freedom_Planet_2_Archipelago
                 Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\clear");
             if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\invincibility"))
                 Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\invincibility");
+            if (!Directory.Exists($@"{Paths.GameRootPath}\Archipelago Saves"))
+                Directory.CreateDirectory($@"{Paths.GameRootPath}\Archipelago Saves");
 
             // Get the sprites for the AP items.
             APLogo = GetAPSprite("Freedom_Planet_2_Archipelago.resources.ap_logo.png");
