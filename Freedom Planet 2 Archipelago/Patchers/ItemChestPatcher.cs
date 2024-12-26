@@ -6,15 +6,19 @@ namespace Freedom_Planet_2_Archipelago.Patchers
     internal class ItemChestPatcher
     {
         /// <summary>
-        /// Stupid hack used to find and steal an initialised ItemLabel from a Dragon Valley chest.
+        /// Stupid hack used to find and steal both an initialised ItemLabel and the items texture atlas from a Dragon Valley chest.
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(ItemChest), "Start")]
-        static void FetchItemLabel(ref ItemLabel ___label)
+        static void FetchItemLabel(ref Sprite ___itemSprite, ref ItemLabel ___label)
         {
-            // Check that this chest has an initialised label and that our plugin doesn't.
-            if (___label != null && Plugin.ItemLabelTemplate == null)
+            // Check that this chest has both a label and item sprite.
+            // Also check that we haven't already read them.
+            if (___label != null && Plugin.ItemLabelTemplate == null && ___itemSprite != null && Plugin.ItemSpriteAtlas == null)
             {
+                // Copy this chest's item sprite texture onto the plugin's atlas.
+                Plugin.ItemSpriteAtlas = ___itemSprite.texture;
+
                 // Copy this chest's label onto the plugin one.
                 Plugin.ItemLabelTemplate = ___label;
 

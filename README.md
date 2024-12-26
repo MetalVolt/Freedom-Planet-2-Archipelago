@@ -46,12 +46,7 @@ This custom audio is loaded when the connect screen is and will also print the t
 
 ### Item Sprites and Descriptions
 
-By default, items will appear as the generic Archipelago logo, and shop items will simply say who the item is for (items for Freedom Planet 2 itself will have their actual descriptions from the game). To get sprites for Freedom Planet 2, create a PNG with the item's name in this folder.
-
-![](https://raw.githubusercontent.com/Knuxfan24/Freedom-Planet-2-Archipelago/refs/heads/master/readme_imgs/custom_fp2sprites.png)
-*An example of a setup for displaying sprites for Freedom Planet 2's own items.*
-
-To get sprites and descriptions for other games, create a folder in `mod_overrides\Archipelago` with the game's name. Then place PNG files with the item names into the new folder. For descriptions, create a file called `descriptions.txt` and add a line with the item name, followed by a comma, then the desired description.
+By default, items for other games will appear as the generic Archipelago logo, and shop items will simply say who the item is for. To get sprites and descriptions for other games, create a folder in `mod_overrides\Archipelago` with the game's name. Then place PNG files with the item names into the new folder. For descriptions, create a file called `descriptions.txt` and add a line with the item name, followed by a comma, then the desired description.
 
 **Example:**
 

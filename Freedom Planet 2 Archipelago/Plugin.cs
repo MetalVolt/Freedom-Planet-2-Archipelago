@@ -174,6 +174,7 @@ namespace Freedom_Planet_2_Archipelago
         static byte[] APLogo;
         static byte[] APLogo_Progression;
         static byte[] APLogo_Trap;
+        public static Texture2D ItemSpriteAtlas;
 
         /// <summary>
         /// Initial code that runs when BepInEx loads our plugin.
@@ -964,7 +965,8 @@ namespace Freedom_Planet_2_Archipelago
 
         /// <summary>
         /// Returns a sprite icon for the given location.
-        /// TODO: Can we find a way to just pull FP2's actual sprites rather than having them as seperate files? I feel like that's not the best approach in the long term.
+        /// TODO: Test all the FP2 sprites.
+        /// TODO: Can I shrink the Star Cards? They feel a bit too big in comparison to everything else.
         /// </summary>
         /// <param name="location">The location this sprite is for.</param>
         /// <returns>The sprite we've generated.</returns>
@@ -975,6 +977,9 @@ namespace Freedom_Planet_2_Archipelago
 
             // Set up a new texture.
             Texture2D texture = new(32, 32);
+
+            // Change the texture to use point filtering.
+            texture.filterMode = FilterMode.Point;
 
             // Load the Archipelago logo.
             texture.LoadImage(APLogo);
@@ -992,32 +997,76 @@ namespace Freedom_Planet_2_Archipelago
                     texture.LoadImage(File.ReadAllBytes($@"{apPath}\{location.Game}\{location.Item}.png"));
             }
 
-            // If this is a Freedom Planet 2 item, then check the AP folder itself for the sprite.
-            // Power Up Start is handled differently, as it appears differently depending on the player character.
+            // If this is a Freedom Planet 2 item, then get it straight from the texture atlas.
+            // Power Up Start is handled seperately, as it appears differently depending on the player character.
             else
             {
                 if (location.Item != "Powerup Start")
                 {
-                    if (File.Exists($@"{apPath}\{location.Item}.png"))
-                        texture.LoadImage(File.ReadAllBytes($@"{apPath}\{location.Item}.png"));
-                    else
-                        Console.WriteLine($"Item {location.Item} currently has no sprite definied.");
+                    switch (location.Item)
+                    {
+                        case "Crystals to Petals": return GetSpriteFromAtlas(495, 709, 24, 28);
+                        case "Double Damage": return GetSpriteFromAtlas(646, 994, 23, 28);
+                        case "Earth Charm": return GetSpriteFromAtlas(603, 795, 26, 27);
+                        case "Element Burst": return GetSpriteFromAtlas(638, 924, 32, 32);
+                        case "Expensive Stocks": return GetSpriteFromAtlas(606, 947, 29, 25);
+                        case "Extra Item Slot": case "Extra Potion Slots": return GetSpriteFromAtlas(494, 606, 25, 33);
+                        case "Fire Charm": return GetSpriteFromAtlas(532, 832, 25, 29);
+                        case "Gold Gem": return GetSpriteFromAtlas(610, 640, 22, 22);
+                        case "Items To Bombs": return GetSpriteFromAtlas(674, 897, 28, 29);
+                        case "Life Oscillation": return GetSpriteFromAtlas(310, 715, 28, 27);
+                        case "Max Life Up": return GetSpriteFromAtlas(809, 995, 18, 27);
+                        case "Metal Charm": return GetSpriteFromAtlas(521, 675, 26, 30);
+                        case "No Guarding": return GetSpriteFromAtlas(667, 959, 32, 30);
+                        case "No Petals": return GetSpriteFromAtlas(528, 748, 18, 29);
+                        case "No Revivals": return GetSpriteFromAtlas(709, 994, 28, 28);
+                        case "No Stocks": return GetSpriteFromAtlas(703, 965, 24, 23);
+                        case "One Hit KO": return GetSpriteFromAtlas(550, 931, 12, 15);
+                        case "Payback Ring": return GetSpriteFromAtlas(574, 920, 26, 26);
+                        case "Petal Armor": return GetSpriteFromAtlas(616, 862, 32, 27);
+                        case "Potion - Accelerator": return GetSpriteFromAtlas(503, 574, 25, 30);
+                        case "Potion - Attack Up": return GetSpriteFromAtlas(484, 247, 23, 29);
+                        case "Potion - Cheaper Stocks": return GetSpriteFromAtlas(524, 640, 31, 30);
+                        case "Potion - Extra Stock": return GetSpriteFromAtlas(675, 994, 28, 28);
+                        case "Potion - Healing Strike": return GetSpriteFromAtlas(734, 959, 15, 31);
+                        case "Potion - Strong Revivals": return GetSpriteFromAtlas(617, 895, 25, 25);
+                        case "Potion - Strong Shields": return GetSpriteFromAtlas(494, 643, 20, 27);
+                        case "Potion - Super Feather": return GetSpriteFromAtlas(552, 731, 26, 32);
+                        case "Rainbow Charm": return GetSpriteFromAtlas(617, 826, 31, 32);
+                        case "Shadow Guard": return GetSpriteFromAtlas(635, 794, 27, 28);
+                        case "Star Card": return GetSpriteFromAtlas(610, 976, 32, 48);
+                        case "Time Capsule": return GetSpriteFromAtlas(585, 723, 26, 34);
+                        case "Time Limit": return GetSpriteFromAtlas(495, 674, 20, 30);
+                        case "Water Charm": return GetSpriteFromAtlas(584, 887, 27, 29);
+                        case "Wood Charm": return GetSpriteFromAtlas(550, 865, 28, 27);
+                        default: Console.WriteLine($"Item {location.Item} currently has no sprite definied."); break;
+                    }
                 }
                 else
                 {
-                    if (File.Exists($@"{apPath}\{location.Item} ({FPPlayerPatcher.GetPlayer()}).png"))
-                        texture.LoadImage(File.ReadAllBytes($@"{apPath}\{location.Item} ({FPPlayerPatcher.GetPlayer()}).png"));
-                    else
-                        Console.WriteLine($"Item {location.Item} currently has no sprite definied.");
+                    switch (FPSaveManager.character)
+                    {
+                        case FPCharacterID.LILAC: return GetSpriteFromAtlas(538, 798, 29, 28);
+                        case FPCharacterID.CAROL: case FPCharacterID.BIKECAROL: return GetSpriteFromAtlas(492, 743, 31, 28);
+                        case FPCharacterID.MILLA: return GetSpriteFromAtlas(552, 767, 26, 25);
+                        case FPCharacterID.NEERA: return GetSpriteFromAtlas(702, 929, 26, 32);
+                    }
+                    
                 }
             }
-
-            // Change the texture to use point filtering.
-            texture.filterMode = FilterMode.Point;
 
             // Return a sprite from our texture.
             return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 1);
         }
+
+        /// <summary>
+        /// Gets a sprite out of a texture atlas.
+        /// </summary>
+        /// <param name="x">The x coordinate on the atlas for this sprite.</param>
+        /// <param name="y">The y coordinate on the atlas for this sprite.</param>
+        /// <param name="width">The width of this sprite.</param>
+        /// <param name="height">The height of this sprite.</param>
+        private static Sprite GetSpriteFromAtlas(float x, float y, float width, float height) => Sprite.Create(ItemSpriteAtlas, new Rect(x, ItemSpriteAtlas.height - (y + height), width, height), new Vector2(0.5f, 0.5f), 1);
 
         /// <summary>
         /// Saves our AP file.
