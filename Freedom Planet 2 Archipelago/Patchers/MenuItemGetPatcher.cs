@@ -1,5 +1,4 @@
-﻿using Archipelago.MultiClient.Net.Packets;
-using System.Collections.Generic;
+﻿using UnityEngine;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {
@@ -10,7 +9,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MenuItemGet), "Start")]
-        static void SendShopLocationCheck()
+        static void SendShopLocationCheck(ref MenuText ___itemName, ref FPHudDigit ___powerupIcon, ref FPHudDigit ___powerupShadow)
         {
             // Set up a location.
             Location location = null;
@@ -138,6 +137,18 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                 // Mark this location as checked.
                 location.Checked = true;
+
+                // Change the text component that shows the item name.
+                if (Plugin.Session.Players.GetPlayerName(Plugin.Session.ConnectionInfo.Slot) == location.Player)
+                    ___itemName.GetComponent<TextMesh>().text = "Your ";
+                else
+                    ___itemName.GetComponent<TextMesh>().text = $"{location.Player}'s ";
+                ___itemName.GetComponent<TextMesh>().text += $"{location.Item}";
+
+                // Change the sprite for the item and its shadow.
+                ___powerupIcon.GetComponent<SpriteRenderer>().sprite = Plugin.GetItemSprite(location);
+                ___powerupShadow.GetComponent<SpriteRenderer>().sprite = Plugin.GetItemSprite(location);
+
             }
         }
 
