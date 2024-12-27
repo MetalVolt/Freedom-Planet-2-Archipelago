@@ -679,7 +679,7 @@ namespace Freedom_Planet_2_Archipelago
                                 FPAudio.PlaySfx(player.sfxHurt);
 
                                 // Either remove a health petal, or floor the health down to 0.
-                                if (player.health >  1f)
+                                if (player.health > 1f)
                                     player.health -= 1f;
                                 else
                                     player.health = 0;
