@@ -4,6 +4,7 @@ global using System;
 using Archipelago.MultiClient.Net;
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using Archipelago.MultiClient.Net.Enums;
+using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Models;
 using Archipelago.MultiClient.Net.Packets;
 using Freedom_Planet_2_Archipelago.Patchers;
@@ -19,6 +20,7 @@ namespace Freedom_Planet_2_Archipelago
 {
     // TODO: RingLink packet sending causes stutters, try to fix that.
     // TODO: RingLink packet sending and release collecting can "crash" the game (it keeps running, but the item receiving seems to die). Track this issue down and sort it.
+    // TODO: The initial item recieve is garbage and will drop half of the multitude items. Fix this, honestly just rewrite the code for that in general.
     public class APSave()
     {
         /// <summary>
@@ -246,6 +248,9 @@ namespace Freedom_Planet_2_Archipelago
             // Enable the Music Randomiser.
             if (Config.Bind("Music Randomiser", "Enable Music Randomiser", true, "Whether or not to use the music randomiser.").Value)
                 harmony.PatchAll(typeof(MusicRandomiser));
+
+            // Set up the silly Easter Egg message.
+            harmony.PatchAll(typeof(EasterEggMessage));
         }
 
         /// <summary>
@@ -369,6 +374,9 @@ namespace Freedom_Planet_2_Archipelago
                         // Set up the listener for handling DeathLinks.
                         DeathLink.OnDeathLinkReceived += Socket_ReceiveDeathLink;
 
+                        // Set up the listener for check completions.
+                        Session.Locations.CheckedLocationsUpdated += Locations_CheckedLocationsUpdated;
+
                         // Check if the save file for this seed doesn't exist.
                         if (!File.Exists($@"{Paths.GameRootPath}\Archipelago Saves\{Session.RoomState.Seed}_Save.json"))
                         {
@@ -469,12 +477,12 @@ namespace Freedom_Planet_2_Archipelago
                                 case "Double Gravity Trap": serverDoubleGravityTrapCount = StartItemCheck(serverDoubleGravityTrapCount, APSave.DoubleGravityTrapCount, itemName); break;
                                 case "Extra Item Slot": serverExtraItemSlots = StartItemCheck(serverExtraItemSlots, APSave.ExtraItemSlots, itemName); break;
                                 case "Gold Gem": serverGoldGemCount = StartItemCheck(serverGoldGemCount, APSave.GoldGemCount, itemName); break;
-                                case "Mirror Trap": serverMirrorTrapCount = StartItemCheck(serverGoldGemCount, APSave.MirrorTrapCount, itemName); break;
+                                case "Mirror Trap": serverMirrorTrapCount = StartItemCheck(serverMirrorTrapCount, APSave.MirrorTrapCount, itemName); break;
                                 case "Moon Gravity Trap": serverMoonGravityTrapCount = StartItemCheck(serverMoonGravityTrapCount, APSave.MoonGravityTrapCount, itemName); break;
                                 case "Star Card": serverStarCardCount = StartItemCheck(serverStarCardCount, APSave.StarCardCount, itemName); break;
                                 case "Time Capsule": serverTimeCapsuleCount = StartItemCheck(serverTimeCapsuleCount, APSave.TimeCapsuleCount, itemName); break;
 
-                                default: ReceiveItem(itemName, true); break;
+                                default: ReceiveItem(itemName); break;
                             }
 
                             // Remove this item from the queue.
@@ -493,7 +501,7 @@ namespace Freedom_Planet_2_Archipelago
                         // Set the speed of the transition.
                         transition.transitionSpeed = 48f;
 
-                        // Set the transition to load Dragon Valley so we can steal the ItemLabel from a Chest there.
+                        // Set the transition to load Dragon Valley so we can steal the ItemLabel and items texture atlas from a Chest there.
                         transition.sceneToLoad = "DragonValley";
 
                         // Set the transition to pure black.
@@ -507,6 +515,36 @@ namespace Freedom_Planet_2_Archipelago
 
                         // Play the menu wipe sound.
                         FPAudio.PlayMenuSfx(3);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Spawn a label if we do a check that isn't for ourself.
+        /// </summary>
+        private void Locations_CheckedLocationsUpdated(System.Collections.ObjectModel.ReadOnlyCollection<long> newCheckedLocations)
+        {
+            // Loop through each location in our check list.
+            for (int i = 0; i < newCheckedLocations.Count; i++)
+            {
+                // Find this location in our array.
+                Location location = Array.Find(APSave.Locations, location => location.Index == newCheckedLocations[i]);
+
+                // Check that this location actually exists.
+                if (location != null)
+                {
+                    // Check if this location is for another player.
+                    if (Session.Players.GetPlayerName(Session.ConnectionInfo.Slot) != location.Player)
+                    {
+                        // Set the notify message to show the player name and item.
+                        NotifyMessage = $"Found {location.Player}'s {location.Item}";
+
+                        // Play the collection sound.
+                        FPAudio.PlayCollectibleSfx(FPAudio.SFX_ITEMGET);
+
+                        // Spawn the item label.
+                        SpawnItemLabel();
                     }
                 }
             }
@@ -536,7 +574,7 @@ namespace Freedom_Planet_2_Archipelago
         /// Receives an item from the multiworld.
         /// </summary>
         /// <param name="receivedItemsHelper">The helper handling the item receive.</param>
-        private void Socket_ReceiveItem(Archipelago.MultiClient.Net.Helpers.ReceivedItemsHelper receivedItemsHelper)
+        private void Socket_ReceiveItem(ReceivedItemsHelper receivedItemsHelper)
         {
             // DEBUG: Print that this helper was fired.
             Console.WriteLine($"Item received helper fired for {receivedItemsHelper.PeekItem().ItemName} from {receivedItemsHelper.PeekItem().Player.Name}.");
@@ -551,7 +589,10 @@ namespace Freedom_Planet_2_Archipelago
             ReceiveItem(receivedItemsHelper.PeekItem().ItemName);
             receivedItemsHelper.DequeueItem();
 
-            // Spawn the label to shwo the player.
+            // Play the collection sound.
+            FPAudio.PlayCollectibleSfx(FPAudio.SFX_ITEMGET);
+
+            // Spawn the label to show the player.
             SpawnItemLabel();
         }
 
@@ -687,7 +728,6 @@ namespace Freedom_Planet_2_Archipelago
         /// <summary>
         /// Listener for our ItemLabel expiring.
         /// </summary>
-        /// <param name="itemLabel"></param>
         private void ItemLabelExpired(ItemLabel itemLabel)
         {
             ItemLabelSpawner.ItemLabelExpired -= ItemLabelExpired;
@@ -751,7 +791,7 @@ namespace Freedom_Planet_2_Archipelago
 
             // If we don't have less of this item than the save reports, then receive it.
             else
-                ReceiveItem(itemName, true);
+                ReceiveItem(itemName);
 
             // Return the value the server's given.
             return serverValue;
@@ -761,12 +801,8 @@ namespace Freedom_Planet_2_Archipelago
         /// Handles receiving an item from the multiworld.
         /// </summary>
         /// <param name="ReceivedItem">The name of the item we're receiving.</param>
-        private void ReceiveItem(string ReceivedItem, bool fromStart = false)
+        private void ReceiveItem(string ReceivedItem)
         {
-            // Only play the sound if we're receiving this item in game rather than upon connect.
-            if (!fromStart)
-                FPAudio.PlaySfx(FPAudio.SFX_ITEMGET);
-
             // Check the item we're receiving.
             switch (ReceivedItem)
             {
