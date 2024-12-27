@@ -171,7 +171,7 @@ namespace Freedom_Planet_2_Archipelago
         public static ItemLabel ItemLabelSpawner = null;
 
         // Set up the sprites for the AP items.
-        static byte[] APLogo;
+        public static byte[] APLogo;
         static byte[] APLogo_Progression;
         static byte[] APLogo_Trap;
         public static Texture2D ItemSpriteAtlas;
@@ -239,6 +239,9 @@ namespace Freedom_Planet_2_Archipelago
 
             // Patch the Item Label class, used to extend the Item Label's background.
             harmony.PatchAll(typeof(ItemLabelPatcher));
+
+            // Patch the Menu Arena Challenge Select class, used to show the AP logo as the reward in the menu.
+            harmony.PatchAll(typeof(MenuArenaChallengeSelectPatcher));
 
             // Enable the Music Randomiser.
             if (Config.Bind("Music Randomiser", "Enable Music Randomiser", true, "Whether or not to use the music randomiser.").Value)

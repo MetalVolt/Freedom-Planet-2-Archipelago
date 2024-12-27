@@ -1,5 +1,6 @@
 ﻿using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Packets;
+using UnityEngine;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {
@@ -64,22 +65,16 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
                 // Handle The Battlesphere differently due to its challenge ID system.
                 case 31:
-                    switch (___challengeID)
-                    {
-                        case 4:  location = Array.Find(Plugin.APSave.Locations, location => location.Name == "The Battlesphere - Clear");           break;
-                        case 6:  location = Array.Find(Plugin.APSave.Locations, location => location.Name == "The Battlesphere - Time Capsule 1");  break;
-                        case 7:  location = Array.Find(Plugin.APSave.Locations, location => location.Name == "The Battlesphere - Time Capsule 2");  break;
-                        case 8:  location = Array.Find(Plugin.APSave.Locations, location => location.Name == "The Battlesphere - Time Capsule 3");  break;
-                        case 9:  location = Array.Find(Plugin.APSave.Locations, location => location.Name == "The Battlesphere - Time Capsule 4");  break;
-                        case 10: location = Array.Find(Plugin.APSave.Locations, location => location.Name == "The Battlesphere - Time Capsule 5");  break;
-                        case 11: location = Array.Find(Plugin.APSave.Locations, location => location.Name == "The Battlesphere - Time Capsule 6");  break;
-                        case 12: location = Array.Find(Plugin.APSave.Locations, location => location.Name == "The Battlesphere - Time Capsule 7");  break;
-                        case 13: location = Array.Find(Plugin.APSave.Locations, location => location.Name == "The Battlesphere - Time Capsule 8");  break;
-                        case 14: location = Array.Find(Plugin.APSave.Locations, location => location.Name == "The Battlesphere - Time Capsule 9");  break;
-                        case 15: location = Array.Find(Plugin.APSave.Locations, location => location.Name == "The Battlesphere - Time Capsule 10"); break;
-                        case 16: location = Array.Find(Plugin.APSave.Locations, location => location.Name == "The Battlesphere - Time Capsule 11"); break;
-                        case 17: location = Array.Find(Plugin.APSave.Locations, location => location.Name == "The Battlesphere - Time Capsule 12"); break;
-                    }
+                    // Set a variable to match ___challengeID, as we can't use it directly in the check.
+                    int challengeID = ___challengeID;
+
+                    // Find the location for this Battlesphere challenge.
+                    location = Array.Find(Plugin.APSave.Locations, location => location.Name == $"The Battlesphere - Challenge {challengeID}");
+
+                    // Panic if we haven't handled this challenge ID yet.
+                    if (location == null)
+                        Console.WriteLine($"Battlesphere Challenge {___challengeID} doesn't have a location yet!");
+
                     break;
 
                 // Panic if we haven't handled this stage ID.
@@ -95,6 +90,17 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 // Mark this location as checked.
                 location.Checked = true;
             }
+        }
+
+        /// <summary>
+        /// Stops the Battlesphere ArenaChallengeMenu scene from being loaded.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(FPResultsMenu), "Update")]
+        static void BattlesphereDivert(ref string ___sourceScene)
+        {
+            if (___sourceScene == "ArenaChallengeMenu")
+                ___sourceScene = "ArenaMenu";
         }
     }
 }

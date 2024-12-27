@@ -4,8 +4,11 @@
     {
         [HarmonyPrefix]
         [HarmonyPatch(typeof(MenuWorldMapConfirm), "Start")]
-        static bool LockChapters(ref int ___selectedStageID, ref FPMapLocationType ___selectedStageType)
+        static bool LockChapters(ref string ___arenaSceneClassicIncomplete, ref int ___selectedStageID, ref FPMapLocationType ___selectedStageType)
         {
+            // Stop the Battlesphere from going to its initial set of challenges.
+            ___arenaSceneClassicIncomplete = "ArenaMenu";
+
             switch (___selectedStageID)
             {
                 // Sky Pirate Panic.
