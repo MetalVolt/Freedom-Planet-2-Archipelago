@@ -291,7 +291,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         case FPPowerup.FIRE_CHARM:      locationName = "Shop - Fire Charm";         break;
                         case FPPowerup.METAL_CHARM:     locationName = "Shop - Metal Charm";        break;
                         case FPPowerup.RAINBOW_CHARM:   locationName = "Shop - Rainbow Charm";      break;
+
+                        // DEBUG: Alert that this FPPowerup type isn't handled.
+                        #if DEBUG
                         default: Console.WriteLine($"FPPowerup type {___itemsForSale[itemIndex + ___detailListOffset]} not handled!"); break;
+                        #endif
                     }
 
                     // Find the location with this name.
@@ -384,7 +388,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         case FPMusicTrack.SCENE_AUDIOLOG1: locationName = "Shop - Vinyl - Audio Log A"; break;
                         case FPMusicTrack.SCENE_AUDIOLOG2: locationName = "Shop - Vinyl - Audio Log B"; break;
                         case FPMusicTrack.SCENE_AUDIOLOG3: locationName = "Shop - Vinyl - Audio Log C"; break;
+                            
+                        // DEBUG: Alert that this FPMusicTrack index isn't handled.
+                        #if DEBUG
                         default: Console.WriteLine($"FPMusicTrack index {___musicID[vinylIndex + ___detailListOffset]} not handled!"); break;
+                        #endif
                     }
 
                     // Find the location with this name.

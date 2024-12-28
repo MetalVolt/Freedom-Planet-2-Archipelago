@@ -362,5 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-FP2Archipelago/build.bat
 Freedom Planet 2 Archipelago/build.bat
+Freedom Planet 2 Archipelago/build (release).bat

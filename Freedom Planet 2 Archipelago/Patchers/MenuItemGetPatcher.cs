@@ -49,7 +49,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         case FPPowerup.FIRE_CHARM:      location = Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Fire Charm");         break;
                         case FPPowerup.METAL_CHARM:     location = Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Metal Charm");        break;
                         case FPPowerup.RAINBOW_CHARM:   location = Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Rainbow Charm");      break;
-                        default:                        Console.WriteLine($"Item ID {itemGetMenu.powerup} not handled!"); break;
+                        
+                        // DEBUG: Alert that this item ID isn't handled.
+                        #if DEBUG
+                        default: Console.WriteLine($"Item ID {itemGetMenu.powerup} not handled!"); break;
+                        #endif
                     }
                 }
                 
@@ -124,7 +128,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                         case 88: location = Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Gallery");                 break;
                         case 89: location = Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - Serpentine's Theme");      break;
                         case 90: location = Array.Find(Plugin.APSave.Locations, location => location.Name == "Shop - Vinyl - City Hall");               break;
-                        default: Console.WriteLine($"Vinyl ID {itemGetMenu.musicID} not handled!");             break;
+                        
+                        // DEBUG: Alert that this vinyl ID isn't handled.
+                        #if DEBUG
+                        default: Console.WriteLine($"Vinyl ID {itemGetMenu.musicID} not handled!"); break;
+                        #endif
                     }
                 }
             }

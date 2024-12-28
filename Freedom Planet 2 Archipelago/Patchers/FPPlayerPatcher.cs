@@ -345,8 +345,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 // Set the flag to avoid sending extras.
                 canSendDeathLink = false;
 
-                // Print the DeathLink to the console too.
+                // DEBUG: Print the DeathLink to the console too.
+                #if DEBUG
                 Console.WriteLine($"Sent DeathLink, reason:\r\n\t{reason}");
+                #endif
             }
         }
 

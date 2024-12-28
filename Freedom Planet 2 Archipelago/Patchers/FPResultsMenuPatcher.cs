@@ -1,6 +1,5 @@
 ﻿using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Packets;
-using UnityEngine;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {
@@ -20,7 +19,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 StatusUpdatePacket statusUpdatePacket = new() { Status = ArchipelagoClientState.ClientGoal };
 
                 // Send the goal flag.
-                Plugin.Session.Socket.SendPacket(statusUpdatePacket);
+                Plugin.Session.Socket.SendPacketAsync(statusUpdatePacket);
 
                 // Don't bother running the rest of this function.
                 return;
@@ -71,14 +70,18 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     // Find the location for this Battlesphere challenge.
                     location = Array.Find(Plugin.APSave.Locations, location => location.Name == $"The Battlesphere - Challenge {challengeID}");
 
-                    // Panic if we haven't handled this challenge ID yet.
+                    // DEBUG: Print an alert if we haven't handled this challenge ID yet.
+                    #if DEBUG
                     if (location == null)
                         Console.WriteLine($"Battlesphere Challenge {___challengeID} doesn't have a location yet!");
+                    #endif
 
                     break;
 
-                // Panic if we haven't handled this stage ID.
+                // DEBUG: Print an alert if we haven't handled this stage ID.
+                #if DEBUG
                 default: Console.WriteLine($"Stage ID {FPStage.currentStage.stageID} not handled!"); break;
+                #endif
             }
 
             // Check if we've read a location.

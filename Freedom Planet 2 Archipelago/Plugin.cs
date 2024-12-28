@@ -287,7 +287,7 @@ namespace Freedom_Planet_2_Archipelago
                 if (GUI.Button(new Rect(16, 130, 100, 20), "Connect"))
                 {
                     // Print that we're attempting to connect.
-                    Logger.LogInfo($"Attempting to connect to Archipelago server at {serverAddress}.");
+                    Console.WriteLine($"Attempting to connect to Archipelago server at {serverAddress}.");
 
                     // Create a session and try to login.
                     Session = ArchipelagoSessionFactory.CreateSession(serverAddress);
@@ -300,8 +300,10 @@ namespace Freedom_Planet_2_Archipelago
                         SlotData = Session.DataStorage.GetSlotData();
 
                         // DEBUG: Print all the key value pairs in the slotdata and their datatypes.
+                        #if DEBUG
                         foreach (var key in SlotData)
                             Console.WriteLine($"{key.Key}: {key.Value} (Type: {key.Value.GetType()})");
+                        #endif
 
                         // Reveal all the map tiles.
                         // Dragon Valley and Shenlin Park.
@@ -408,7 +410,7 @@ namespace Freedom_Planet_2_Archipelago
                                 };
 
                                 // Print that we're getting information for this location.
-                                Logger.LogInfo($"Getting information for location {Location.Name} with an index of {Location.Index}.");
+                                Console.WriteLine($"Getting information for location {Location.Name} with an index of {Location.Index}.");
 
                                 // Scout the location for the player, item, flags and game.
                                 Session.Locations.ScoutLocationsAsync(locationInfoPacket => { Location.Player = Session.Players.GetPlayerName(locationInfoPacket[Location.Index].Player); Location.Item = locationInfoPacket[Location.Index].ItemName; Location.Flags = locationInfoPacket[Location.Index].Flags; Location.Game = locationInfoPacket[Location.Index].ItemGame; }, [Session.Locations.AllLocations[locationIndex]]);
@@ -418,7 +420,9 @@ namespace Freedom_Planet_2_Archipelago
                                     System.Threading.Thread.Sleep(1);
 
                                 // DEBUG: Report the data on the item at this location.
-                                // Logger.LogInfo($"Found {Location.Player}'s {Location.Item} for {Location.Game} with flags {Location.Flags} at {Session.Locations.GetLocationNameFromId(Session.Locations.AllLocations[locationIndex])} (location index {Location.Index})");
+                                #if DEBUG
+                                Console.WriteLine($"Found {Location.Player}'s {Location.Item} for {Location.Game} with flags {Location.Flags} at {Session.Locations.GetLocationNameFromId(Session.Locations.AllLocations[locationIndex])} (location index {Location.Index})");
+                                #endif
 
                                 // Save this location check.
                                 APSave.Locations[locationIndex] = Location;
@@ -435,7 +439,7 @@ namespace Freedom_Planet_2_Archipelago
                             APSave = JsonConvert.DeserializeObject<APSave>(File.ReadAllText($@"{Paths.GameRootPath}\Archipelago Saves\{Session.RoomState.Seed}_Save.json"));
 
                             // Report the length of the locations array in the save.
-                            Logger.LogInfo($"Loaded {APSave.Locations.Length} location checks.");
+                            Console.WriteLine($"Loaded {APSave.Locations.Length} location checks.");
                         }
 
                         // Set the save manager's version to 1.
@@ -577,7 +581,9 @@ namespace Freedom_Planet_2_Archipelago
         private void Socket_ReceiveItem(ReceivedItemsHelper receivedItemsHelper)
         {
             // DEBUG: Print that this helper was fired.
+            #if DEBUG
             Console.WriteLine($"Item received helper fired for {receivedItemsHelper.PeekItem().ItemName} from {receivedItemsHelper.PeekItem().Player.Name}.");
+            #endif
 
             // Set the notify message depending on if we received this item from ourselves.
             if (receivedItemsHelper.PeekItem().Player.Name != Session.Players.GetPlayerName(Session.ConnectionInfo.Slot))
@@ -786,7 +792,7 @@ namespace Freedom_Planet_2_Archipelago
                 serverValue++;
 
                 // Inform that we've skipped giving this item.
-                Logger.LogInfo($"Skipped giving {itemName} as it was already received.");
+                Console.WriteLine($"Skipped giving {itemName} as it was already received.");
             }
 
             // If we don't have less of this item than the save reports, then receive it.
@@ -957,8 +963,10 @@ namespace Freedom_Planet_2_Archipelago
                 case "Echoes of the Dragon War": APSave.UnlockedChapters[6] = true; break;
                 case "Bakunawa": APSave.UnlockedChapters[7] = true; break;
 
-                // Warn that the given item is not yet handled on the client.
-                default: Logger.LogWarning($"Item type '{ReceivedItem}' not yet handled!"); break;
+                // DEBUG: Warn that the given item is not yet handled on the client.
+                #if DEBUG
+                default: Console.WriteLine($"Item type '{ReceivedItem}' not yet handled!"); break;
+                #endif
             }
 
             // Force the game to save.
@@ -1078,7 +1086,11 @@ namespace Freedom_Planet_2_Archipelago
                         case "Time Limit": return GetSpriteFromAtlas(495, 674, 20, 30);
                         case "Water Charm": return GetSpriteFromAtlas(584, 887, 27, 29);
                         case "Wood Charm": return GetSpriteFromAtlas(550, 865, 28, 27);
+
+                        // DEBUG: Warn that the given FP2 item doesn't yet have a sprite.
+                        #if DEBUG
                         default: Console.WriteLine($"Item {location.Item} currently has no sprite definied."); break;
+                        #endif
                     }
                 }
                 else

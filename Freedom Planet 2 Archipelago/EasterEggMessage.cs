@@ -24,7 +24,8 @@ namespace Freedom_Planet_2_Archipelago
             "Waiting on a fresh stock of Ukuleles.", // Risk of Rain 2
             "gone swimming", // Subnautica
             "Reading this closed notice. It fills you with determination.", // Undertale
-            "Closed until new (MORE ORGANISED!) chefs found." // Overcooked
+            "Closed until new (MORE ORGANISED!) chefs found.", // Overcooked
+            "gone fishing. how unfortunate" // FNaF World
         ];
 
         // Set up a Random Number Generator
