@@ -17,6 +17,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         public static bool hasBufferedDeathLink = false;
 
         /// <summary>
+        /// Whether or we've got a 1UP that the game is waiting on.
+        /// </summary>
+        public static bool hasBufferedExtraLife = false;
+
+        /// <summary>
         /// Handles resetting the DeathLink flag.
         /// </summary>
         [HarmonyPostfix]
@@ -59,6 +64,47 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 hasBufferedDeathLink = false;
             }
         }
+
+        /// <summary>
+        /// Receives a 1UP.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(FPPlayer), "Update")]
+        static void ReceiveBuffered1UP()
+        {
+            // Check that the stage has finished loading and that we have a 1UP waiting.
+            if (FPStage.objectsRegistered && hasBufferedExtraLife)
+            {
+                // Reset the buffered flag.
+                hasBufferedExtraLife = false;
+
+                // Look for the player object.
+                FPPlayer player = UnityEngine.Object.FindObjectOfType<FPPlayer>();
+
+                // Give a 1UP (copy and pasted from the original source).
+                if (player.lives < 9)
+                    player.lives++;
+
+                CrystalBonus crystalBonus = (CrystalBonus)FPStage.CreateStageObject(CrystalBonus.classID, 292f, -64f);
+                crystalBonus.animator.Play("HUD_Add");
+                crystalBonus.duration = 40f;
+
+                InvincibilityStar invincibilityStar = (InvincibilityStar)FPStage.CreateStageObject(InvincibilityStar.classID, -100f, -100f);
+                invincibilityStar.parentObject = player;
+                invincibilityStar.distance = 320f;
+                invincibilityStar.descend = true;
+                InvincibilityStar invincibilityStar2 = (InvincibilityStar)FPStage.CreateStageObject(InvincibilityStar.classID, -100f, -100f);
+                invincibilityStar2.parentObject = player;
+                invincibilityStar2.rotation = 180f;
+                invincibilityStar2.distance = 320f;
+                invincibilityStar2.descend = true;
+
+                FPAudio.PlayJingle(3);
+            }
+        }
+        
+
+            
 
         /// <summary>
         /// Handles changing gravity when either a Moon Gravity Trap or Double Gravity Trap is active.

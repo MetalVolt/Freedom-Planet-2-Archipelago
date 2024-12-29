@@ -20,7 +20,7 @@ namespace Freedom_Planet_2_Archipelago
 {
     // TODO: RingLink packet sending causes stutters, try to fix that.
     // TODO: RingLink packet sending and release collecting can "crash" the game (it keeps running, but the item receiving seems to die). Track this issue down and sort it.
-    // TODO: The initial item recieve is garbage and will drop half of the multitude items. Fix this, honestly just rewrite the code for that in general.
+    // TODO: The initial item receive is garbage and will drop half of the multitude items. Fix this, honestly just rewrite the code for that in general.
     public class APSave()
     {
         /// <summary>
@@ -244,6 +244,9 @@ namespace Freedom_Planet_2_Archipelago
 
             // Patch the Menu Arena Challenge Select class, used to show the AP logo as the reward in the menu.
             harmony.PatchAll(typeof(MenuArenaChallengeSelectPatcher));
+
+            // Patch the Player Spawn Point class, used to randomise the character every load if that value is set in our slot data.
+            harmony.PatchAll(typeof(PlayerSpawnPointPatcher));
 
             // Enable the Music Randomiser.
             if (Config.Bind("Music Randomiser", "Enable Music Randomiser", true, "Whether or not to use the music randomiser.").Value)
@@ -860,9 +863,62 @@ namespace Freedom_Planet_2_Archipelago
 
                 case "Fire Charm": APSave.UnlockedBraveStones[15] = true; break;
 
-                // Increment the save manager's total gold gems count and our save's gold gem count.
+                // Handle the Gold Gem differently depending on the slot data
                 case "Gold Gem":
-                    FPSaveManager.totalGoldGems++;
+                    // If Milla's shop is enabled, then give a Gold Gem.
+                    if ((long)SlotData["milla_shop"] == 1)
+                        FPSaveManager.totalGoldGems++;
+
+                    // If not, but the vinyl shop is enabled, then give 100 crystals.
+                    else if ((long)SlotData["vinyl_shop"] == 1)
+                    {
+                        // Look for the player object.
+                        FPPlayer player = UnityEngine.Object.FindObjectOfType<FPPlayer>();
+
+                        // Edit the player's crystal counts if they exist.
+                        if (player != null)
+                        {
+                            player.totalCrystals += 100;
+
+                            player.crystals -= 100;
+                            if (player.crystals > player.extraLifeCost)
+                                player.crystals = player.extraLifeCost;
+
+                            // Give a 1UP if the player has enough crystals (copy and pasted from the original source).
+                            if (player.crystals < 1)
+                            {
+                                player.crystals = player.extraLifeCost;
+
+                                if (player.lives < 9)
+                                    player.lives++;
+
+                                CrystalBonus crystalBonus = (CrystalBonus)FPStage.CreateStageObject(CrystalBonus.classID, 292f, -64f);
+                                crystalBonus.animator.Play("HUD_Add");
+                                crystalBonus.duration = 40f;
+
+                                InvincibilityStar invincibilityStar = (InvincibilityStar)FPStage.CreateStageObject(InvincibilityStar.classID, -100f, -100f);
+                                invincibilityStar.parentObject = player;
+                                invincibilityStar.distance = 320f;
+                                invincibilityStar.descend = true;
+                                InvincibilityStar invincibilityStar2 = (InvincibilityStar)FPStage.CreateStageObject(InvincibilityStar.classID, -100f, -100f);
+                                invincibilityStar2.parentObject = player;
+                                invincibilityStar2.rotation = 180f;
+                                invincibilityStar2.distance = 320f;
+                                invincibilityStar2.descend = true;
+
+                                FPAudio.PlayJingle(3);
+                            }
+                        }
+
+                        // If the player doesn't exist (because a stage isn't active for instance), then just add the crystals straight to the save.
+                        else
+                            FPSaveManager.totalCrystals += 100;
+                    }
+
+                    // If neither shop is active, then give the player a 1UP instead.
+                    else
+                        FPPlayerPatcher.hasBufferedExtraLife = true;
+
                     APSave.GoldGemCount++;
                     break;
 

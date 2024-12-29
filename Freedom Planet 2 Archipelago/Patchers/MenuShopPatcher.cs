@@ -533,8 +533,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     case "Mirror Trap": return "Flips the stage horizontally.";
                     case "Moon Gravity Trap": return "Halves the current gravity for the player.";
                     case "Double Gravity Trap": return "Doubles the current gravity for the player.";
-                    case "Ice Trap": return "Reduces the player's traction by a quarter.";
-                    case "Reverse Trap": return "Reverses player controls for 30 seconds.";
                 }
             }
 

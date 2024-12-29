@@ -29,9 +29,6 @@ namespace Freedom_Planet_2_Archipelago
             "Closed while I get new paintings fitted." // Super Mario 64
         ];
 
-        // Set up a Random Number Generator
-        private static readonly Random rng = new();
-
         /// <summary>
         /// </summary>
         [HarmonyPostfix]
@@ -39,10 +36,10 @@ namespace Freedom_Planet_2_Archipelago
         static void SetEasterEggDialog(ref NPCDialog[] ___dialog)
         {
             // Generate some numbers to get message indices.
-            int dojoMessageIndex = rng.Next(EasterEggMessages.Count);
-            int tavernMessageIndex = rng.Next(EasterEggMessages.Count);
+            int dojoMessageIndex = Plugin.Randomiser.Next(EasterEggMessages.Count);
+            int tavernMessageIndex = Plugin.Randomiser.Next(EasterEggMessages.Count);
             while (tavernMessageIndex == dojoMessageIndex)
-                tavernMessageIndex = rng.Next(EasterEggMessages.Count);
+                tavernMessageIndex = Plugin.Randomiser.Next(EasterEggMessages.Count);
 
             // Change the Dojo message.
             if (___dialog[0].lines[0].text == "No one's inside. I hope everyone evacuated safely.")
