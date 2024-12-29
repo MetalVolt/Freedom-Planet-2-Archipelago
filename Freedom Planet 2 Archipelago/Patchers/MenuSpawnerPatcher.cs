@@ -1,21 +1,51 @@
-﻿using UnityEngine.SceneManagement;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {
     internal class MenuSpawnerPatcher
     {
         /// <summary>
-        /// Detects whether the active scene is the Stage Debug Menu one and, if so, stops the MenuSpawner's start function from running.
+        /// Deactivates the Debug Menu and copies its textTime TextMesh to create our labels and login textboxes.
         /// </summary>
-        /// <returns>Whether or not to run the MenuSpawner's start function.</returns>
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(MenuSpawner), "Start")]
-        static bool DeleteDebugMenu()
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(MenuStageDebug), "Start")]
+        static void DeleteDebugMenu(ref TextMesh ___textTime)
         {
-            if (SceneManager.GetActiveScene().name == "StageDebugMenu")
-                return false;
-            else
-                return true;
+            // Deactivate the actual Debug Menu.
+            UnityEngine.Object.FindObjectOfType<MenuStageDebug>().gameObject.SetActive(false);
+
+            // Create and configure our copies of the TextMesh.
+            SpawnTextMesh(___textTime, new Vector3(86, -16, 0), "Freedom Planet 2 Archipelago Connection");
+            SpawnTextMesh(___textTime, new Vector3(15, -40, 0), "Host:");
+            SpawnTextMesh(___textTime, new Vector3(76, -40, 0), "[localhost:62746]", "hostname");
+            SpawnTextMesh(___textTime, new Vector3(15, -64, 0), "Slot:");
+            SpawnTextMesh(___textTime, new Vector3(76, -64, 0), "[Knux]", "slotname");
+            SpawnTextMesh(___textTime, new Vector3(15, -88, 0), "Password:");
+            SpawnTextMesh(___textTime, new Vector3(124, -88, 0), "[]", "passwordname");
+        }
+
+        /// <summary>
+        /// Creates a copy of a TextMesh stolen from the Debug Menu.
+        /// </summary>
+        /// <param name="___textTime">The actual TextMesh referenced from the Debug Menu.</param>
+        /// <param name="position">The position to place this TextMesh at on the screen.</param>
+        /// <param name="text">The text that this TextMesh should display.</param>
+        /// <param name="name">The name of this TextMesh object, if needed.</param>
+        private static void SpawnTextMesh(TextMesh ___textTime, Vector3 position, string text, string name = null)
+        {
+            // Create this TextMesh.
+            TextMesh textMesh = UnityEngine.Object.Instantiate(___textTime);
+
+            // Set the position of this TextMesh.
+            textMesh.gameObject.transform.position = position;
+
+            // Set the text on this TextMesh.
+            textMesh.text = text;
+
+            // If a name is specified, then set it.
+            if (name != null)
+                textMesh.name = name;
         }
 
         /// <summary>

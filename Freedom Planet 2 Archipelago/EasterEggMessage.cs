@@ -25,7 +25,8 @@ namespace Freedom_Planet_2_Archipelago
             "gone swimming", // Subnautica
             "Reading this closed notice. It fills you with determination.", // Undertale
             "Closed until new (MORE ORGANISED!) chefs found.", // Overcooked
-            "gone fishing. how unfortunate" // FNaF World
+            "gone fishing. how unfortunate", // FNaF World
+            "Closed while I get new paintings fitted." // Super Mario 64
         ];
 
         // Set up a Random Number Generator

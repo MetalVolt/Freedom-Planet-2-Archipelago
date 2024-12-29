@@ -265,26 +265,37 @@ namespace Freedom_Planet_2_Archipelago
             float resY = (float)(Screen.height) / DesignHeight;
             GUI.matrix = Matrix4x4.TRS(new Vector3(0, 0, 0), Quaternion.identity, new Vector3(resX, resY, 1));
 
+            // If we're in release, then hide the textboxes.
+            #if !DEBUG
+            GUI.color = new(1, 1, 1, 0);
+            #endif
+
             // Check if we're on the Stage Debug Menu scene.
             if (SceneManager.GetActiveScene().name == "StageDebugMenu")
             {
                 // Make the cursor visible.
                 Cursor.visible = true;
 
-                // Create the login labels.
-                // TODO: These look ugly.
-                GUI.Label(new Rect(16, 70, 150, 20), "Host: ");
-                GUI.Label(new Rect(16, 90, 150, 20), "Player Name: ");
-                GUI.Label(new Rect(16, 110, 150, 20), "Password: ");
+                // Create the hidden login textboxes.
+                // TODO: Resizing the window to an arbitary resolution will cause the position of these to desynch with their visuals. Fix this.
+                // TODO: Maybe put some sort of length cap on these so they don't stretch off the screen?
+                serverAddress = GUI.TextField(new Rect(76, 27, 548, 24), serverAddress);
+                slotName = GUI.TextField(new Rect(76, 51, 548, 24), slotName);
+                password = GUI.TextField(new Rect(124, 75, 500, 24), password);
 
-                // Create the login textboxes.
-                // TODO: These look ugly.
-                serverAddress = GUI.TextField(new Rect(150, 70, 150, 20), serverAddress);
-                slotName = GUI.TextField(new Rect(150, 90, 150, 20), slotName);
-                password = GUI.TextField(new Rect(150, 110, 150, 20), password);
+                // Update the text on our custom labels to match the contents of the hidden textboxes.
+                UpdateHiddenTextbox("hostname", serverAddress);
+                UpdateHiddenTextbox("slotname", slotName);
+                UpdateHiddenTextbox("passwordname", password);
+
+                // If we're in release, then restore the GUI colour so the connect button is visible.
+                #if !DEBUG
+                GUI.color = UnityEngine.Color.white;
+                #endif
 
                 // Create and check the connect button.
-                if (GUI.Button(new Rect(16, 130, 100, 20), "Connect"))
+                // TODO: Make this look better somehow.
+                if (GUI.Button(new Rect(16, 328, 608, 24), "Connect"))
                 {
                     // Print that we're attempting to connect.
                     Console.WriteLine($"Attempting to connect to Archipelago server at {serverAddress}.");
@@ -538,17 +549,21 @@ namespace Freedom_Planet_2_Archipelago
                 // Check that this location actually exists.
                 if (location != null)
                 {
-                    // Check if this location is for another player.
-                    if (Session.Players.GetPlayerName(Session.ConnectionInfo.Slot) != location.Player)
+                    // Check that this location is either a Stage Clear or Battlesphere Challenge, as the other ones already have some form of label for feedback.
+                    if (location.Name.EndsWith(" - Clear") || location.Name.StartsWith("The Battlesphere - Challenge"))
                     {
-                        // Set the notify message to show the player name and item.
-                        NotifyMessage = $"Found {location.Player}'s {location.Item}";
+                        // Check if this location is for another player.
+                        if (Session.Players.GetPlayerName(Session.ConnectionInfo.Slot) != location.Player)
+                        {
+                            // Set the notify message to show the player name and item.
+                            NotifyMessage = $"Found {location.Player}'s {location.Item}";
 
-                        // Play the collection sound.
-                        FPAudio.PlayCollectibleSfx(FPAudio.SFX_ITEMGET);
+                            // Play the collection sound.
+                            FPAudio.PlayCollectibleSfx(FPAudio.SFX_ITEMGET);
 
-                        // Spawn the item label.
-                        SpawnItemLabel();
+                            // Spawn the item label.
+                            SpawnItemLabel();
+                        }
                     }
                 }
             }
@@ -1129,7 +1144,7 @@ namespace Freedom_Planet_2_Archipelago
         /// </summary>
         /// <param name="spriteName">The name of the resource to load.</param>
         /// <returns>The bytes that make up the resource.</returns>
-        static byte[] GetAPSprite(string spriteName)
+        public static byte[] GetAPSprite(string spriteName)
         {
             // Load the resource into a stream.
             Stream sprite = Assembly.GetExecutingAssembly().GetManifestResourceStream(spriteName);
@@ -1139,6 +1154,38 @@ namespace Freedom_Planet_2_Archipelago
 
             // Read the length of the stream into a byte array and return it.
             return reader.ReadBytes((int)sprite.Length);
+        }
+
+        /// <summary>
+        /// Changes the value of a text mesh to match what was typed into an invisible textbox.
+        /// </summary>
+        /// <param name="objectName">The name of the text mesh to update.</param>
+        /// <param name="displayedText">The string to display.</param>
+        private static void UpdateHiddenTextbox(string objectName, string displayedText)
+        {
+            // Find the TextMesh object.
+            GameObject textmeshGameObject = UnityEngine.GameObject.Find(objectName);
+
+            // Check that we've actually found the TextMesh object.
+            if (textmeshGameObject != null)
+            {
+                // Find the actual TextMesh component of the object.
+                TextMesh textmeshComponent = textmeshGameObject.GetComponent<TextMesh>();
+
+                // Check that we've actually found the TextMesh component.
+                if (textmeshComponent != null)
+                {
+                    // Check if our TextMesh's value doesn't match what we're inputting. (Including the square brackets)
+                    if (textmeshComponent.text != $"[{displayedText}]")
+                    {
+                        // Update the text in the TextMesh.
+                        textmeshComponent.text = $"[{displayedText}]";
+
+                        // Play the menu move sound.
+                        FPAudio.PlaySfx(FPAudio.SFX_MOVE);
+                    }
+                }
+            }
         }
     }
 }

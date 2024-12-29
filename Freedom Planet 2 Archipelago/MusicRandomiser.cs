@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 
 namespace Freedom_Planet_2_Archipelago
 {
-    // TODO: More formats for the custom music?
     // TODO: If the custom music hits an issue, then the game hangs indefinitely, fix this in some way.
     class MusicRandomiser
     {
