@@ -102,9 +102,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 FPAudio.PlayJingle(3);
             }
         }
-        
-
-            
 
         /// <summary>
         /// Handles changing gravity when either a Moon Gravity Trap or Double Gravity Trap is active.
