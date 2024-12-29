@@ -14,7 +14,7 @@ You should now be able to right click the solution and choose `Rebuild` to build
 
 ## Installing
 
-First off, install [BepInEx 5](https://github.com/BepInEx/BepInEx/releases/latest) into Freedom Planet 2 (make sure to use the x86 version, as the game is a 32-bit application rather than a 64-bit one). Then create an `Archipelago` folder in the `BepInEx/plugins` directory. Copy the `Archipelago.MultiClient.Net`, `Freedom_Planet_2_Archipelago` and `Newtonsoft.Json` DLLs from the build (`bin/Debug/net35` or `bin/Release/net35` into this folder. Then grab the `clang32` version of [c-wspp-websocket-sharp](https://github.com/black-sliver/c-wspp-websocket-sharp/releases/latest) and extract the `c-wspp` and `websocket-sharp` DLLs to this folder as well.
+First off, install [BepInEx 5](https://github.com/BepInEx/BepInEx/releases/latest) into Freedom Planet 2 (make sure to use the x86 version, as the game is a 32-bit application rather than a 64-bit one). Then create an `Archipelago` folder in the `BepInEx/plugins` directory. Copy the `Archipelago.MultiClient.Net`, `Freedom_Planet_2_Archipelago` and `Newtonsoft.Json` DLLs from the build (`bin/Debug/net35` or `bin/Release/net35`) into this folder. Then grab the `clang32` version of [c-wspp-websocket-sharp](https://github.com/black-sliver/c-wspp-websocket-sharp/releases/latest) and extract the `c-wspp` and `websocket-sharp` DLLs to this folder as well.
 
 It is also HEAVILY recommended to enable the BepInEx console. To do this, go to the `BepInEx/config` and open `BepInEx.cfg` in a text editor. There, find the `Enabled = false` line under `[Logging.Console]` and change it to `Enabled = true`.
 
