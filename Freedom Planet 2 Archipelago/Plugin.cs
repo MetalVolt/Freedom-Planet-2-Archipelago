@@ -552,21 +552,17 @@ namespace Freedom_Planet_2_Archipelago
                 // Check that this location actually exists.
                 if (location != null)
                 {
-                    // Check that this location is either a Stage Clear or Battlesphere Challenge, as the other ones already have some form of label for feedback.
-                    if (location.Name.EndsWith(" - Clear") || location.Name.StartsWith("The Battlesphere - Challenge"))
+                    // Check if this location is for another player.
+                    if (Session.Players.GetPlayerName(Session.ConnectionInfo.Slot) != location.Player)
                     {
-                        // Check if this location is for another player.
-                        if (Session.Players.GetPlayerName(Session.ConnectionInfo.Slot) != location.Player)
-                        {
-                            // Set the notify message to show the player name and item.
-                            NotifyMessage = $"Found {location.Player}'s {location.Item}";
+                        // Set the notify message to show the player name and item.
+                        NotifyMessage = $"Found {location.Player}'s {location.Item}";
 
-                            // Play the collection sound.
-                            FPAudio.PlayCollectibleSfx(FPAudio.SFX_ITEMGET);
+                        // Play the collection sound.
+                        FPAudio.PlayCollectibleSfx(FPAudio.SFX_ITEMGET);
 
-                            // Spawn the item label.
-                            SpawnItemLabel();
-                        }
+                        // Spawn the item label.
+                        SpawnItemLabel();
                     }
                 }
             }
@@ -588,7 +584,7 @@ namespace Freedom_Planet_2_Archipelago
             // Set the flag to tell the player patcher that a DeathLink is awaiting.
             FPPlayerPatcher.hasBufferedDeathLink = true;
 
-            // Spawn the label to shwo the player.
+            // Spawn the label to show the player.
             SpawnItemLabel();
         }
 
@@ -609,15 +605,27 @@ namespace Freedom_Planet_2_Archipelago
             else
                 NotifyMessage = $"Found your {receivedItemsHelper.PeekItem().ItemName}";
 
+            // Set up a value to check if we should show the ItemLabel.
+            bool shouldShowLabel = true;
+
+            // Check if this item came from ourself. If so, check the name of the location and flip the label flag to false if it's not from a stage clear.
+            if (receivedItemsHelper.PeekItem().Player.Name == Session.Players.GetPlayerName(Session.ConnectionInfo.Slot))
+                if (!receivedItemsHelper.PeekItem().LocationName.EndsWith(" - Clear") && !receivedItemsHelper.PeekItem().LocationName.StartsWith("The Battlesphere - Challenge"))
+                    shouldShowLabel = false;
+
             // Handle actually receiving the item.
             ReceiveItem(receivedItemsHelper.PeekItem().ItemName);
             receivedItemsHelper.DequeueItem();
 
-            // Play the collection sound.
-            FPAudio.PlayCollectibleSfx(FPAudio.SFX_ITEMGET);
+            // Show the item label if we should.
+            if (shouldShowLabel)
+            {
+                // Play the collection sound.
+                FPAudio.PlayCollectibleSfx(FPAudio.SFX_ITEMGET);
 
-            // Spawn the label to show the player.
-            SpawnItemLabel();
+                // Spawn the label to show the player.
+                SpawnItemLabel();
+            }
         }
 
         /// <summary>
