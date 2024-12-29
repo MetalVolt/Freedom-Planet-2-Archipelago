@@ -76,6 +76,13 @@ namespace Freedom_Planet_2_Archipelago
             // Check that the play music function has a bgm assigned.
             if (bgmMusic != null)
             {
+                // Overwrite the bgm value with null if we haven't yet got our item label template and item sprite atlas.
+                if (Plugin.ItemLabelTemplate == null && Plugin.ItemSpriteAtlas == null)
+                {
+                    bgmMusic = null;
+                    return;
+                }
+
                 // Check that we've actually gotten a list of music. If we haven't, then return.
                 if (Plugin.Music == null || Plugin.Music.Count == 0)
                     return;
