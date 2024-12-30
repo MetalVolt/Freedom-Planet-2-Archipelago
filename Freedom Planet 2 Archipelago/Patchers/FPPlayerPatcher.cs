@@ -342,19 +342,19 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(FPPlayer), "State_KO")]
-        static void KOed() => SendDeathLink($"{GetPlayer()} got slapped.", false);
+        static void KOed() => SendDeathLink($"{GetPlayer()} got slapped. $[{Plugin.Session.ConnectionInfo.Slot}]", false);
         [HarmonyPostfix]
         [HarmonyPatch(typeof(FPPlayer), "Action_Crush")]
-        static void Crush() => SendDeathLink($"{GetPlayer()} became a pancake.", false);
+        static void Crush() => SendDeathLink($"{GetPlayer()} became a pancake. $[{Plugin.Session.ConnectionInfo.Slot}]", false);
         [HarmonyPostfix]
         [HarmonyPatch(typeof(FPPlayer), "State_CrushKO")]
-        static void Fall() => SendDeathLink($"{GetPlayer()} fell in a hole.", true);
+        static void Fall() => SendDeathLink($"{GetPlayer()} fell in a hole. $[{Plugin.Session.ConnectionInfo.Slot}]", true);
         [HarmonyPostfix]
         [HarmonyPatch(typeof(FPPlayer), "State_FallKO")]
         static void RingOut()
         {
             if (SceneManager.GetActiveScene().name == "Battlesphere_RingOut")
-                SendDeathLink($"{GetPlayer()} fell in a hole.", false);
+                SendDeathLink($"{GetPlayer()} fell in a hole. $[{Plugin.Session.ConnectionInfo.Slot}]", false);
         }
 
         /// <summary>
