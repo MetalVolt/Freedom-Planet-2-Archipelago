@@ -45,7 +45,7 @@
             ___stages[29].starCardRequirement = 23;
             ___stages[32].starCardRequirement = 23;
 
-            // The Time Capsule tracker seems to get confused by Weapons Core having a Star Card lock, so only set that if it needs enforcing.
+            // Weapons Core uses starCardRequirement to count the Time Capsules, so only set it to 32 when we don't have enough cards.
             if (Plugin.APSave.StarCardCount < 32)
                 ___stages[30].starCardRequirement = 32;
 
@@ -59,7 +59,7 @@
                 tileSprites[stageIndex] = ___stages[stageIndex].icon.sprite;
 
                 // If this stage isn't Dragon Valley, Shenlin Park or the Basic Tutorial, then replace its sprite with Globe Opera's locked one.
-                if (stageIndex != 0 && stageIndex != 1 && stageIndex != 31)
+                if (stageIndex != 0 && stageIndex != 1 && stageIndex != 31 && stageIndex != 33)
                     ___stages[stageIndex].icon.sprite = ___stages[11].lockedPanel.sprite;
             }
         }
@@ -73,7 +73,7 @@
         {
             // Undo the edit to Weapons Core if we meet the Star Card requirement.
             if (Plugin.APSave.StarCardCount >= 32 && ___stages[30].starCardRequirement == 32)
-                ___stages[30].starCardRequirement = 0;
+                ___stages[30].starCardRequirement = 11;
 
             // Hide the stage name and time.
             ___textLocation.gameObject.SetActive(false);
@@ -164,10 +164,11 @@
             // Handle showing the stage name and record based on the selected stage.
             switch (___currentTile)
             {
-                // Dragon Valley, Shenlin Park and Basic Tutorial.
+                // Dragon Valley, Shenlin Park and the two tutorials.
                 case 0:
                 case 1:
                 case 31:
+                case 33:
                     ShowText(___textLocation, ___textRecord);
                     break;
 

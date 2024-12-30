@@ -28,6 +28,18 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         }
 
         /// <summary>
+        /// Disables Item chests if the player has them off in the slto data.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(ItemChest), "Start")]
+        static void DisableItemChests(ref FPItemChestContent ___contents)
+        {
+            // Check if the item_chests value in our slot data is 0 and that this chest is either a Brave Stone or Vinyl. If so, set the contents to random.
+            if ((long)Plugin.SlotData["item_chests"] == 0 && (___contents == FPItemChestContent.POWERUP || ___contents == FPItemChestContent.MUSIC))
+                ___contents = FPItemChestContent.RANDOM;
+        }
+
+        /// <summary>
         /// Gets the location at a chest.
         /// </summary>
         /// <param name="contents">The chest contents (either a Brave Stone or Vinyl).</param>

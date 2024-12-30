@@ -18,11 +18,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // Create and configure our copies of the TextMesh.
             SpawnTextMesh(___textTime, new Vector3(86, -16, 0), "Freedom Planet 2 Archipelago Connection");
             SpawnTextMesh(___textTime, new Vector3(15, -40, 0), "Host:");
-            SpawnTextMesh(___textTime, new Vector3(76, -40, 0), "[localhost:62746]", "hostname");
+            SpawnTextMesh(___textTime, new Vector3(76, -40, 0), $"[{Plugin.serverAddress}]", "hostname");
             SpawnTextMesh(___textTime, new Vector3(15, -64, 0), "Slot:");
-            SpawnTextMesh(___textTime, new Vector3(76, -64, 0), "[Knux]", "slotname");
+            SpawnTextMesh(___textTime, new Vector3(76, -64, 0), $"[{Plugin.slotName}]", "slotname");
             SpawnTextMesh(___textTime, new Vector3(15, -88, 0), "Password:");
-            SpawnTextMesh(___textTime, new Vector3(124, -88, 0), "[]", "passwordname");
+            SpawnTextMesh(___textTime, new Vector3(124, -88, 0), $"[{Plugin.password}]", "passwordname");
         }
 
         /// <summary>

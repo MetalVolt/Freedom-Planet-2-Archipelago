@@ -59,12 +59,13 @@
                     break;
 
                 // Globe Opera.
+                // We check the stage type as the tutorials also use slot 11 and 12, but are classed as a HUB.
                 case 11:
                 case 12:
                 case 13:
                 case 14:
                 case 15:
-                    if (!Plugin.APSave.UnlockedChapters[3])
+                    if (!Plugin.APSave.UnlockedChapters[3] && ___selectedStageType == FPMapLocationType.STAGE)
                     {
                         UnityEngine.Object.Destroy(UnityEngine.Object.FindObjectOfType<MenuWorldMapConfirm>().gameObject);
                         return false;

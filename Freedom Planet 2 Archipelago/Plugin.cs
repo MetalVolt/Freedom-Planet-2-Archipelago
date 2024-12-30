@@ -150,9 +150,9 @@ namespace Freedom_Planet_2_Archipelago
         public static Dictionary<string, object> SlotData = [];
 
         // Set up the values for the connection menu.
-        string serverAddress = "localhost:62746";
-        string slotName = "Knux";
-        string password = "";
+        public static string serverAddress = "localhost:62746";
+        public static string slotName = "Knux";
+        public static string password = "";
 
         // Set up the value for the received item text.
         string NotifyMessage = "";
@@ -202,6 +202,11 @@ namespace Freedom_Planet_2_Archipelago
 
             // Load the Stage Debug Menu to act as a connector menu.
             SceneManager.LoadScene("StageDebugMenu");
+
+            // Set the server values to the ones in the config.
+            serverAddress = Config.Bind("Archipelago Server Settings", "Host", "localhost:62746", "The host to connect to.").Value;
+            slotName = Config.Bind("Archipelago Server Settings", "Slot", "Knux", "The name of the slot to connect to.").Value;
+            password = Config.Bind("Archipelago Server Settings", "Password", "", "The server password (if it has one).").Value;
 
             // Set up Harmony.
             Harmony harmony = new(PluginInfo.PLUGIN_GUID);
@@ -320,55 +325,8 @@ namespace Freedom_Planet_2_Archipelago
                         #endif
 
                         // Reveal all the map tiles.
-                        // Dragon Valley and Shenlin Park.
-                        FPSaveManager.mapTileReveal[0] = true;
-                        FPSaveManager.mapTileReveal[1] = true;
-
-                        // Mystery of the Frozen North.
-                        FPSaveManager.mapTileReveal[4] = true;
-                        FPSaveManager.mapTileReveal[5] = true;
-                        FPSaveManager.mapTileReveal[6] = true;
-                        FPSaveManager.mapTileReveal[7] = true;
-
-                        // Sky Pirate Panic.
-                        FPSaveManager.mapTileReveal[2] = true;
-                        FPSaveManager.mapTileReveal[3] = true;
-
-                        // Enter the Battlesphere.
-                        FPSaveManager.mapTileReveal[8] = true;
-                        FPSaveManager.mapTileReveal[9] = true;
-                        FPSaveManager.mapTileReveal[10] = true;
-
-                        // Globe Opera.
-                        FPSaveManager.mapTileReveal[11] = true;
-                        FPSaveManager.mapTileReveal[12] = true;
-                        FPSaveManager.mapTileReveal[13] = true;
-                        FPSaveManager.mapTileReveal[14] = true;
-                        FPSaveManager.mapTileReveal[15] = true;
-
-                        // Justice in the Sky Paradise.
-                        FPSaveManager.mapTileReveal[18] = true;
-                        FPSaveManager.mapTileReveal[19] = true;
-
-                        // Robot Wars! Snake VS Tarsier.
-                        FPSaveManager.mapTileReveal[16] = true;
-                        FPSaveManager.mapTileReveal[17] = true;
-
-                        // Echoes of the Dragon War.
-                        FPSaveManager.mapTileReveal[20] = true;
-                        FPSaveManager.mapTileReveal[21] = true;
-                        FPSaveManager.mapTileReveal[22] = true;
-
-                        // Bakunawa.
-                        FPSaveManager.mapTileReveal[23] = true;
-                        FPSaveManager.mapTileReveal[32] = true;
-                        FPSaveManager.mapTileReveal[24] = true;
-                        FPSaveManager.mapTileReveal[25] = true;
-                        FPSaveManager.mapTileReveal[26] = true;
-                        FPSaveManager.mapTileReveal[27] = true;
-                        FPSaveManager.mapTileReveal[28] = true;
-                        FPSaveManager.mapTileReveal[29] = true;
-                        FPSaveManager.mapTileReveal[30] = true;
+                        for (int i = 0; i < FPSaveManager.mapTileReveal.Length; i++)
+                            FPSaveManager.mapTileReveal[i] = true;
 
                         // Set up the DeathLink service.
                         DeathLink = Session.CreateDeathLinkService();
