@@ -94,16 +94,5 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 location.Checked = true;
             }
         }
-
-        /// <summary>
-        /// Stops the Battlesphere ArenaChallengeMenu scene from being loaded.
-        /// </summary>
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(FPResultsMenu), "Update")]
-        static void BattlesphereDivert(ref string ___sourceScene)
-        {
-            if (___sourceScene == "ArenaChallengeMenu")
-                ___sourceScene = "ArenaMenu";
-        }
     }
 }

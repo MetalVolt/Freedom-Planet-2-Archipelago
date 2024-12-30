@@ -774,8 +774,8 @@ namespace Freedom_Planet_2_Archipelago
         /// </summary>
         private void Update()
         {
-            // If the active scene is the Battlesphere Time Capsule cutscene, then boot the player out to the arena menu instead.
-            if (SceneManager.GetActiveScene().name == "Cutscene_BattlesphereCapsule")
+            // If the active scene is the Battlesphere Time Capsule cutscene or initial challenge list, then boot the player out to the arena menu instead.
+            if (SceneManager.GetActiveScene().name == "Cutscene_BattlesphereCapsule" || SceneManager.GetActiveScene().name == "ArenaChallengeMenu")
                 SceneManager.LoadScene("ArenaMenu");
 
             // Check if the RingLink timer is going and decrement it if so.
@@ -1100,9 +1100,6 @@ namespace Freedom_Planet_2_Archipelago
         /// <returns>The sprite we've generated.</returns>
         public static Sprite GetItemSprite(Location location)
         {
-            // Set the path to the mod overrides folder so we don't keep typing it out.
-            string apPath = $@"{Paths.GameRootPath}\mod_overrides\Archipelago";
-
             // Set up a new texture.
             Texture2D texture = new(32, 32);
 
@@ -1121,8 +1118,8 @@ namespace Freedom_Planet_2_Archipelago
             // If this icon is not for Freedom Planet 2, then check if one exists for this game and icon combination, if so, load it.
             if (location.Game != "Manual_FreedomPlanet2_Knuxfan24")
             {
-                if (File.Exists($@"{apPath}\{location.Game}\{location.Item}.png"))
-                    texture.LoadImage(File.ReadAllBytes($@"{apPath}\{location.Game}\{location.Item}.png"));
+                if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\{location.Game}\{location.Item}.png"))
+                    texture.LoadImage(File.ReadAllBytes($@"{Paths.GameRootPath}\mod_overrides\Archipelago\{location.Game}\{location.Item}.png"));
             }
 
             // If this is a Freedom Planet 2 item, then get it straight from the texture atlas.
@@ -1176,6 +1173,7 @@ namespace Freedom_Planet_2_Archipelago
                 }
                 else
                 {
+                    // TODO: In a test, the shop showed Carol's sprite for Neera's, is this my fault or some weirdness with the random character?
                     switch (FPSaveManager.character)
                     {
                         case FPCharacterID.LILAC: return GetSpriteFromAtlas(538, 798, 29, 28);
