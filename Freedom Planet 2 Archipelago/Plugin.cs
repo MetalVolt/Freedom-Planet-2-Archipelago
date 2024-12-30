@@ -575,8 +575,10 @@ namespace Freedom_Planet_2_Archipelago
         private void Socket_ReceiveDeathLink(DeathLink deathLinkHelper)
         {
             // Present the cause and source of the DeathLink.
-            // TODO: Test how this message appears for different games, I'm not sure if all of them give a cause. SA2 also puts the player name IN the cause.
-            NotifyMessage = $@"{deathLinkHelper.Cause} [{deathLinkHelper.Source}]";
+            if (deathLinkHelper.Cause != null)
+                NotifyMessage = $"{deathLinkHelper.Cause}";
+            else
+                NotifyMessage = $"DeathLink received from {deathLinkHelper.Source}";
 
             // Stop the player from being able to send a DeathLink out.
             FPPlayerPatcher.canSendDeathLink = false;
