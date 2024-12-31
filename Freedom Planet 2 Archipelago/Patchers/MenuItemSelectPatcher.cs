@@ -7,15 +7,14 @@ namespace Freedom_Planet_2_Archipelago.Patchers
     {
         /// <summary>
         /// Creates the Item Select Menu, reconstructed from the original code to remove a check that ruins everything.
-        /// TODO: This feels stupid.
-        /// TODO: Opening and closing the menu seems to deequip everything?
+        /// TODO: This feels stupid, a sensible person would transpile the offending line out, but that involves me having a brain.
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(MenuItemSelect), "Start")]
         static bool StartItemMenu(ref bool[] ___potions, ref bool[] ___amulets, ref int ___ps, ref int ___buttonCount, ref MenuOption[] ___menuOptions,
-                                  ref SpriteRenderer[] ___menuButtons, ref FPHudDigit[] ___equipIcons, ref GameObject[] ___equipSlots,
-                                  ref GameObject ___pfEquipSlot, ref GameObject ___itemWindow, ref GameObject ___bottle, ref FPHudDigit ___pfPowerupIcon,
-                                  ref Vector2 ___itemSlotSpacing, ref SpriteRenderer ___itemFolder, ref FPPowerup[] ___amuletList)
+                                  ref SpriteRenderer[] ___menuButtons, ref byte[] ___activePotions, ref FPPowerup[] ___powerups, ref FPHudDigit[] ___equipIcons,
+                                  ref GameObject[] ___equipSlots, ref GameObject ___pfEquipSlot, ref GameObject ___itemWindow, ref GameObject ___bottle,
+                                  ref FPHudDigit ___pfPowerupIcon, ref Vector2 ___itemSlotSpacing, ref SpriteRenderer ___itemFolder, ref FPPowerup[] ___amuletList)
         {
             // Set the empty slot to "unlocked" to avoid the menu being completely empty and thus breaking.
             Plugin.APSave.UnlockedPotions[0] = true;
@@ -40,6 +39,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // Get each option's associated button.
             for (int buttonIndex = 0; buttonIndex < ___buttonCount; buttonIndex++)
                 ___menuButtons[buttonIndex] = ___menuOptions[buttonIndex].GetComponent<SpriteRenderer>();
+
+            // Set our active potions and Brave Stones.
+            ___activePotions = FPSaveManager.itemSets[FPSaveManager.activeItemSet].activePotions;
+            ___powerups = FPSaveManager.itemSets[FPSaveManager.activeItemSet].powerups;
 
             // Set up the equip icons and slots.
             ___equipIcons = new FPHudDigit[FPSaveManager.GetItemSlots()];
