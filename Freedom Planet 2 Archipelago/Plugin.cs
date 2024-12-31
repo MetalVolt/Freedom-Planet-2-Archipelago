@@ -20,7 +20,6 @@ namespace Freedom_Planet_2_Archipelago
 {
     // TODO: RingLink packet sending causes stutters, try to fix that.
     // TODO: RingLink packet sending and release collecting can "crash" the game (it keeps running, but the item receiving seems to die). Track this issue down and sort it.
-    // TODO: The initial item receive is garbage and will drop half of the multitude items. Fix this, honestly just rewrite the code for that in general.
     public class APSave()
     {
         /// <summary>
@@ -428,42 +427,8 @@ namespace Freedom_Planet_2_Archipelago
                             case 3: FPSaveManager.character = FPCharacterID.NEERA; break;
                         }
 
-                        // Always keep Dragon Valley and Shenlin Park unlocked.
-                        FPSaveManager.mapTileReveal[0] = true;
-                        FPSaveManager.mapTileReveal[1] = true;
-                        
-                        // Set up values to check our extra item slots and gold gems.
-                        int serverDoubleGravityTrapCount = 0;
-                        int serverExtraItemSlots = 0;
-                        int serverGoldGemCount = 0;
-                        int serverMirrorTrapCount = 0;
-                        int serverMoonGravityTrapCount = 0;
-                        int serverStarCardCount = 0;
-                        int serverTimeCapsuleCount = 0;
-
-                        // Loop through each item the server has sent and receive it.
-                        foreach (ItemInfo item in Session.Items.AllItemsReceived)
-                        {
-                            // Split the item's name.
-                            string itemName = item.ItemName;
-
-                            // Check the item's name.
-                            switch (itemName)
-                            {
-                                case "Double Gravity Trap": serverDoubleGravityTrapCount = StartItemCheck(serverDoubleGravityTrapCount, APSave.DoubleGravityTrapCount, itemName); break;
-                                case "Extra Item Slot": serverExtraItemSlots = StartItemCheck(serverExtraItemSlots, APSave.ExtraItemSlots, itemName); break;
-                                case "Gold Gem": serverGoldGemCount = StartItemCheck(serverGoldGemCount, APSave.GoldGemCount, itemName); break;
-                                case "Mirror Trap": serverMirrorTrapCount = StartItemCheck(serverMirrorTrapCount, APSave.MirrorTrapCount, itemName); break;
-                                case "Moon Gravity Trap": serverMoonGravityTrapCount = StartItemCheck(serverMoonGravityTrapCount, APSave.MoonGravityTrapCount, itemName); break;
-                                case "Star Card": serverStarCardCount = StartItemCheck(serverStarCardCount, APSave.StarCardCount, itemName); break;
-                                case "Time Capsule": serverTimeCapsuleCount = StartItemCheck(serverTimeCapsuleCount, APSave.TimeCapsuleCount, itemName); break;
-
-                                default: ReceiveItem(itemName); break;
-                            }
-
-                            // Remove this item from the queue.
-                            Session.Items.DequeueItem();
-                        }
+                        // Get our items from the server.
+                        ReceiveStartItems();
 
                         // Hide the cursor again.
                         Cursor.visible = false;
@@ -493,6 +458,67 @@ namespace Freedom_Planet_2_Archipelago
                         FPAudio.PlayMenuSfx(3);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Gets the items from the server when we initially connect to it.
+        /// </summary>
+        private void ReceiveStartItems()
+        {
+            // Set up values to check any items that need multiple copies.
+            int serverDoubleGravityTrapCount = 0;
+            int serverExtraItemSlots = 0;
+            int serverGoldGemCount = 0;
+            int serverMirrorTrapCount = 0;
+            int serverMoonGravityTrapCount = 0;
+            int serverStarCardCount = 0;
+            int serverTimeCapsuleCount = 0;
+
+            // Loop through each item the server has sent and receive it.
+            foreach (ItemInfo item in Session.Items.AllItemsReceived)
+            {
+                // Split the item's name.
+                string itemName = item.ItemName;
+
+                // Check the item's name to see if we need to receive a certain amount of them to avoid duplication.
+                switch (itemName)
+                {
+                    case "Double Gravity Trap": serverDoubleGravityTrapCount++; break;
+                    case "Extra Item Slot": serverExtraItemSlots++; break;
+                    case "Gold Gem": serverGoldGemCount++; break;
+                    case "Mirror Trap": serverMirrorTrapCount++; break;
+                    case "Moon Gravity Trap": serverMoonGravityTrapCount++; break;
+                    case "Star Card": serverStarCardCount++; break;
+                    case "Time Capsule": serverTimeCapsuleCount++; break;
+
+                    default: ReceiveItem(itemName); break;
+                }
+
+                // Remove this item from the queue.
+                Session.Items.DequeueItem();
+            }
+
+            // Send the multitude items.
+            CalculateItems(serverDoubleGravityTrapCount, APSave.DoubleGravityTrapCount, "Double Gravity Trap");
+            CalculateItems(serverExtraItemSlots, APSave.ExtraItemSlots, "Extra Item Slot");
+            CalculateItems(serverGoldGemCount, APSave.GoldGemCount, "Gold Gem");
+            CalculateItems(serverMirrorTrapCount, APSave.MirrorTrapCount, "Mirror Trap");
+            CalculateItems(serverMoonGravityTrapCount, APSave.MoonGravityTrapCount, "Moon Gravity Trap");
+            CalculateItems(serverStarCardCount, APSave.StarCardCount, "Star Card");
+            CalculateItems(serverTimeCapsuleCount, APSave.TimeCapsuleCount, "Time Capsule");
+
+            // Local function that actually sends the missing multitude items.
+            void CalculateItems(int serverValue, int saveValue, string itemName)
+            {
+                // If this is a debug build, report how many of this item we should receive, and what the initial and final values should be.
+                #if DEBUG
+                Console.WriteLine($"Server should send {serverValue - saveValue} {itemName}(s), giving a total of {serverValue}, up from {saveValue}.");
+                #endif
+
+                // Calculate how many of this item we need to get based on the gap between server and save and receive that many.
+                for (int i = 0; i < serverValue - saveValue; i++)
+                    ReceiveItem(itemName);
             }
         }
 
@@ -768,26 +794,6 @@ namespace Freedom_Planet_2_Archipelago
                 RingLinkValue = 0;
             }
         }
-
-        private int StartItemCheck(int serverValue, int saveValue, string itemName)
-        {
-            // Check if we have less of this item than the save reports.
-            if (serverValue < saveValue)
-            {
-                // Increment the count.
-                serverValue++;
-
-                // Inform that we've skipped giving this item.
-                Console.WriteLine($"Skipped giving {itemName} as it was already received.");
-            }
-
-            // If we don't have less of this item than the save reports, then receive it.
-            else
-                ReceiveItem(itemName);
-
-            // Return the value the server's given.
-            return serverValue;
-        }
     
         /// <summary>
         /// Handles receiving an item from the multiworld.
@@ -1051,7 +1057,6 @@ namespace Freedom_Planet_2_Archipelago
 
         /// <summary>
         /// Returns a sprite icon for the given location.
-        /// TODO: Test all the FP2 sprites.
         /// TODO: Can I shrink the Star Cards? They feel a bit too big in comparison to everything else.
         /// </summary>
         /// <param name="location">The location this sprite is for.</param>

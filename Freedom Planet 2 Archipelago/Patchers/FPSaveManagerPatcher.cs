@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {
-    // Parts of this were taken from FP2Lib mostly unmodified https://github.com/Kuborros/FP2Lib/blob/master/FP2Lib/Saves/SavePatches.cs (besides some formatting changes to fit my style).
+    // The transpiler stuff here was all taken from FP2Lib mostly unmodified https://github.com/Kuborros/FP2Lib/blob/master/FP2Lib/Saves/SavePatches.cs (besides some formatting changes to fit my style).
     // TODO: Can I use this code?
     internal class FPSaveManagerPatcher
     {
