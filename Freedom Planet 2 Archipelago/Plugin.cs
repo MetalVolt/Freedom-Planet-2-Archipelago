@@ -443,7 +443,10 @@ namespace Freedom_Planet_2_Archipelago
                         transition.transitionSpeed = 48f;
 
                         // Set the transition to load Dragon Valley so we can steal the ItemLabel and items texture atlas from a Chest there.
-                        transition.sceneToLoad = "DragonValley";
+                        if (ItemLabelTemplate == null && ItemSpriteAtlas == null)
+                            transition.sceneToLoad = "DragonValley";
+                        else
+                            transition.sceneToLoad = "ClassicMenu";
 
                         // Set the transition to pure black.
                         transition.SetTransitionColor(0f, 0f, 0f);

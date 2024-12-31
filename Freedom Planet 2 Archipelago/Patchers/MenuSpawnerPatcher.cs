@@ -55,13 +55,14 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// Redirects the main menu to the debug menu.
+        /// TODO: Check that the menu to load check is right, as the Game Over continue screen uses this scene too.
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MenuSpawner), "Start")]
         static void ReturnToConnectMenu()
         {
             // Check if we've been sent to the main menu for whatever reason.
-            if (SceneManager.GetActiveScene().name == "MainMenu")
+            if (SceneManager.GetActiveScene().name == "MainMenu" && FPSaveManager.menuToLoad != 1)
             {
                 // Disconnect from our slot.
                 Plugin.Session.Socket.Disconnect();
