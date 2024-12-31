@@ -55,7 +55,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// Redirects the main menu to the debug menu.
-        /// TODO: Check that the menu to load check is right, as the Game Over continue screen uses this scene too.
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MenuSpawner), "Start")]
