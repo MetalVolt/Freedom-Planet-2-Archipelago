@@ -1,4 +1,6 @@
-﻿namespace Freedom_Planet_2_Archipelago.Patchers
+﻿using System.Reflection;
+
+namespace Freedom_Planet_2_Archipelago.Patchers
 {
     internal class MenuClassicPatcher
     {
@@ -15,6 +17,25 @@
         static bool StopMapUnlockEffect(ref int __result)
         {
             __result = -1;
+            return false;
+        }
+
+        /// <summary>
+        /// Stops the Time Capsule scene after Tidal Gate from playing.
+        /// TODO: Make sure this doesn't have any knock on effects.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(MenuClassic), "State_Intro")]
+        static bool StopTimeCapsuleScene()
+        {
+            // Get a reference to this menu.
+            MenuClassic menu = UnityEngine.Object.FindObjectOfType<MenuClassic>();
+
+            // Get and run the State_Default function to force the state to change.
+            MethodInfo function = typeof(MenuClassic).GetMethod("State_Default", BindingFlags.NonPublic | BindingFlags.Instance);
+            function.Invoke(menu, new object[] { });
+
+            // Stop the original Intro state from running.
             return false;
         }
 

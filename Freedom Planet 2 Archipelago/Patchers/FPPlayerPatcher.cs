@@ -1,6 +1,4 @@
 ﻿using Rewired;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {
@@ -112,22 +110,16 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         static void GravityTraps(ref float ___gravityStrength)
         {
             // Check if the Moon Gravity Trap timer is going.
-            if (Plugin.MoonGravityTrapTimer > 0f)
+            if (Plugin.MoonGravityTrapTimer > 0)
             {
-                // Take the delta time away from the trap timer.
-                Plugin.MoonGravityTrapTimer -= FPStage.deltaTime;
-
                 // If we haven't already halved the gravity, then do so.
                 if (___gravityStrength != -0.1875f)
                     ___gravityStrength = -0.1875f;
             }
 
             // Check if the Double Gravity Trap timer is going.
-            if (Plugin.DoubleGravityTrapTimer > 0f)
+            if (Plugin.DoubleGravityTrapTimer > 0)
             {
-                // Take the delta time away from the trap timer.
-                Plugin.DoubleGravityTrapTimer -= FPStage.deltaTime;
-
                 // If we haven't already doubled the gravity, then do so.
                 if (___gravityStrength != -0.75f)
                     ___gravityStrength = -0.75f;
@@ -136,44 +128,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // If both trap timers aren't running and we don't have the correct gravity, then reset it.
             if (Plugin.MoonGravityTrapTimer <= 0f && Plugin.DoubleGravityTrapTimer <= 0f && ___gravityStrength != -0.375f)
                 ___gravityStrength = -0.375f;
-        }
-
-        /// <summary>
-        /// Handles flipping the screen when a Mirror Trap is active.
-        /// </summary>
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(FPPlayer), "Update")]
-        static void MirrorTrapScreenFlip(ref FPPlayerInput ___input)
-        {
-            // Check if the Mirror Trap timer is going.
-            if (Plugin.MirrorTrapTimer > 0f)
-            {
-                // Take the delta time away from the trap timer.
-                Plugin.MirrorTrapTimer -= FPStage.deltaTime;
-
-                // Find the Pixel Art Target renderer.
-                GameObject pixelArtTarget = GameObject.Find("Pixel Art Target");
-
-                // If we've found it, then check if it has a positive X scale, if so, invert it.
-                if (pixelArtTarget != null)
-                    if (pixelArtTarget.transform.localScale.x > 0)
-                        pixelArtTarget.transform.localScale = new Vector3(pixelArtTarget.transform.localScale.x * -1f, pixelArtTarget.transform.localScale.y, pixelArtTarget.transform.localScale.z);
-            }
-
-            // Check if the Mirror Trap timer has gone below 0.
-            else if (Plugin.MirrorTrapTimer < 0f)
-            {
-                // Set the trap timer to 0 so this check doesn't refire.
-                Plugin.MirrorTrapTimer = 0f;
-
-                // Find the Pixel Art Target renderer.
-                GameObject pixelArtTarget = GameObject.Find("Pixel Art Target");
-
-                // If we've found it, then check if it has a negative X scale, if so, invert it.
-                if (pixelArtTarget != null)
-                    if (pixelArtTarget.transform.localScale.x < 0)
-                        pixelArtTarget.transform.localScale = new Vector3(pixelArtTarget.transform.localScale.x * -1f, pixelArtTarget.transform.localScale.y, pixelArtTarget.transform.localScale.z);
-            }
         }
 
         /// <summary>

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Reflection.Emit;
-using UnityEngine;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {

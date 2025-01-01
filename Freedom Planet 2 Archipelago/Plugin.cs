@@ -1,6 +1,8 @@
 ﻿global using BepInEx;
 global using HarmonyLib;
 global using System;
+global using UnityEngine;
+global using UnityEngine.SceneManagement;
 using Archipelago.MultiClient.Net;
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using Archipelago.MultiClient.Net.Enums;
@@ -13,13 +15,12 @@ using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Freedom_Planet_2_Archipelago
 {
     // TODO: RingLink packet sending causes stutters, try to fix that.
     // TODO: RingLink packet sending and release collecting can "crash" the game (it keeps running, but the item receiving seems to die). Track this issue down and sort it.
+    // TODO: Actually write the last used host, slot and password to the config file.
     public class APSave()
     {
         /// <summary>
@@ -127,7 +128,7 @@ namespace Freedom_Planet_2_Archipelago
         public bool Hinted = false;
     }
 
-    [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
+    [BepInPlugin("FP2_AP", "Archipelago", "0.0.1")]
     public class Plugin : BaseUnityPlugin
     {
         // Set up the Archipelago Session and LoginResult data.
@@ -141,9 +142,9 @@ namespace Freedom_Planet_2_Archipelago
         public static APSave APSave;
 
         // Set up the timers for the various traps.
-        public static float DoubleGravityTrapTimer = 0f;
-        public static float MirrorTrapTimer = 0f;
-        public static float MoonGravityTrapTimer = 0f;
+        public static int DoubleGravityTrapTimer = -1;
+        public static int MirrorTrapTimer = -1;
+        public static int MoonGravityTrapTimer = -1;
 
         // Store our slot data.
         public static Dictionary<string, object> SlotData = [];
@@ -176,6 +177,9 @@ namespace Freedom_Planet_2_Archipelago
         static byte[] APLogo_Progression;
         static byte[] APLogo_Trap;
         public static Texture2D ItemSpriteAtlas;
+
+        // Set up our own time counter.
+        private float TimeCounter = 0;
 
         /// <summary>
         /// Initial code that runs when BepInEx loads our plugin.
@@ -225,7 +229,7 @@ namespace Freedom_Planet_2_Archipelago
             // Patch the Player Boss Merga class, used to stop the normal ending from playing.
             harmony.PatchAll(typeof(PlayerBossMergaPatcher));
 
-            // Patch the FP Player class, used to send out DeathLinks.
+            // Patch the FP Player class, used to handle a few things relating to the player.
             harmony.PatchAll(typeof(FPPlayerPatcher));
 
             // Patch the Menu Item Get class, used to send items purchased from the shop.
@@ -251,6 +255,9 @@ namespace Freedom_Planet_2_Archipelago
 
             // Patch the Player Spawn Point class, used to randomise the character every load if that value is set in our slot data.
             harmony.PatchAll(typeof(PlayerSpawnPointPatcher));
+
+            // Patch the FP Camera class, used to handle the visual side of a Mirror Trap.
+            harmony.PatchAll(typeof(FPCameraPatcher));
 
             // Enable the Music Randomiser.
             if (Config.Bind("Music Randomiser", "Enable Music Randomiser", true, "Whether or not to use the music randomiser.").Value)
@@ -761,6 +768,31 @@ namespace Freedom_Planet_2_Archipelago
         /// </summary>
         private void Update()
         {
+            // Increment our time counter by the game's delta time.
+            TimeCounter += Time.deltaTime;
+
+            // Check if time counter has reached one.
+            while (TimeCounter >= 1f)
+            {
+                // Subtract 1 from it.
+                TimeCounter -= 1f;
+
+                // If a player exists, then decrement the trap timers.
+                if (UnityEngine.Object.FindObjectOfType<FPPlayer>() != null)
+                {
+                    if (DoubleGravityTrapTimer > 0) DoubleGravityTrapTimer--;
+                    if (MirrorTrapTimer > 0) MirrorTrapTimer--;
+                    if (MoonGravityTrapTimer > 0) MoonGravityTrapTimer--;
+
+                    // If this is a debug build, then print the remaining time on the trap timers.
+                    #if DEBUG
+                    if (DoubleGravityTrapTimer > 0) Console.WriteLine($"Double Gravity Trap Timer is now: {DoubleGravityTrapTimer}");
+                    if (MirrorTrapTimer > 0) Console.WriteLine($"Mirror Trap Timer is now: {MirrorTrapTimer}");
+                    if (MoonGravityTrapTimer > 0) Console.WriteLine($"Moon Gravity Trap Timer is now: {MoonGravityTrapTimer}");
+                    #endif
+                }
+            }
+
             // If the active scene is the Battlesphere Time Capsule cutscene or initial challenge list, then boot the player out to the arena menu instead.
             if (SceneManager.GetActiveScene().name == "Cutscene_BattlesphereCapsule" || SceneManager.GetActiveScene().name == "ArenaChallengeMenu")
                 SceneManager.LoadScene("ArenaMenu");
@@ -814,9 +846,9 @@ namespace Freedom_Planet_2_Archipelago
                     SetTrapBraveStone(FPPowerup.DOUBLE_DAMAGE);
                     break;
 
-                // Set the Double Gravity Trap Timer to 1750 (roughly thirty seconds?) and increment our save's double gravity trap count.
+                // Set the Double Gravity Trap Timer to 30 seconds and increment our save's double gravity trap count.
                 case "Double Gravity Trap":
-                    DoubleGravityTrapTimer = 1750f;
+                    DoubleGravityTrapTimer = 30;
                     APSave.DoubleGravityTrapCount++;
                     break;
 
@@ -913,15 +945,15 @@ namespace Freedom_Planet_2_Archipelago
 
                 case "Metal Charm": APSave.UnlockedBraveStones[16] = true; break;
 
-                // Set the Mirror Trap Timer to 3000 (roughly a minute?) and increment our save's mirror trap count.
+                // Set the Mirror Trap Timer to a minute and increment our save's mirror trap count.
                 case "Mirror Trap":
-                    MirrorTrapTimer = 3000f;
+                    MirrorTrapTimer = 60;
                     APSave.MirrorTrapCount++;
                     break;
 
-                // Set the Moon Gravity Trap Timer to 1750 (roughly thirty seconds?) and increment our save's mirror trap count.
+                // Set the Moon Gravity Trap Timer to 30 seconds and increment our save's mirror trap count.
                 case "Moon Gravity Trap":
-                    MoonGravityTrapTimer = 1750f;
+                    MoonGravityTrapTimer = 30;
                     APSave.MoonGravityTrapCount++;
                     break;
 

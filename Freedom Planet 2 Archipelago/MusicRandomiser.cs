@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Freedom_Planet_2_Archipelago

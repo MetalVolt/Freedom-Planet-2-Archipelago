@@ -28,7 +28,7 @@ Upon pressing Connect, the game will freeze for a short while as it gets the sta
 
 ### Music
 
-By default, an option for custom music is enabled (this can be disabled by changing the `Enable Music Randomiser = true` line in `Freedom_Planet_2_Archipelago.cfg` (found in the same directory as BepInEx's own configuration file) to `Enable Music Randomiser = false`). To use this, place any music you want into the `mod_overrides\Archipelago\music` directory as an OGG Vorbis file. To control when the music loops, create a file in the same directory called `loop_points.txt` and open it in a text editor. Add a line to it with the file name, the start loop point (in samples) and end loop point (also in samples).
+By default, an option for custom music is enabled (this can be disabled by changing the `Enable Music Randomiser = true` line in `FP2_AP.cfg` (found in the same directory as BepInEx's own configuration file) to `Enable Music Randomiser = false`). To use this, place any music you want into the `mod_overrides\Archipelago\music` directory as an OGG Vorbis file. To control when the music loops, create a file in the same directory called `loop_points.txt` and open it in a text editor. Add a line to it with the file name, the start loop point (in samples) and end loop point (also in samples).
 
 **Example:**
 
