@@ -197,6 +197,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// <param name="item">The name of the item to hint for.</param>
         private static void SendHint(string item)
         {
+            // Only hint this shop location if we can actually see the item names.
+            if ((long)Plugin.SlotData["shop_information"] != 0)
+                return;
+
             // Get the item we're looking for from the locations array.
             Location itemLocation = Array.Find(Plugin.APSave.Locations, location => location.Name == item);
 
