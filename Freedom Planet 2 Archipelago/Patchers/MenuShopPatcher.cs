@@ -417,7 +417,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     if (___powerups[powerupIndex].digitValue != 1)
                     {
                         // Read and insert a custom sprite at position 37.
-                        ___powerups[powerupIndex].digitFrames[37] = Plugin.GetItemSprite(locations[powerupIndex]);
+                        ___powerups[powerupIndex].digitFrames[37] = Plugin.GetItemSprite(locations[powerupIndex], true);
 
                         // Set this icon to position 37.
                         ___powerups[powerupIndex].SetDigitValue(37);
@@ -439,7 +439,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     if (___vinyls[vinylIndex].digitValue != 0)
                     {
                         // Read and insert a custom sprite at position 10.
-                        ___vinyls[vinylIndex].digitFrames[10] = Plugin.GetItemSprite(locations[vinylIndex]);
+                        ___vinyls[vinylIndex].digitFrames[10] = Plugin.GetItemSprite(locations[vinylIndex], true);
 
                         // Set this icon to position 10.
                         ___vinyls[vinylIndex].SetDigitValue(10);
@@ -450,23 +450,41 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // Check if the displayed item name is not the ? ? ? ? ? string.
             if (___detailName[0].GetComponent<TextMesh>().text != "? ? ? ? ?")
             {
-                // Check if the displayed item name is not the ? ? ? ? ? string.
+                // Get the name of this item.
+                ___detailName[0].GetComponent<TextMesh>().text = GetItemName(locations[selectedItem - ___detailListOffset]);
+
+                // Set the description of our item based on if its for ourself or not.
                 if (locations[selectedItem - ___detailListOffset].Player != Plugin.Session.Players.GetPlayerName(Plugin.Session.ConnectionInfo.Slot))
-                {
-                    // Show the name of the item, as well as the player it's for.
-                    ___detailName[0].GetComponent<TextMesh>().text = $"{locations[selectedItem - ___detailListOffset].Player}'s {locations[selectedItem - ___detailListOffset].Item}";
-
-                    // Set the description of our item.
                     ___itemDescription.GetComponent<TextMesh>().text = FPStage.WrapText(GetItemDescription(locations[selectedItem - ___detailListOffset], $"An item for {locations[selectedItem - ___detailListOffset].Player}'s {locations[selectedItem - ___detailListOffset].Game}."), 40) + $"\r\nLocation: {locations[selectedItem - ___detailListOffset].Name}";
-                }
                 else
-                {
-                    // Show the name of the item, as well as the player it's for.
-                    ___detailName[0].GetComponent<TextMesh>().text = $"{locations[selectedItem - ___detailListOffset].Item}";
+                    ___itemDescription.GetComponent<TextMesh>().text = FPStage.WrapText(GetItemDescription(locations[selectedItem - ___detailListOffset], "An item for you."), 40) + $"\r\nLocation: {locations[selectedItem - ___detailListOffset].Name}";
+            }
+        }
 
-                    // Set the description of our item.
-                    ___itemDescription.GetComponent<TextMesh>().text = FPStage.WrapText(GetItemDescription(locations[selectedItem - ___detailListOffset], "Put the right item description here."), 40) + $"\r\nLocation: {locations[selectedItem - ___detailListOffset].Name}";
-                }
+        /// <summary>
+        /// Gets the name for the item to display in the shop.
+        /// </summary>
+        /// <param name="location">The location this name is for.
+        /// <returns>The name we want.</returns>
+        private static string GetItemName(Location location)
+        {
+            // Determine who this item is for.
+            string itemTarget = $"{location.Player}'s ";
+            if (location.Player == Plugin.Session.Players.GetPlayerName(Plugin.Session.ConnectionInfo.Slot))
+                itemTarget = "";
+
+            // Determine the progression level of this item.
+            string itemType = "";
+            if (location.Flags == Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement) itemType = "Progression ";
+            if (location.Flags == Archipelago.MultiClient.Net.Enums.ItemFlags.Trap) itemType = "Trap ";
+
+            // Return the right string for the Show Item Names in Shops setting.
+            switch ((long)Plugin.SlotData["shop_information"])
+            {
+                default: return $"{itemTarget}{location.Item}";
+                case 1: return $"{itemTarget}{itemType}Item";
+                case 2: return $"{itemTarget}Item";
+                case 3: return "Item";
             }
         }
 
@@ -478,6 +496,28 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// <returns>The description we want.</returns>
         private static string GetItemDescription(Location location, string defaultDescription)
         {
+            // Determine who this item is for.
+            string itemTarget = location.Player;
+            if (location.Player == Plugin.Session.Players.GetPlayerName(Plugin.Session.ConnectionInfo.Slot))
+                itemTarget = "you";
+
+            switch ((long)Plugin.SlotData["shop_information"])
+            {
+                case 1:
+                    if (location.Flags == Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement)
+                        return $"A progression item for {itemTarget}.";
+                    else if (location.Flags == Archipelago.MultiClient.Net.Enums.ItemFlags.Trap)
+                        return $"A trap item for {itemTarget}.";
+                    else
+                        return $"An item for {itemTarget}.";
+
+                case 2:
+                    return $"An item for {itemTarget}.";
+
+                case 3:
+                    return $"An item for somebody.";
+            }
+
             // Check if this item is for Freedom Planet 2.
             // If so, then either read the game's own descriptions, or read my own.
             if (location.Game == "Manual_FreedomPlanet2_Knuxfan24")

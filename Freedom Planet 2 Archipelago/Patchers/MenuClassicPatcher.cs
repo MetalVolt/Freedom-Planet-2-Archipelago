@@ -22,7 +22,6 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
         /// <summary>
         /// Stops the Time Capsule scene after Tidal Gate from playing.
-        /// TODO: Make sure this doesn't have any knock on effects.
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(MenuClassic), "State_Intro")]
@@ -44,8 +43,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MenuClassic), "Start")]
-        static void SetStageLocks(ref MenuClassicTile[] ___stages)
+        static void SetStageLocks(ref bool ___newMusic, ref MenuClassicTile[] ___stages)
         {
+            // Actually play the map music after State_Intro being cut short stops it from doing so.
+            ___newMusic = true;
+
             // Set the Star Card requirements for everything past Globe Opera 1 and Gravity Bubble, as only those two stages actually have one.
             ___stages[12].starCardRequirement = 11;
             ___stages[13].starCardRequirement = 11;

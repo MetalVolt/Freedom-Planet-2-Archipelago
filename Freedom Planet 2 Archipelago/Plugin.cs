@@ -14,11 +14,12 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace Freedom_Planet_2_Archipelago
 {
-    // TODO: RingLink packet sending causes stutters, try to fix that.
+    // TODO: RingLink packet sending causes skip hitching, try to fix that.
     // TODO: RingLink packet sending and release collecting can "crash" the game (it keeps running, but the item receiving seems to die). Track this issue down and sort it.
     // TODO: Actually write the last used host, slot and password to the config file.
     public class APSave()
@@ -312,7 +313,7 @@ namespace Freedom_Planet_2_Archipelago
                 if (GUI.Button(new Rect(16, 328, 608, 24), "Connect"))
                 {
                     // Print that we're attempting to connect.
-                    Console.WriteLine($"Attempting to connect to Archipelago server at {serverAddress}.");
+                    Console.WriteLine($"Attempting to connect to Archipelago server at {serverAddress} with slot {slotName} and password {password}.");
 
                     // Create a session and try to login.
                     Session = ArchipelagoSessionFactory.CreateSession(serverAddress);
@@ -467,6 +468,10 @@ namespace Freedom_Planet_2_Archipelago
                         // Play the menu wipe sound.
                         FPAudio.PlayMenuSfx(3);
                     }
+
+                    // Report that we failed to connect.
+                    else
+                        Console.WriteLine($"Failed to connect to Archipelago server at {serverAddress} with slot {slotName} and password {password}!");
                 }
             }
         }
@@ -1068,6 +1073,10 @@ namespace Freedom_Planet_2_Archipelago
             // Check that the player exists and we haven't Received this item when loading the file.
             if (player != null)
             {
+                // If this Brave Stone is already equipped on the player, then don't add a second copy of it.
+                if (player.powerups.Contains(item))
+                    return;
+
                 // Set up a new array that is 1 element longer than the existing powers array.
                 FPPowerup[] powers = new FPPowerup[player.powerups.Length + 1];
 
@@ -1095,8 +1104,9 @@ namespace Freedom_Planet_2_Archipelago
         /// TODO: Can I shrink the Star Cards? They feel a bit too big in comparison to everything else.
         /// </summary>
         /// <param name="location">The location this sprite is for.</param>
+        /// <param name="isShop">Whether this sprite is being called for from the shop.</param>
         /// <returns>The sprite we've generated.</returns>
-        public static Sprite GetItemSprite(Location location)
+        public static Sprite GetItemSprite(Location location, bool isShop = false)
         {
             // Set up a new texture.
             Texture2D texture = new(32, 32);
@@ -1107,11 +1117,21 @@ namespace Freedom_Planet_2_Archipelago
             // Load the Archipelago logo.
             texture.LoadImage(APLogo);
 
+            // If the Show Item Names in Shops setting is set to either Hidden or Nothing, then return the base sprite no matter what.
+            if (isShop)
+                if ((long)SlotData["shop_information"] >= 2)
+                    return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 1);
+
             // If this is a progression item or trap, then use the approriate sprite.
             if (location.Flags == ItemFlags.Advancement)
                 texture.LoadImage(APLogo_Progression);
             if (location.Flags == ItemFlags.Trap)
                 texture.LoadImage(APLogo_Trap);
+
+            // If the Show Item Names in Shops setting is set to Flags, then return whichever AP Logo we have loaded.
+            if (isShop)
+                if ((long)SlotData["shop_information"] == 1)
+                    return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 1);
 
             // If this icon is not for Freedom Planet 2, then check if one exists for this game and icon combination, if so, load it.
             if (location.Game != "Manual_FreedomPlanet2_Knuxfan24")
