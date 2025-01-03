@@ -381,6 +381,8 @@ namespace Freedom_Planet_2_Archipelago
                             // Loop through each location for our game on the server.
                             for (int locationIndex = 0; locationIndex < Session.Locations.AllLocations.Count; locationIndex++)
                             {
+                                FPAudio.PlaySfx(FPAudio.SFX_MOVE);
+
                                 // Create a new location entry.
                                 Location Location = new()
                                 {
@@ -471,7 +473,10 @@ namespace Freedom_Planet_2_Archipelago
 
                     // Report that we failed to connect.
                     else
+                    {
+                        FPAudio.PlaySfx(FPAudio.SFX_INVALID);
                         Console.WriteLine($"Failed to connect to Archipelago server at {serverAddress} with slot {slotName} and password {password}!");
+                    }
                 }
             }
         }

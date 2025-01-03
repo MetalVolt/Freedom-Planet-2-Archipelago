@@ -95,7 +95,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         static void CheckForStageLocks(ref MenuClassicTile[] ___stages, ref MenuText ___textLocation, ref MenuText ___textRecord, ref int ___currentTile)
         {
             // Undo the edit to Weapons Core if we meet the Star Card requirement.
-            if (Plugin.APSave.StarCardCount >= 32 && ___stages[30].starCardRequirement == 32)
+            if (Plugin.APSave.StarCardCount >= 32 && ___stages[30].starCardRequirement > 11)
                 ___stages[30].starCardRequirement = 11;
 
             // Hide the stage name and time.
