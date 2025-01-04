@@ -1147,6 +1147,13 @@ namespace Freedom_Planet_2_Archipelago
                     texture.LoadImage(File.ReadAllBytes($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{location.Game}\{location.Item}.png"));
             }
 
+            // Special case for Balatro, as some items in that use a forward slash in their name, which is not a valid character in filenames.
+            if (location.Game == "Balatro")
+            {
+                if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{location.Game}\{location.Item.Replace('/', '_')}.png"))
+                    texture.LoadImage(File.ReadAllBytes($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{location.Game}\{location.Item.Replace('/', '_')}.png"));
+            }
+
             // If this is a Freedom Planet 2 item, then get it straight from the texture atlas.
             // Power Up Start is handled seperately, as it appears differently depending on the player character.
             else
