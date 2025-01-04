@@ -1147,11 +1147,17 @@ namespace Freedom_Planet_2_Archipelago
                     texture.LoadImage(File.ReadAllBytes($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{location.Game}\{location.Item}.png"));
             }
 
-            // Special case for Balatro, as some items in that use a forward slash in their name, which is not a valid character in filenames.
-            if (location.Game == "Balatro")
+            // Special case for certain games that use invalid characters.
+            if (location.Game == "Balatro") // Uses forward slashes in some item names.
             {
                 if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{location.Game}\{location.Item.Replace('/', '_')}.png"))
                     texture.LoadImage(File.ReadAllBytes($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{location.Game}\{location.Item.Replace('/', '_')}.png"));
+            }
+
+            if (location.Game == "Terraria") // Uses colons in some item names.
+            {
+                if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{location.Game}\{location.Item.Replace(':', '_')}.png"))
+                    texture.LoadImage(File.ReadAllBytes($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{location.Game}\{location.Item.Replace(':', '_')}.png"));
             }
 
             // If this is a Freedom Planet 2 item, then get it straight from the texture atlas.
