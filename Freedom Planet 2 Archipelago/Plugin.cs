@@ -496,6 +496,7 @@ namespace Freedom_Planet_2_Archipelago
             int serverMoonGravityTrapCount = 0;
             int serverStarCardCount = 0;
             int serverTimeCapsuleCount = 0;
+            int serverProgressiveChapterCount = 0;
 
             // Loop through each item the server has sent and receive it.
             foreach (ItemInfo item in Session.Items.AllItemsReceived)
@@ -511,6 +512,7 @@ namespace Freedom_Planet_2_Archipelago
                     case "Gold Gem": serverGoldGemCount++; break;
                     case "Mirror Trap": serverMirrorTrapCount++; break;
                     case "Moon Gravity Trap": serverMoonGravityTrapCount++; break;
+                    case "Progressive Chapter": serverProgressiveChapterCount++; break;
                     case "Star Card": serverStarCardCount++; break;
                     case "Time Capsule": serverTimeCapsuleCount++; break;
 
@@ -521,12 +523,19 @@ namespace Freedom_Planet_2_Archipelago
                 Session.Items.DequeueItem();
             }
 
+            // Calculate how many progressive chapters we need.
+            int progressiveChapterCount = 0;
+            foreach (bool chapter in APSave.UnlockedChapters)
+                if (chapter)
+                    progressiveChapterCount++;
+
             // Send the multitude items.
             CalculateItems(serverDoubleGravityTrapCount, APSave.DoubleGravityTrapCount, "Double Gravity Trap");
             CalculateItems(serverExtraItemSlots, APSave.ExtraItemSlots, "Extra Item Slot");
             CalculateItems(serverGoldGemCount, APSave.GoldGemCount, "Gold Gem");
             CalculateItems(serverMirrorTrapCount, APSave.MirrorTrapCount, "Mirror Trap");
             CalculateItems(serverMoonGravityTrapCount, APSave.MoonGravityTrapCount, "Moon Gravity Trap");
+            CalculateItems(serverProgressiveChapterCount, progressiveChapterCount, "Progressive Chapter");
             CalculateItems(serverStarCardCount, APSave.StarCardCount, "Star Card");
             CalculateItems(serverTimeCapsuleCount, APSave.TimeCapsuleCount, "Time Capsule");
 
