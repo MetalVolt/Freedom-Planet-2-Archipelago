@@ -256,9 +256,9 @@
                 case 19:
                     switch (collectableID)
                     {
-                        case 0: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Sky Bridge - Vinyl");
-                        case 1: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Sky Bridge - Extra Chest 1");
-                        default: Console.WriteLine($"No location found for chest {collectableID} in Sky Bridge!"); return null;
+                        case 0: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Lightning Tower - Vinyl");
+                        case 1: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Lightning Tower - Extra Chest 1");
+                        default: Console.WriteLine($"No location found for chest {collectableID} in Lightning Tower!"); return null;
                     }
 
                 // Ancestral Forge.
@@ -311,7 +311,7 @@
                         default: Console.WriteLine($"No location found for chest {collectableID} in Clockwork Arboretum!"); return null;
                     }
 
-                // Magma Starscape.
+                // Inversion Dynamo.
                 case 27:
                     switch (collectableID)
                     {
