@@ -188,14 +188,16 @@ namespace Freedom_Planet_2_Archipelago
         private void Awake()
         {
             // Create the custom content directories if they doesn't already exist.
-            if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\music"))
-                Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\music");
-            if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\1up"))
-                Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\1up");
-            if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\clear"))
-                Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\clear");
-            if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\invincibility"))
-                Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\invincibility");
+            if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Audio\music"))
+                Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Audio\music");
+            if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Audio\jingles\1up"))
+                Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Audio\jingles\1up");
+            if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Audio\jingles\clear"))
+                Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Audio\jingles\clear");
+            if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Audio\jingles\invincibility"))
+                Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Audio\jingles\invincibility");
+            if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites"))
+                Directory.CreateDirectory($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites");
             if (!Directory.Exists($@"{Paths.GameRootPath}\Archipelago Saves"))
                 Directory.CreateDirectory($@"{Paths.GameRootPath}\Archipelago Saves");
 
@@ -1141,8 +1143,8 @@ namespace Freedom_Planet_2_Archipelago
             // If this icon is not for Freedom Planet 2, then check if one exists for this game and icon combination, if so, load it.
             if (location.Game != "Manual_FreedomPlanet2_Knuxfan24")
             {
-                if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\{location.Game}\{location.Item}.png"))
-                    texture.LoadImage(File.ReadAllBytes($@"{Paths.GameRootPath}\mod_overrides\Archipelago\{location.Game}\{location.Item}.png"));
+                if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{location.Game}\{location.Item}.png"))
+                    texture.LoadImage(File.ReadAllBytes($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{location.Game}\{location.Item}.png"));
             }
 
             // If this is a Freedom Planet 2 item, then get it straight from the texture atlas.

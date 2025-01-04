@@ -583,10 +583,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             else
             {
                 // Check if a descriptions.txt file exists for this game.
-                if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\{location.Game}\descriptions.txt"))
+                if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{location.Game}\descriptions.txt"))
                 {
                     // Read this description file.
-                    string[] descriptions = File.ReadAllLines($@"{Paths.GameRootPath}\mod_overrides\Archipelago\{location.Game}\descriptions.txt");
+                    string[] descriptions = File.ReadAllLines($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{location.Game}\descriptions.txt");
 
                     // Loop through each line in this description file. If the line before the first comma perfectly matches the item name, then use everything after said comma for the description.
                     foreach (string line in descriptions)

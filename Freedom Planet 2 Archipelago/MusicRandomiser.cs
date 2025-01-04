@@ -99,9 +99,9 @@ namespace Freedom_Planet_2_Archipelago
                     if (Plugin.Music[musicIndex].name.StartsWith("imported_") && Plugin.Music[musicIndex].length == 0)
                     {
                         // Inform the user that we're importing the custom song.
-                        Console.WriteLine($@"Importing {Paths.GameRootPath}\mod_overrides\Archipelago\music\{Plugin.Music[musicIndex].name.Replace("imported_", "")}.ogg, game may hang for a short while.");
+                        Console.WriteLine($@"Importing {Paths.GameRootPath}\mod_overrides\Archipelago\Audio\music\{Plugin.Music[musicIndex].name.Replace("imported_", "")}.ogg, game may hang for a short while.");
 
-                        using (WWW audioLoader = new(FilePathToFileUrl($@"{Paths.GameRootPath}\mod_overrides\Archipelago\music\{Plugin.Music[musicIndex].name.Replace("imported_", "")}.ogg")))
+                        using (WWW audioLoader = new(FilePathToFileUrl($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Audio\music\{Plugin.Music[musicIndex].name.Replace("imported_", "")}.ogg")))
                         {
                             // Freeze the game until the audio loader is done.
                             while (!audioLoader.isDone)
@@ -206,11 +206,11 @@ namespace Freedom_Planet_2_Archipelago
                 Plugin.Music = [];
 
                 // If the music directory doesn't exist, then return.
-                if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\music"))
+                if (!Directory.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Audio\music"))
                     return;
 
                 // Set the path where the custom music is located.
-                string[] customTracks = Directory.GetFiles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\music", "*.ogg");
+                string[] customTracks = Directory.GetFiles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Audio\music", "*.ogg");
 
                 // If there wasn't any music, then also return.
                 if (customTracks.Length == 0)
@@ -224,16 +224,16 @@ namespace Freedom_Planet_2_Archipelago
                     Plugin.Music.Add(AudioClip.Create($"imported_{Path.GetFileNameWithoutExtension(oggFile)}", 1, 2, 44100, true));
 
                 // Get the custom jingles.
-                Plugin.CustomInvincibility = GetJingles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\invincibility");
-                Plugin.CustomClear = GetJingles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\clear");
-                Plugin.Custom1UP = GetJingles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\jingles\1up");
+                Plugin.CustomInvincibility = GetJingles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Audio\jingles\invincibility");
+                Plugin.CustomClear = GetJingles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Audio\jingles\clear");
+                Plugin.Custom1UP = GetJingles($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Audio\jingles\1up");
 
                 // Print how much custom music has been loaded.
                 Console.WriteLine($"Custom music has been loaded.\r\n\t{Plugin.Music.Count} songs.\r\n\t{Plugin.CustomInvincibility.Length} invincibility jingles.\r\n\t{Plugin.CustomClear.Length} clear jingles.\r\n\t{Plugin.Custom1UP.Length} 1UP jingles.");
 
                 // Check that the custom loop points file exists and read the values if so.
-                if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\music\loop_points.txt"))
-                    CustomSongLoops = File.ReadAllLines($@"{Paths.GameRootPath}\mod_overrides\Archipelago\music\loop_points.txt");
+                if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Audio\music\loop_points.txt"))
+                    CustomSongLoops = File.ReadAllLines($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Audio\music\loop_points.txt");
             }
         }
 

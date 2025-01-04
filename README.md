@@ -28,7 +28,7 @@ Upon pressing Connect, the game will freeze for a short while as it gets the sta
 
 ### Music
 
-By default, an option for custom music is enabled (this can be disabled by changing the `Enable Music Randomiser = true` line in `FP2_AP.cfg` (found in the same directory as BepInEx's own configuration file) to `Enable Music Randomiser = false`). To use this, place any music you want into the `mod_overrides\Archipelago\music` directory as an OGG Vorbis file. To control when the music loops, create a file in the same directory called `loop_points.txt` and open it in a text editor. Add a line to it with the file name, the start loop point (in samples) and end loop point (also in samples).
+By default, an option for custom music is enabled (this can be disabled by changing the `Enable Music Randomiser = true` line in `FP2_AP.cfg` (found in the same directory as BepInEx's own configuration file) to `Enable Music Randomiser = false`). To use this, place any music you want into the `mod_overrides\Archipelago\Audio\music` directory as an OGG Vorbis file. To control when the music loops, create a file in the same directory called `loop_points.txt` and open it in a text editor. Add a line to it with the file name, the start loop point (in samples) and end loop point (also in samples).
 
 **Example:**
 
@@ -37,7 +37,7 @@ By default, an option for custom music is enabled (this can be disabled by chang
 ![](https://raw.githubusercontent.com/Knuxfan24/Freedom-Planet-2-Archipelago/refs/heads/master/readme_imgs/custom_music.png)
 *An example of a populated custom music directory and approriate loop_points.txt file.*
 
-Custom 1UP, Stage Clear and Invincibility Jingles can also be added in a similar manner, although these do not use loop points and go in different directories within the `mod_overrides\Archipelago\jingles` directory.
+Custom 1UP, Stage Clear and Invincibility Jingles can also be added in a similar manner, although these do not use loop points and go in different directories within the `mod_overrides\Archipelago\Audio\jingles` directory.
 
 ![](https://raw.githubusercontent.com/Knuxfan24/Freedom-Planet-2-Archipelago/refs/heads/master/readme_imgs/custom_jingles.png)
 *An example of populated custom jingle directories.*
@@ -46,7 +46,7 @@ This custom audio is loaded when the connect screen is and will also print the t
 
 ### Item Sprites and Descriptions
 
-By default, items for other games will appear as the generic Archipelago logo, and shop items will simply say who the item is for. To get sprites and descriptions for other games, create a folder in `mod_overrides\Archipelago` with the game's name. Then place PNG files with the item names into the new folder. For descriptions, create a file called `descriptions.txt` and add a line with the item name, followed by a comma, then the desired description.
+By default, items for other games will appear as the generic Archipelago logo, and shop items will simply say who the item is for. To get sprites and descriptions for other games, create a folder in `mod_overrides\Archipelago\Sprites` with the game's name. Then place PNG files with the item names into the new folder. For descriptions, create a file called `descriptions.txt` and add a line with the item name, followed by a comma, then the desired description.
 
 **Example:**
 
