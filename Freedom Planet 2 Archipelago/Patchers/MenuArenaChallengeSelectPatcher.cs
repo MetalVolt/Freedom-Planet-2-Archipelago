@@ -4,6 +4,7 @@
     {
         /// <summary>
         /// Replaces the reward sprite for a challenge in the menu with the AP logo and handles applying the checkmark.
+        /// TODO: Hide the sprite if the challenge is locked?
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MenuArenaChallengeSelect), "State_Challenge")]
@@ -18,17 +19,13 @@
             // Check if we have a reward item sprite renderer and that we're not selecting either of the last two challenges.
             if (___rewardItem != null && ___challengeSelection <= 17)
             {
-                // Set up a new texture.
-                Texture2D texture = new(32, 32);
+                // Get the location for this challenge.
+                int challengeID = ___challengeSelection + 1;
+                Location location = Array.Find(Plugin.APSave.Locations, location => location.Name == $"The Battlesphere - Challenge {challengeID}");
 
-                // Change the texture to use point filtering.
-                texture.filterMode = FilterMode.Point;
-
-                // Load the Archipelago logo.
-                texture.LoadImage(Plugin.APLogo);
-
-                // Set the sprite of the reward item to our AP logo.
-                ___rewardItem.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 1);
+                // If we've found a location for this challenge, then set the sprite, respecting the shop_information slot data setting.
+                if (location != null)
+                    ___rewardItem.sprite = Plugin.GetItemSprite(location, true);
             }
         }
     }

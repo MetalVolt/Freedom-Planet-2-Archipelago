@@ -1120,9 +1120,9 @@ namespace Freedom_Planet_2_Archipelago
         /// TODO: Can I shrink the Star Cards? They feel a bit too big in comparison to everything else.
         /// </summary>
         /// <param name="location">The location this sprite is for.</param>
-        /// <param name="isShop">Whether this sprite is being called for from the shop.</param>
+        /// <param name="shouldUseHideFlags">Whether this sprite should abide by the shop_information slot data.</param>
         /// <returns>The sprite we've generated.</returns>
-        public static Sprite GetItemSprite(Location location, bool isShop = false)
+        public static Sprite GetItemSprite(Location location, bool shouldUseHideFlags = false)
         {
             // Set up a new texture.
             Texture2D texture = new(32, 32);
@@ -1134,7 +1134,7 @@ namespace Freedom_Planet_2_Archipelago
             texture.LoadImage(APLogo);
 
             // If the Show Item Names in Shops setting is set to either Hidden or Nothing, then return the base sprite no matter what.
-            if (isShop)
+            if (shouldUseHideFlags)
                 if ((long)SlotData["shop_information"] >= 2)
                     return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 1);
 
@@ -1145,7 +1145,7 @@ namespace Freedom_Planet_2_Archipelago
                 texture.LoadImage(APLogo_Trap);
 
             // If the Show Item Names in Shops setting is set to Flags, then return whichever AP Logo we have loaded.
-            if (isShop)
+            if (shouldUseHideFlags)
                 if ((long)SlotData["shop_information"] == 1)
                     return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 1);
 
@@ -1171,7 +1171,7 @@ namespace Freedom_Planet_2_Archipelago
 
             // If this is a Freedom Planet 2 item, then get it straight from the texture atlas.
             // Power Up Start is handled seperately, as it appears differently depending on the player character.
-            else
+            if (location.Game == "Manual_FreedomPlanet2_Knuxfan24")
             {
                 if (location.Item != "Powerup Start")
                 {
