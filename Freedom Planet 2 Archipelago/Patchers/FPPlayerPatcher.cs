@@ -337,7 +337,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 }
 
                 // Send a DeathLink.
-                Plugin.DeathLink.SendDeathLink(new Archipelago.MultiClient.Net.BounceFeatures.DeathLink.DeathLink("Freedom Planet 2", reason));
+                Plugin.DeathLink.SendDeathLink(new Archipelago.MultiClient.Net.BounceFeatures.DeathLink.DeathLink(Plugin.Session.Players.GetPlayerName(Plugin.Session.ConnectionInfo.Slot), reason));
 
                 // Set the flag to avoid sending extras.
                 canSendDeathLink = false;

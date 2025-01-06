@@ -9,11 +9,19 @@
         [HarmonyPatch(typeof(ItemLabel), "Update")]
         static void BackgroundExtend()
         {
-            // Find the background of this ItemLabel.
-            SpriteRenderer labelBG = UnityEngine.Object.FindObjectOfType<ItemLabel>().GetComponent<SpriteRenderer>();
+            // Find this ItemLabel.
+            ItemLabel label = UnityEngine.Object.FindObjectOfType<ItemLabel>();
 
-            // Change the X value on its local scale to 1.75.
-            labelBG.transform.localScale = new(1.75f, labelBG.transform.localScale.y, labelBG.transform.localScale.z);
+            // Check that the label actually exists (you'd think it would but...)
+            if (label != null)
+            {
+                // Find this label's background.
+                SpriteRenderer labelBG = label.GetComponent<SpriteRenderer>();
+
+                // Change the X value on its local scale to 1.75.
+                if (labelBG != null )
+                    labelBG.transform.localScale = new(1.75f, labelBG.transform.localScale.y, labelBG.transform.localScale.z);
+            }
         }
     }
 }
