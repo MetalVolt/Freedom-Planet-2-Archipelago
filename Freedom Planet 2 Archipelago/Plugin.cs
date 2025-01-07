@@ -31,6 +31,11 @@ namespace Freedom_Planet_2_Archipelago
         public int FPSaveManagerSlot;
 
         /// <summary>
+        /// The amount of Battlesphere Keys that have been given by the server.
+        /// </summary>
+        public int BattlesphereKeyCount;
+
+        /// <summary>
         /// The amount of double gravity traps that have been given by the server.
         /// </summary>
         public int DoubleGravityTrapCount;
@@ -89,6 +94,11 @@ namespace Freedom_Planet_2_Archipelago
         /// The individual chapter unlocks.
         /// </summary>
         public bool[] UnlockedChapters { get; set; } = new bool[8];
+
+        /// <summary>
+        /// The chest tracers we've received.
+        /// </summary>
+        public bool[] ChestTracers { get; set; } = new bool[24];
     }
 
     public class Location
@@ -393,6 +403,11 @@ namespace Freedom_Planet_2_Archipelago
                                 FPSaveManagerSlot = saveSlot,
                                 Locations = new Location[Session.Locations.AllLocations.Count]
                             };
+                            
+                            // If the chest tracer items are disabled, then unlock all of them.
+                            if ((long)SlotData["chest_tracer_items"] == 0)
+                                for (int tracerIndex = 0; tracerIndex < APSave.ChestTracers.Length; tracerIndex++)
+                                    APSave.ChestTracers[tracerIndex] = true;
 
                             // Loop through each location for our game on the server.
                             for (int locationIndex = 0; locationIndex < Session.Locations.AllLocations.Count; locationIndex++)
@@ -501,6 +516,7 @@ namespace Freedom_Planet_2_Archipelago
         private void ReceiveStartItems()
         {
             // Set up values to check any items that need multiple copies.
+            int serverBattlesphereKeyCount = 0;
             int serverDoubleGravityTrapCount = 0;
             int serverExtraItemSlots = 0;
             int serverGoldGemCount = 0;
@@ -520,6 +536,7 @@ namespace Freedom_Planet_2_Archipelago
                 // Check the item's name to see if we need to receive a certain amount of them to avoid duplication.
                 switch (itemName)
                 {
+                    case "Battlesphere Key": serverBattlesphereKeyCount++; break;
                     case "Double Gravity Trap": serverDoubleGravityTrapCount++; break;
                     case "Extra Item Slot": serverExtraItemSlots++; break;
                     case "Gold Gem": serverGoldGemCount++; break;
@@ -544,6 +561,7 @@ namespace Freedom_Planet_2_Archipelago
                     progressiveChapterCount++;
 
             // Send the multitude items.
+            CalculateItems(serverBattlesphereKeyCount, APSave.BattlesphereKeyCount, "Battlesphere Key");
             CalculateItems(serverDoubleGravityTrapCount, APSave.DoubleGravityTrapCount, "Double Gravity Trap");
             CalculateItems(serverExtraItemSlots, APSave.ExtraItemSlots, "Extra Item Slot");
             CalculateItems(serverGoldGemCount, APSave.GoldGemCount, "Gold Gem");
@@ -901,6 +919,8 @@ namespace Freedom_Planet_2_Archipelago
             // Check the item we're receiving.
             switch (ReceivedItem)
             {
+                case "Battlesphere Key": if (APSave.BattlesphereKeyCount < 18) APSave.BattlesphereKeyCount++; break;
+
                 case "Crystals to Petals": APSave.UnlockedBraveStones[7] = true; break;
 
                 case "Double Damage":
@@ -1058,10 +1078,46 @@ namespace Freedom_Planet_2_Archipelago
                 case "Echoes of the Dragon War": APSave.UnlockedChapters[6] = true; break;
                 case "Bakunawa": APSave.UnlockedChapters[7] = true; break;
 
+                case "Chest Tracer - Dragon Valley": APSave.ChestTracers[0] = true; break;
+                case "Chest Tracer - Shenlin Park": APSave.ChestTracers[1] = true; break;
+                case "Chest Tracer - Avian Museum": APSave.ChestTracers[2] = true; break;
+                case "Chest Tracer - Airship Sigwada": APSave.ChestTracers[3] = true; break;
+                case "Chest Tracer - Tiger Falls": APSave.ChestTracers[4] = true; break;
+                case "Chest Tracer - Robot Graveyard": APSave.ChestTracers[5] = true; break;
+                case "Chest Tracer - Shade Armory": APSave.ChestTracers[6] = true; break;
+                case "Chest Tracer - Phoenix Highway": APSave.ChestTracers[7] = true; break;
+                case "Chest Tracer - Zao Land": APSave.ChestTracers[8] = true; break;
+                case "Chest Tracer - Globe Opera 1": APSave.ChestTracers[9] = true; break;
+                case "Chest Tracer - Globe Opera 2": APSave.ChestTracers[10] = true; break;
+                case "Chest Tracer - Palace Courtyard": APSave.ChestTracers[11] = true; break;
+                case "Chest Tracer - Tidal Gate": APSave.ChestTracers[12] = true; break;
+                case "Chest Tracer - Zulon Jungle": APSave.ChestTracers[13] = true; break;
+                case "Chest Tracer - Nalao Lake": APSave.ChestTracers[14] = true; break;
+                case "Chest Tracer - Sky Bridge": APSave.ChestTracers[15] = true; break;
+                case "Chest Tracer - Lightning Tower": APSave.ChestTracers[16] = true; break;
+                case "Chest Tracer - Ancestral Forge": APSave.ChestTracers[17] = true; break;
+                case "Chest Tracer - Magma Starscape": APSave.ChestTracers[18] = true; break;
+                case "Chest Tracer - Gravity Bubble": APSave.ChestTracers[19] = true; break;
+                case "Chest Tracer - Bakunawa Rush": APSave.ChestTracers[20] = true; break;
+                case "Chest Tracer - Clockwork Arboretum": APSave.ChestTracers[21] = true; break;
+                case "Chest Tracer - Inversion Dynamo": APSave.ChestTracers[22] = true; break;
+                case "Chest Tracer - Lunar Cannon": APSave.ChestTracers[23] = true; break;
+
                 // DEBUG: Warn that the given item is not yet handled on the client.
                 #if DEBUG
                 default: Console.WriteLine($"Item type '{ReceivedItem}' not yet handled!"); break;
                 #endif
+            }
+
+            // Handle enabling the tracer if we're in a stage already.
+            if (ReceivedItem.StartsWith("Chest Tracer - "))
+            {
+                // Look for the player object.
+                FPPlayer player = UnityEngine.Object.FindObjectOfType<FPPlayer>();
+
+                // If the player exists, then recreate the chest tracers.
+                if (player != null)
+                    FPPlayerPatcher.CreateChestTracers();
             }
 
             // Force the game to save.
@@ -1266,6 +1322,30 @@ namespace Freedom_Planet_2_Archipelago
                 {
                     switch (location.Item)
                     {
+                        case "Chest Tracer - Dragon Valley":
+                        case "Chest Tracer - Shenlin Park":
+                        case "Chest Tracer - Tiger Falls":
+                        case "Chest Tracer - Robot Graveyard":
+                        case "Chest Tracer - Shade Armory":
+                        case "Chest Tracer - Avian Museum":
+                        case "Chest Tracer - Airship Sigwada":
+                        case "Chest Tracer - Phoenix Highway":
+                        case "Chest Tracer - Zao Land":
+                        case "Chest Tracer - Globe Opera 1":
+                        case "Chest Tracer - Globe Opera 2":
+                        case "Chest Tracer - Palace Courtyard":
+                        case "Chest Tracer - Tidal Gate":
+                        case "Chest Tracer - Sky Bridge":
+                        case "Chest Tracer - Lightning Tower":
+                        case "Chest Tracer - Zulon Jungle":
+                        case "Chest Tracer - Nalao Lake":
+                        case "Chest Tracer - Ancestral Forge":
+                        case "Chest Tracer - Magma Starscape":
+                        case "Chest Tracer - Gravity Bubble":
+                        case "Chest Tracer - Bakunawa Rush":
+                        case "Chest Tracer - Clockwork Arboretum":
+                        case "Chest Tracer - Inversion Dynamo":
+                        case "Chest Tracer - Lunar Cannon": return GetSpriteFromAtlas(1002, 1380, 26, 26, true);
                         case "Crystals to Petals": return GetSpriteFromAtlas(495, 709, 24, 28);
                         case "Double Damage": return GetSpriteFromAtlas(646, 994, 23, 28);
                         case "Earth Charm": return GetSpriteFromAtlas(603, 795, 26, 27);

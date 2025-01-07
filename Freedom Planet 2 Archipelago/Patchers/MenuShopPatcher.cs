@@ -577,6 +577,31 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     case "Moon Gravity Trap": return "Halves the current gravity for the player.";
                     case "Double Gravity Trap": return "Doubles the current gravity for the player.";
                     case "Powerpoint Trap": return "Drops the framerate down to 15FPS.";
+                    case "Chest Tracer - Dragon Valley":
+                    case "Chest Tracer - Shenlin Park":
+                    case "Chest Tracer - Tiger Falls":
+                    case "Chest Tracer - Robot Graveyard":
+                    case "Chest Tracer - Shade Armory":
+                    case "Chest Tracer - Avian Museum":
+                    case "Chest Tracer - Airship Sigwada":
+                    case "Chest Tracer - Phoenix Highway":
+                    case "Chest Tracer - Zao Land":
+                    case "Chest Tracer - Globe Opera 1":
+                    case "Chest Tracer - Globe Opera 2":
+                    case "Chest Tracer - Palace Courtyard":
+                    case "Chest Tracer - Tidal Gate":
+                    case "Chest Tracer - Sky Bridge":
+                    case "Chest Tracer - Lightning Tower":
+                    case "Chest Tracer - Zulon Jungle":
+                    case "Chest Tracer - Nalao Lake":
+                    case "Chest Tracer - Ancestral Forge":
+                    case "Chest Tracer - Magma Starscape":
+                    case "Chest Tracer - Gravity Bubble":
+                    case "Chest Tracer - Bakunawa Rush":
+                    case "Chest Tracer - Clockwork Arboretum":
+                    case "Chest Tracer - Inversion Dynamo":
+                    case "Chest Tracer - Lunar Cannon": return $"Reveals the locations of chests in {location.Item.Replace("Chest Tracer - ", "")}.";
+                    case "Battlesphere Key": return "Unlocks a challenge in The Battlesphere.";
                 }
             }
 

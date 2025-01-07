@@ -59,33 +59,33 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             int chestCount = 0;
             List<Vector3> locations = new();
 
-            // Get the chests for the stage we're currently in.
+            // Get the chests for the stage we're currently in, assuming we have the tracer for it.
             switch (FPStage.currentStage.stageID)
             {
-                case 1: GetChests(ChestLineTables.DragonValley); break;
-                case 2: GetChests(ChestLineTables.ShenlinPark); break;
-                case 3: GetChests(ChestLineTables.AvianMuseum); break;
-                case 4: GetChests(ChestLineTables.AirshipSigwada); break;
-                case 5: GetChests(ChestLineTables.TigerFalls); break;
-                case 6: GetChests(ChestLineTables.RobotGraveyard); break;
-                case 7: GetChests(ChestLineTables.ShadeArmory); break;
-                case 9: GetChests(ChestLineTables.PhoenixHighway); break;
-                case 10: GetChests(ChestLineTables.ZaoLand); break;
-                case 11: GetChests(ChestLineTables.GlobeOpera1); break;
-                case 12: GetChests(ChestLineTables.GlobeOpera2); break;
-                case 14: GetChests(ChestLineTables.PalaceCourtyard); break;
-                case 15: GetChests(ChestLineTables.TidalGate); break;
-                case 16: GetChests(ChestLineTables.ZulonJungle); break;
-                case 17: GetChests(ChestLineTables.NalaoLake); break;
-                case 18: GetChests(ChestLineTables.SkyBridge); break;
-                case 19: GetChests(ChestLineTables.LightningTower); break;
-                case 20: GetChests(ChestLineTables.AncestralForge); break;
-                case 21: GetChests(ChestLineTables.MagmaStarscape); break;
-                case 23: GetChests(ChestLineTables.GravityBubble); break;
-                case 24: GetChests(ChestLineTables.BakunawaRush); break;
-                case 26: GetChests(ChestLineTables.ClockworkArboretum); break;
-                case 27: GetChests(ChestLineTables.InversionDynamo); break;
-                case 28: GetChests(ChestLineTables.LunarCannon); break;
+                case 1: if (Plugin.APSave.ChestTracers[0]) GetChests(ChestLineTables.DragonValley); break;
+                case 2: if (Plugin.APSave.ChestTracers[1]) GetChests(ChestLineTables.ShenlinPark); break;
+                case 3: if (Plugin.APSave.ChestTracers[2]) GetChests(ChestLineTables.AvianMuseum); break;
+                case 4: if (Plugin.APSave.ChestTracers[3]) GetChests(ChestLineTables.AirshipSigwada); break;
+                case 5: if (Plugin.APSave.ChestTracers[4]) GetChests(ChestLineTables.TigerFalls); break;
+                case 6: if (Plugin.APSave.ChestTracers[5]) GetChests(ChestLineTables.RobotGraveyard); break;
+                case 7: if (Plugin.APSave.ChestTracers[6]) GetChests(ChestLineTables.ShadeArmory); break;
+                case 9: if (Plugin.APSave.ChestTracers[7]) GetChests(ChestLineTables.PhoenixHighway); break;
+                case 10: if (Plugin.APSave.ChestTracers[8]) GetChests(ChestLineTables.ZaoLand); break;
+                case 11: if (Plugin.APSave.ChestTracers[9]) GetChests(ChestLineTables.GlobeOpera1); break;
+                case 12: if (Plugin.APSave.ChestTracers[10]) GetChests(ChestLineTables.GlobeOpera2); break;
+                case 14: if (Plugin.APSave.ChestTracers[11]) GetChests(ChestLineTables.PalaceCourtyard); break;
+                case 15: if (Plugin.APSave.ChestTracers[12]) GetChests(ChestLineTables.TidalGate); break;
+                case 16: if (Plugin.APSave.ChestTracers[13]) GetChests(ChestLineTables.ZulonJungle); break;
+                case 17: if (Plugin.APSave.ChestTracers[14]) GetChests(ChestLineTables.NalaoLake); break;
+                case 18: if (Plugin.APSave.ChestTracers[15]) GetChests(ChestLineTables.SkyBridge); break;
+                case 19: if (Plugin.APSave.ChestTracers[16]) GetChests(ChestLineTables.LightningTower); break;
+                case 20: if (Plugin.APSave.ChestTracers[17]) GetChests(ChestLineTables.AncestralForge); break;
+                case 21: if (Plugin.APSave.ChestTracers[18]) GetChests(ChestLineTables.MagmaStarscape); break;
+                case 23: if (Plugin.APSave.ChestTracers[19]) GetChests(ChestLineTables.GravityBubble); break;
+                case 24: if (Plugin.APSave.ChestTracers[20]) GetChests(ChestLineTables.BakunawaRush); break;
+                case 26: if (Plugin.APSave.ChestTracers[21]) GetChests(ChestLineTables.ClockworkArboretum); break;
+                case 27: if (Plugin.APSave.ChestTracers[22]) GetChests(ChestLineTables.InversionDynamo); break;
+                case 28: if (Plugin.APSave.ChestTracers[23]) GetChests(ChestLineTables.LunarCannon); break;
             }
 
             // Set our line renderer's point count to our chest value, multiplied by 2.
