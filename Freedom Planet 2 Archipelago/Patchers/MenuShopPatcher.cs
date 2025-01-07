@@ -573,7 +573,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     case "Justice in the Sky Paradise": return "Allows access to Sky Bridge and Lightning Tower.";
                     case "Bakunawa": return "Allows access to Gravity Bubble, Bakunawa Chase, Bakunawa Rush, Refinery Room, Clockwork Arboretum, Inversion Dynamo, Lunar Cannon, Merga and Weapon's Core.";
                     case "Progressive Chapter": return "Unlocks the next chapter's set of stages.";
-                    case "Mirror Trap": return "Flips the stage horizontally.";
+                    case "Mirror Trap": return FPSaveManager.GetItemDescription(FPPowerup.MIRROR_LENS);
                     case "Moon Gravity Trap": return "Halves the current gravity for the player.";
                     case "Double Gravity Trap": return "Doubles the current gravity for the player.";
                     case "Powerpoint Trap": return "Drops the framerate down to 15FPS.";
