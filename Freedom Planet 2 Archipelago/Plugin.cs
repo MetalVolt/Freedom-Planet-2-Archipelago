@@ -22,6 +22,7 @@ namespace Freedom_Planet_2_Archipelago
     // TODO: RingLink packet sending causes skip hitching, try to fix that.
     // TODO: RingLink packet sending and release collecting can "crash" the game (it keeps running, but the item receiving seems to die). Track this issue down and sort it.
     // TODO: Actually write the last used host, slot and password to the config file.
+    // TODO: Maybe change the Atlas references to an array now that I have more than one.
     public class APSave()
     {
         /// <summary>
@@ -53,6 +54,11 @@ namespace Freedom_Planet_2_Archipelago
         /// The amount of moon gravity traps that have been given by the server.
         /// </summary>
         public int MoonGravityTrapCount;
+
+        /// <summary>
+        /// The amount of powerpoint traps that have been given by the server.
+        /// </summary>
+        public int PowerpointTrapCount;
 
         /// <summary>
         /// The amount of star cards that have been given by the server.
@@ -146,6 +152,7 @@ namespace Freedom_Planet_2_Archipelago
         public static int DoubleGravityTrapTimer = -1;
         public static int MirrorTrapTimer = -1;
         public static int MoonGravityTrapTimer = -1;
+        public static int PowerpointTrapTimer = -1;
 
         // Store our slot data.
         public static Dictionary<string, object> SlotData = [];
@@ -178,6 +185,7 @@ namespace Freedom_Planet_2_Archipelago
         static byte[] APLogo_Progression;
         static byte[] APLogo_Trap;
         public static Texture2D ItemSpriteAtlas;
+        public static Texture2D OtherSpriteAtlas;
 
         // Set up our own time counter.
         private float TimeCounter = 0;
@@ -261,6 +269,9 @@ namespace Freedom_Planet_2_Archipelago
 
             // Patch the FP Camera class, used to handle the visual side of a Mirror Trap.
             harmony.PatchAll(typeof(FPCameraPatcher));
+
+            // Patch the Menu Global Pause class, used to swap the core counter on the details tab with a Time Capsule counter.
+            harmony.PatchAll(typeof(MenuGlobalPausePatcher));
 
             // Enable the Music Randomiser.
             if (Config.Bind("Music Randomiser", "Enable Music Randomiser", true, "Whether or not to use the music randomiser.").Value)
@@ -494,6 +505,7 @@ namespace Freedom_Planet_2_Archipelago
             int serverGoldGemCount = 0;
             int serverMirrorTrapCount = 0;
             int serverMoonGravityTrapCount = 0;
+            int serverPowerpointTrapCount = 0;
             int serverStarCardCount = 0;
             int serverTimeCapsuleCount = 0;
             int serverProgressiveChapterCount = 0;
@@ -512,6 +524,7 @@ namespace Freedom_Planet_2_Archipelago
                     case "Gold Gem": serverGoldGemCount++; break;
                     case "Mirror Trap": serverMirrorTrapCount++; break;
                     case "Moon Gravity Trap": serverMoonGravityTrapCount++; break;
+                    case "Powerpoint Trap": serverPowerpointTrapCount++; break;
                     case "Progressive Chapter": serverProgressiveChapterCount++; break;
                     case "Star Card": serverStarCardCount++; break;
                     case "Time Capsule": serverTimeCapsuleCount++; break;
@@ -535,6 +548,7 @@ namespace Freedom_Planet_2_Archipelago
             CalculateItems(serverGoldGemCount, APSave.GoldGemCount, "Gold Gem");
             CalculateItems(serverMirrorTrapCount, APSave.MirrorTrapCount, "Mirror Trap");
             CalculateItems(serverMoonGravityTrapCount, APSave.MoonGravityTrapCount, "Moon Gravity Trap");
+            CalculateItems(serverPowerpointTrapCount, APSave.PowerpointTrapCount, "Powerpoint Trap");
             CalculateItems(serverProgressiveChapterCount, progressiveChapterCount, "Progressive Chapter");
             CalculateItems(serverStarCardCount, APSave.StarCardCount, "Star Card");
             CalculateItems(serverTimeCapsuleCount, APSave.TimeCapsuleCount, "Time Capsule");
@@ -810,13 +824,39 @@ namespace Freedom_Planet_2_Archipelago
                     if (DoubleGravityTrapTimer > 0) Console.WriteLine($"Double Gravity Trap Timer is now: {DoubleGravityTrapTimer}");
                     if (MirrorTrapTimer > 0) Console.WriteLine($"Mirror Trap Timer is now: {MirrorTrapTimer}");
                     if (MoonGravityTrapTimer > 0) Console.WriteLine($"Moon Gravity Trap Timer is now: {MoonGravityTrapTimer}");
+                    if (PowerpointTrapTimer > 0) Console.WriteLine($"Powerpoint Trap Timer is now: {PowerpointTrapTimer}");
                     #endif
                 }
+
+                if (PowerpointTrapTimer > 0)
+                {
+                    PowerpointTrapTimer--;
+
+                    #if DEBUG
+                    Console.WriteLine($"Powerpoint Trap Timer is now: {PowerpointTrapTimer}");
+                    #endif
+
+                    if (Application.targetFrameRate > 15)
+                        Application.targetFrameRate = 15;
+                }
+                else
+                    FPSaveManager.SetTargetFPS();
             }
 
             // If the active scene is the Battlesphere Time Capsule cutscene or initial challenge list, then boot the player out to the arena menu instead.
             if (SceneManager.GetActiveScene().name == "Cutscene_BattlesphereCapsule" || SceneManager.GetActiveScene().name == "ArenaChallengeMenu")
                 SceneManager.LoadScene("ArenaMenu");
+
+            // Check if we haven't yet read the second sprite atlas and that we're on the classic menu.
+            if (OtherSpriteAtlas == null && SceneManager.GetActiveScene().name == "ClassicMenu")
+            {
+                // Find the menu GameObject.
+                GameObject menu = UnityEngine.GameObject.Find("ClassicMenu");
+
+                // Check that the menu actually exists and grab the atlas from the Dragon Valley background if it does.
+                if (menu != null)
+                    OtherSpriteAtlas = menu.transform.GetChild(13).transform.GetChild(6).GetComponent<SpriteRenderer>().sprite.texture;
+            }
 
             // Check if the RingLink timer is going and decrement it if so.
             if (RingLinkTimer > 0f)
@@ -968,6 +1008,12 @@ namespace Freedom_Planet_2_Archipelago
                 case "Potion - Strong Shields": APSave.UnlockedPotions[6] = true; break;
 
                 case "Potion - Super Feather": APSave.UnlockedPotions[8] = true; break;
+
+                // Set the Powerpoint Trap Timer to 30 seconds and increment our save's powerpoint trap count.
+                case "Powerpoint Trap":
+                    PowerpointTrapTimer = 30;
+                    APSave.PowerpointTrapCount++;
+                    break;
 
                 // Unlock certain levels on the map.
                 case "Progressive Chapter":
@@ -1207,6 +1253,10 @@ namespace Freedom_Planet_2_Archipelago
                     texture.LoadImage(File.ReadAllBytes($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{location.Game}\{location.Item.Replace(':', '_')}.png"));
             }
 
+            // Don't try to read sprites from our Atlas' if they don't exist yet.
+            if (ItemSpriteAtlas == null || OtherSpriteAtlas == null)
+                return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 1);
+
             // If this is a Freedom Planet 2 item, then get it straight from the texture atlas.
             // Power Up Start is handled seperately, as it appears differently depending on the player character.
             if (location.Game == "Manual_FreedomPlanet2_Knuxfan24")
@@ -1253,8 +1303,8 @@ namespace Freedom_Planet_2_Archipelago
                         case "Bakunawa": return GetSpriteFromAtlas(777, 991, 26, 32);
                         case "Rainbow Charm": return GetSpriteFromAtlas(617, 826, 31, 32);
                         case "Shadow Guard": return GetSpriteFromAtlas(635, 794, 27, 28);
-                        case "Star Card": return GetSpriteFromAtlas(610, 976, 32, 48);
-                        case "Time Capsule": return GetSpriteFromAtlas(585, 723, 26, 34);
+                        case "Star Card": return GetSpriteFromAtlas(985, 178, 26, 26, true);
+                        case "Time Capsule": return GetSpriteFromAtlas(1050, 785, 20, 25, true);
                         case "Time Limit": return GetSpriteFromAtlas(495, 674, 20, 30);
                         case "Water Charm": return GetSpriteFromAtlas(584, 887, 27, 29);
                         case "Wood Charm": return GetSpriteFromAtlas(550, 865, 28, 27);
@@ -1290,7 +1340,13 @@ namespace Freedom_Planet_2_Archipelago
         /// <param name="y">The y coordinate on the atlas for this sprite.</param>
         /// <param name="width">The width of this sprite.</param>
         /// <param name="height">The height of this sprite.</param>
-        private static Sprite GetSpriteFromAtlas(float x, float y, float width, float height) => Sprite.Create(ItemSpriteAtlas, new Rect(x, ItemSpriteAtlas.height - (y + height), width, height), new Vector2(0.5f, 0.5f), 1);
+        private static Sprite GetSpriteFromAtlas(float x, float y, float width, float height, bool otherAtlas = false)
+        {
+            if (!otherAtlas)
+                return Sprite.Create(ItemSpriteAtlas, new Rect(x, ItemSpriteAtlas.height - (y + height), width, height), new Vector2(0.5f, 0.5f), 1);
+            else
+                return Sprite.Create(OtherSpriteAtlas, new Rect(x, OtherSpriteAtlas.height - (y + height), width, height), new Vector2(0.5f, 0.5f), 1);
+        }
 
         /// <summary>
         /// Saves our AP file.

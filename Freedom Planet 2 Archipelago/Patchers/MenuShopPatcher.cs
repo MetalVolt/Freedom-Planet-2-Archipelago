@@ -528,9 +528,9 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             {
                 switch (location.Item)
                 {
-                    case "Gold Gem": return "Currency in Milla's shop.";
+                    case "Gold Gem": return FPSaveManager.GetCollectableDescription(1);
                     case "Star Card": return "Keys for unlocking distant lands.";
-                    case "Time Capsule": return "Cordelia's convenient vlogs that somehow act as the key to Bakunawa's core because yes.";
+                    case "Time Capsule": return FPSaveManager.GetCollectableDescription(7);
                     case "Extra Item Slot": return "Allows equipping an extra Brave Stone.";
                     case "Extra Potion Slots": return "Allows equipping two extra Potions.";
                     case "Potion - Extra Stock": return FPSaveManager.GetItemDescription(FPPowerup.EXTRA_STOCK);
@@ -576,6 +576,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     case "Mirror Trap": return "Flips the stage horizontally.";
                     case "Moon Gravity Trap": return "Halves the current gravity for the player.";
                     case "Double Gravity Trap": return "Doubles the current gravity for the player.";
+                    case "Powerpoint Trap": return "Drops the framerate down to 15FPS.";
                 }
             }
 
