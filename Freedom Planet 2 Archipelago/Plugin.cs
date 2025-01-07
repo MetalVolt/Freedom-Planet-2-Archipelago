@@ -1327,6 +1327,10 @@ namespace Freedom_Planet_2_Archipelago
                     }
                     
                 }
+
+                // Allow a custom sprite to overwrite the predefinied ones.
+                if (File.Exists($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{location.Item}.png"))
+                    texture.LoadImage(File.ReadAllBytes($@"{Paths.GameRootPath}\mod_overrides\Archipelago\Sprites\{location.Item}.png"));
             }
 
             // Return a sprite from our texture.
