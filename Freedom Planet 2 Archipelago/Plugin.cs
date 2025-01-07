@@ -895,60 +895,7 @@ namespace Freedom_Planet_2_Archipelago
 
                 // Handle the Gold Gem differently depending on the slot data
                 case "Gold Gem":
-                    // If Milla's shop is enabled, then give a Gold Gem.
-                    if ((long)SlotData["milla_shop"] == 1)
-                        FPSaveManager.totalGoldGems++;
-
-                    // If not, but the vinyl shop is enabled, then give 100 crystals.
-                    else if ((long)SlotData["vinyl_shop"] == 1)
-                    {
-                        // Look for the player object.
-                        FPPlayer player = UnityEngine.Object.FindObjectOfType<FPPlayer>();
-
-                        // Edit the player's crystal counts if they exist.
-                        if (player != null)
-                        {
-                            player.totalCrystals += 100;
-
-                            player.crystals -= 100;
-                            if (player.crystals > player.extraLifeCost)
-                                player.crystals = player.extraLifeCost;
-
-                            // Give a 1UP if the player has enough crystals (copy and pasted from the original source).
-                            if (player.crystals < 1)
-                            {
-                                player.crystals = player.extraLifeCost;
-
-                                if (player.lives < 9)
-                                    player.lives++;
-
-                                CrystalBonus crystalBonus = (CrystalBonus)FPStage.CreateStageObject(CrystalBonus.classID, 292f, -64f);
-                                crystalBonus.animator.Play("HUD_Add");
-                                crystalBonus.duration = 40f;
-
-                                InvincibilityStar invincibilityStar = (InvincibilityStar)FPStage.CreateStageObject(InvincibilityStar.classID, -100f, -100f);
-                                invincibilityStar.parentObject = player;
-                                invincibilityStar.distance = 320f;
-                                invincibilityStar.descend = true;
-                                InvincibilityStar invincibilityStar2 = (InvincibilityStar)FPStage.CreateStageObject(InvincibilityStar.classID, -100f, -100f);
-                                invincibilityStar2.parentObject = player;
-                                invincibilityStar2.rotation = 180f;
-                                invincibilityStar2.distance = 320f;
-                                invincibilityStar2.descend = true;
-
-                                FPAudio.PlayJingle(3);
-                            }
-                        }
-
-                        // If the player doesn't exist (because a stage isn't active for instance), then just add the crystals straight to the save.
-                        else
-                            FPSaveManager.totalCrystals += 100;
-                    }
-
-                    // If neither shop is active, then give the player a 1UP instead.
-                    else
-                        FPPlayerPatcher.hasBufferedExtraLife = true;
-
+                    GoldGem();
                     APSave.GoldGemCount++;
                     break;
 
@@ -1075,6 +1022,97 @@ namespace Freedom_Planet_2_Archipelago
 
             // Update our AP Save.
             SaveAPFile();
+
+            static void GoldGem()
+            {
+                // Check the slot data to see which shops are enabled.
+                bool millaShop = (long)SlotData["milla_shop"] == 1;
+                bool vinylShop = (long)SlotData["vinyl_shop"] == 1;
+
+                // Check if Milla's shop is enabled.
+                if (millaShop)
+                {
+                    // Set up a counter to track how many locations for this shop have been checked.
+                    int checkedCount = 0;
+
+                    // Loop through each item for this shop and increment the counter if they've been checked.
+                    foreach (var location in APSave.Locations.Where(location => location.Name.StartsWith("Shop - ") && !location.Name.Contains("Vinyl") && location.Checked))
+                        checkedCount++;
+
+                    // If we've gotten all 24 locations for Milla's shop, then disable it.
+                    if (checkedCount >= 24)
+                        millaShop = false;
+                }
+
+                // Check if the Vinyl shop is enabled.
+                if (vinylShop)
+                {
+                    // Set up a counter to track how many locations for this shop have been checked.
+                    int checkedCount = 0;
+
+                    // Loop through each item for this shop and increment the counter if they've been checked.
+                    foreach (var location in APSave.Locations.Where(location => location.Name.StartsWith("Shop - Vinyl") && location.Checked))
+                        checkedCount++;
+
+                    // If we've gotten all 66 locations for the Vinyl shop, then disable it.
+                    if (checkedCount >= 66)
+                        vinylShop = false;
+                }
+
+                // If Milla's shop is enabled, then give a Gold Gem.
+                if (millaShop)
+                    FPSaveManager.totalGoldGems++;
+
+                // If not, but the vinyl shop is enabled, then give 100 crystals.
+                else if (vinylShop)
+                {
+                    // Look for the player object.
+                    FPPlayer player = UnityEngine.Object.FindObjectOfType<FPPlayer>();
+
+                    // Edit the player's crystal counts if they exist.
+                    if (player != null)
+                    {
+                        player.totalCrystals += 100;
+
+                        player.crystals -= 100;
+                        if (player.crystals > player.extraLifeCost)
+                            player.crystals = player.extraLifeCost;
+
+                        // Give a 1UP if the player has enough crystals (copy and pasted from the original source).
+                        if (player.crystals < 1)
+                        {
+                            player.crystals = player.extraLifeCost;
+
+                            if (player.lives < 9)
+                                player.lives++;
+
+                            CrystalBonus crystalBonus = (CrystalBonus)FPStage.CreateStageObject(CrystalBonus.classID, 292f, -64f);
+                            crystalBonus.animator.Play("HUD_Add");
+                            crystalBonus.duration = 40f;
+
+                            InvincibilityStar invincibilityStar = (InvincibilityStar)FPStage.CreateStageObject(InvincibilityStar.classID, -100f, -100f);
+                            invincibilityStar.parentObject = player;
+                            invincibilityStar.distance = 320f;
+                            invincibilityStar.descend = true;
+                            InvincibilityStar invincibilityStar2 = (InvincibilityStar)FPStage.CreateStageObject(InvincibilityStar.classID, -100f, -100f);
+                            invincibilityStar2.parentObject = player;
+                            invincibilityStar2.rotation = 180f;
+                            invincibilityStar2.distance = 320f;
+                            invincibilityStar2.descend = true;
+
+                            FPAudio.PlayJingle(3);
+                        }
+                    }
+
+                    // If the player doesn't exist (because a stage isn't active for instance), then just add the crystals straight to the save.
+                    else
+                        FPSaveManager.totalCrystals += 100;
+                }
+
+                // If neither shop is active, then give the player a 1UP instead.
+                else
+                    FPPlayerPatcher.hasBufferedExtraLife = true;
+            }
         }
 
         /// <summary>
