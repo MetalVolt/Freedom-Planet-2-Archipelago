@@ -126,12 +126,12 @@
                 case 5:
                     switch (collectableID)
                     {
-                        case 0: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tiger Falls - Extra Chest 1");
-                        case 1: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tiger Falls - Vinyl");
-                        case 2: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tiger Falls - Extra Chest 2");
-                        case 3: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tiger Falls - Extra Chest 3");
-                        case 4: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tiger Falls - Brave Stone");
-                        case 5: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tiger Falls - Extra Chest 4");
+                        case 0: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tiger Falls - Extra Chest 3");
+                        case 1: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tiger Falls - Brave Stone");
+                        case 2: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tiger Falls - Extra Chest 1");
+                        case 3: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tiger Falls - Extra Chest 4");
+                        case 4: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tiger Falls - Vinyl");
+                        case 5: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tiger Falls - Extra Chest 2");
                         default: Console.WriteLine($"No location found for chest {collectableID} in Tiger Falls!"); return null;
                     }
 
@@ -169,11 +169,11 @@
                 case 10:
                     switch (collectableID)
                     {
-                        case 0: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Zao Land - Extra Chest 1");
+                        case 0: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Zao Land - Extra Chest 3");
                         case 1: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Zao Land - Brave Stone");
                         case 2: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Zao Land - Vinyl");
                         case 3: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Zao Land - Extra Chest 2");
-                        case 4: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Zao Land - Extra Chest 3");
+                        case 4: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Zao Land - Extra Chest 1");
                         default: Console.WriteLine($"No location found for chest {collectableID} in Zao Land!"); return null;
                     }
 
@@ -181,11 +181,11 @@
                 case 11:
                     switch (collectableID)
                     {
-                        case 0: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Globe Opera 1 - Extra Chest 1");
+                        case 0: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Globe Opera 1 - Extra Chest 4");
                         case 1: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Globe Opera 1 - Vinyl");
-                        case 2: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Globe Opera 1 - Extra Chest 2");
+                        case 2: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Globe Opera 1 - Extra Chest 1");
                         case 3: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Globe Opera 1 - Extra Chest 3");
-                        case 4: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Globe Opera 1 - Extra Chest 4");
+                        case 4: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Globe Opera 1 - Extra Chest 2");
                         default: Console.WriteLine($"No location found for chest {collectableID} in Globe Opera 1!"); return null;
                     }
 
@@ -212,13 +212,13 @@
                     switch (collectableID)
                     {
                         case 0: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tidal Gate - Vinyl");
-                        case 1: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tidal Gate - Extra Chest 1");
-                        case 2: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tidal Gate - Extra Chest 2");
-                        case 3: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tidal Gate - Extra Chest 3");
-                        case 4: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tidal Gate - Extra Chest 4");
-                        case 5: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tidal Gate - Extra Chest 5");
-                        case 6: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tidal Gate - Extra Chest 6");
-                        case 7: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tidal Gate - Extra Chest 7");
+                        case 1: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tidal Gate - Extra Chest 3");
+                        case 2: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tidal Gate - Extra Chest 6");
+                        case 3: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tidal Gate - Extra Chest 7");
+                        case 4: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tidal Gate - Extra Chest 2");
+                        case 5: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tidal Gate - Extra Chest 1");
+                        case 6: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tidal Gate - Extra Chest 4");
+                        case 7: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Tidal Gate - Extra Chest 5");
                         default: Console.WriteLine($"No location found for chest {collectableID} in Tidal Gate!"); return null;
                     }
 
@@ -226,8 +226,8 @@
                 case 16:
                     switch (collectableID)
                     {
-                        case 0: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Zulon Jungle - Extra Chest 1");
-                        case 1: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Zulon Jungle - Extra Chest 2");
+                        case 0: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Zulon Jungle - Extra Chest 2");
+                        case 1: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Zulon Jungle - Extra Chest 1");
                         case 2: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Zulon Jungle - Vinyl");
                         default: Console.WriteLine($"No location found for chest {collectableID} in Zulon Jungle!"); return null;
                     }
@@ -236,8 +236,8 @@
                 case 17:
                     switch (collectableID)
                     {
-                        case 0: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Nalao Lake - Extra Chest 1");
-                        case 1: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Nalao Lake - Extra Chest 2");
+                        case 0: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Nalao Lake - Extra Chest 2");
+                        case 1: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Nalao Lake - Extra Chest 1");
                         case 2: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Nalao Lake - Vinyl");
                         default: Console.WriteLine($"No location found for chest {collectableID} in Nalao Lake!"); return null;
                     }
@@ -265,13 +265,13 @@
                 case 20:
                     switch (collectableID)
                     {
-                        case 0: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Ancestral Forge - Extra Chest 1");
-                        case 1: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Ancestral Forge - Extra Chest 2");
-                        case 2: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Ancestral Forge - Extra Chest 3");
-                        case 3: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Ancestral Forge - Extra Chest 4");
+                        case 0: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Ancestral Forge - Extra Chest 2");
+                        case 1: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Ancestral Forge - Extra Chest 3");
+                        case 2: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Ancestral Forge - Extra Chest 5");
+                        case 3: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Ancestral Forge - Extra Chest 6");
                         case 4: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Ancestral Forge - Vinyl");
-                        case 5: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Ancestral Forge - Extra Chest 5");
-                        case 6: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Ancestral Forge - Extra Chest 6");
+                        case 5: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Ancestral Forge - Extra Chest 4");
+                        case 6: return Array.Find(Plugin.APSave.Locations, location => location.Name == "Ancestral Forge - Extra Chest 1");
                         default: Console.WriteLine($"No location found for chest {collectableID} in Ancestral Forge!"); return null;
                     }
 
@@ -380,6 +380,9 @@
 
                 // Mark this location as checked.
                 location.Checked = true;
+
+                // Recreate the player's line tracers to remove this chest.
+                FPPlayerPatcher.CreateChestTracers();
             }
         }
     }

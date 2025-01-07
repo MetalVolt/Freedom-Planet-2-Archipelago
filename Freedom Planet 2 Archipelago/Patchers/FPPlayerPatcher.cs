@@ -1,4 +1,5 @@
 ﻿using Rewired;
+using System.Collections.Generic;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {
@@ -20,11 +21,135 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         public static bool hasBufferedExtraLife = false;
 
         /// <summary>
-        /// Handles resetting the DeathLink flag.
+        /// Handles resetting the DeathLink flag and creating the chest tracers.
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(FPPlayer), "Start")]
-        static void Start() => canSendDeathLink = true;
+        static void Start()
+        {
+            canSendDeathLink = true;
+            CreateChestTracers();
+        }
+
+        /// <summary>
+        /// Creates the tracers pointing to each chest in the current stage.
+        /// </summary>
+        public static void CreateChestTracers()
+        {
+            // Find the player object.
+            FPPlayer player = UnityEngine.Object.FindObjectOfType<FPPlayer>();
+
+            // Find the line renderer component of our player object, or create it if it doesn't exist.
+            LineRenderer lineRenderer = player.GetComponent<LineRenderer>() ?? player.gameObject.AddComponent<LineRenderer>();
+
+            // Set the material for our line renderer.
+            lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+
+            // Set the width of our line renderer.
+            lineRenderer.widthMultiplier = 1f;
+
+            // Clear the default position count.
+            lineRenderer.positionCount = 0;
+
+            // If the slot data has chest tracers turned off, then stop here.
+            if ((long)Plugin.SlotData["chest_tracers"] == 0)
+                return;
+
+            // Set up values to track the amount of chests and their locations.
+            int chestCount = 0;
+            List<Vector3> locations = new();
+
+            // Get the chests for the stage we're currently in.
+            switch (FPStage.currentStage.stageID)
+            {
+                case 1: GetChests(ChestLineTables.DragonValley); break;
+                case 2: GetChests(ChestLineTables.ShenlinPark); break;
+                case 3: GetChests(ChestLineTables.AvianMuseum); break;
+                case 4: GetChests(ChestLineTables.AirshipSigwada); break;
+                case 5: GetChests(ChestLineTables.TigerFalls); break;
+                case 6: GetChests(ChestLineTables.RobotGraveyard); break;
+                case 7: GetChests(ChestLineTables.ShadeArmory); break;
+                case 9: GetChests(ChestLineTables.PhoenixHighway); break;
+                case 10: GetChests(ChestLineTables.ZaoLand); break;
+                case 11: GetChests(ChestLineTables.GlobeOpera1); break;
+                case 12: GetChests(ChestLineTables.GlobeOpera2); break;
+                case 14: GetChests(ChestLineTables.PalaceCourtyard); break;
+                case 15: GetChests(ChestLineTables.TidalGate); break;
+                case 16: GetChests(ChestLineTables.ZulonJungle); break;
+                case 17: GetChests(ChestLineTables.NalaoLake); break;
+                case 18: GetChests(ChestLineTables.SkyBridge); break;
+                case 19: GetChests(ChestLineTables.LightningTower); break;
+                case 20: GetChests(ChestLineTables.AncestralForge); break;
+                case 21: GetChests(ChestLineTables.MagmaStarscape); break;
+                case 23: GetChests(ChestLineTables.GravityBubble); break;
+                case 24: GetChests(ChestLineTables.BakunawaRush); break;
+                case 26: GetChests(ChestLineTables.ClockworkArboretum); break;
+                case 27: GetChests(ChestLineTables.InversionDynamo); break;
+                case 28: GetChests(ChestLineTables.LunarCannon); break;
+            }
+
+            // Set our line renderer's point count to our chest value, multiplied by 2.
+            lineRenderer.positionCount = chestCount * 2;
+
+            // Loop through each point on the line renderer, setting it to the position of the chest if the index is odd.
+            for (int pointIndex = 0; pointIndex < lineRenderer.positionCount; pointIndex++)
+                if (pointIndex % 2 != 0)
+                    lineRenderer.SetPosition(pointIndex, locations[pointIndex / 2]);
+
+            // Local function to get the chests from the look up tables.
+            void GetChests(Dictionary<string, Vector3> table)
+            {
+                // Loop through each entry in the given table.
+                foreach (KeyValuePair<string, Vector3> entry in table)
+                {
+                    // Get the location for this entry.
+                    Location location = Array.Find(Plugin.APSave.Locations, location => location.Name == entry.Key);
+
+                    // Check that the location exists.
+                    if (location != null)
+                    {
+                        // Check that the location hasn't already been checked.
+                        if (!location.Checked)
+                        {
+                            // Increment our chest count.
+                            chestCount++;
+
+                            // Store the position for this location.
+                            locations.Add(entry.Value);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Updates the position of odd numbered chest tracers to the player's position.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(FPPlayer), "Update")]
+        static void UpdateChestTracers(ref FPPlayerInput ___input)
+        {
+            // Get the player and its line renderer.
+            FPPlayer player = UnityEngine.Object.FindObjectOfType<FPPlayer>();
+            LineRenderer lineRenderer = player.GetComponent<LineRenderer>();
+
+            // Loop through each point on the line renderer, setting it to the position of the player if the index is even.
+            for (int i = 0; i < lineRenderer.positionCount; i++)
+                if (i % 2 == 0)
+                    lineRenderer.SetPosition(i, player.gameObject.transform.position);
+
+            // Check for the F9 key or Select button (which is frustratingly mapped to pause by default).
+            if (Input.GetKeyDown(KeyCode.F9) || Input.GetKeyDown("joystick 1 button 8"))
+            {
+                // If the line renderer has a width multiplier above 0, then set it to 0.
+                if (lineRenderer.widthMultiplier > 0)
+                    lineRenderer.widthMultiplier = 0;
+
+                // If not, then set it to 1.
+                else
+                    lineRenderer.widthMultiplier = 1;
+            }
+        }
 
         /// <summary>
         /// Receives a DeathLink.

@@ -335,6 +335,9 @@ namespace Freedom_Planet_2_Archipelago
                     // Check if we've successfully logged in.
                     if (LoginResult.Successful)
                     {
+                        // Play the badge sound to indicate a successful connection.
+                        FPAudio.PlaySfx(18);
+
                         // Get our slot data.
                         SlotData = Session.DataStorage.GetSlotData();
 
@@ -394,8 +397,6 @@ namespace Freedom_Planet_2_Archipelago
                             // Loop through each location for our game on the server.
                             for (int locationIndex = 0; locationIndex < Session.Locations.AllLocations.Count; locationIndex++)
                             {
-                                FPAudio.PlaySfx(FPAudio.SFX_MOVE);
-
                                 // Create a new location entry.
                                 Location Location = new()
                                 {
