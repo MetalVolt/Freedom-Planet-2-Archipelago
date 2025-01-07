@@ -1242,6 +1242,15 @@ namespace Freedom_Planet_2_Archipelago
                         case "Potion - Strong Revivals": return GetSpriteFromAtlas(617, 895, 25, 25);
                         case "Potion - Strong Shields": return GetSpriteFromAtlas(494, 643, 20, 27);
                         case "Potion - Super Feather": return GetSpriteFromAtlas(552, 731, 26, 32);
+                        case "Progressive Chapter":
+                        case "Mystery of the Frozen North":
+                        case "Sky Pirate Panic":
+                        case "Enter the Battlesphere":
+                        case "Globe Opera":
+                        case "Justice in the Sky Paradise":
+                        case "Robot Wars! Snake VS Tarsier":
+                        case "Echoes of the Dragon War":
+                        case "Bakunawa": return GetSpriteFromAtlas(777, 991, 26, 32);
                         case "Rainbow Charm": return GetSpriteFromAtlas(617, 826, 31, 32);
                         case "Shadow Guard": return GetSpriteFromAtlas(635, 794, 27, 28);
                         case "Star Card": return GetSpriteFromAtlas(610, 976, 32, 48);
