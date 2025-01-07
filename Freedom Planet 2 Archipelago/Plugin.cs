@@ -405,7 +405,7 @@ namespace Freedom_Planet_2_Archipelago
                             };
                             
                             // If the chest tracer items are disabled, then unlock all of them.
-                            if ((long)SlotData["chest_tracer_items"] == 0)
+                            if ((long)SlotData["chest_tracer_items"] == 0 && (long)SlotData["chest_tracer_global"] == 0)
                                 for (int tracerIndex = 0; tracerIndex < APSave.ChestTracers.Length; tracerIndex++)
                                     APSave.ChestTracers[tracerIndex] = true;
 
@@ -1102,6 +1102,10 @@ namespace Freedom_Planet_2_Archipelago
                 case "Chest Tracer - Clockwork Arboretum": APSave.ChestTracers[21] = true; break;
                 case "Chest Tracer - Inversion Dynamo": APSave.ChestTracers[22] = true; break;
                 case "Chest Tracer - Lunar Cannon": APSave.ChestTracers[23] = true; break;
+                case "Chest Tracer":
+                    for (int tracerIndex = 0; tracerIndex < APSave.ChestTracers.Length; tracerIndex++)
+                        APSave.ChestTracers[tracerIndex] = true;
+                    break;
 
                 // DEBUG: Warn that the given item is not yet handled on the client.
                 #if DEBUG
@@ -1110,7 +1114,7 @@ namespace Freedom_Planet_2_Archipelago
             }
 
             // Handle enabling the tracer if we're in a stage already.
-            if (ReceivedItem.StartsWith("Chest Tracer - "))
+            if (ReceivedItem.StartsWith("Chest Tracer"))
             {
                 // Look for the player object.
                 FPPlayer player = UnityEngine.Object.FindObjectOfType<FPPlayer>();
@@ -1322,6 +1326,7 @@ namespace Freedom_Planet_2_Archipelago
                 {
                     switch (location.Item)
                     {
+                        case "Chest Tracer":
                         case "Chest Tracer - Dragon Valley":
                         case "Chest Tracer - Shenlin Park":
                         case "Chest Tracer - Tiger Falls":

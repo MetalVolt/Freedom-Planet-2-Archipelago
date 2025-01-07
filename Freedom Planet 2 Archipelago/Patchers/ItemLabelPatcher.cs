@@ -19,7 +19,7 @@
                 SpriteRenderer labelBG = label.GetComponent<SpriteRenderer>();
 
                 // Change the X value on its local scale to 1.75.
-                if (labelBG != null )
+                if (labelBG != null)
                     labelBG.transform.localScale = new(1.75f, labelBG.transform.localScale.y, labelBG.transform.localScale.z);
             }
         }

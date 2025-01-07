@@ -601,6 +601,7 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                     case "Chest Tracer - Clockwork Arboretum":
                     case "Chest Tracer - Inversion Dynamo":
                     case "Chest Tracer - Lunar Cannon": return $"Reveals the locations of chests in {location.Item.Replace("Chest Tracer - ", "")}.";
+                    case "Chest Tracer": return $"Reveals the locations of chests.";
                     case "Battlesphere Key": return "Unlocks a challenge in The Battlesphere.";
                 }
             }
