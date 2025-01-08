@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {
@@ -270,6 +271,78 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         {
             ___textLocation.gameObject.SetActive(true);
             ___textRecord.gameObject.SetActive(true);
+        }
+
+        /// <summary>
+        /// Replaces the collectable and vinyl icons with chest ones based on if there are any unopened chests in the stage and if the chest tracer is obtained.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(MenuClassic), "UpdateHeader")]
+        private static void SetChestIcons(ref int ___currentTile, ref SpriteRenderer[] ___hudCollectibles, ref Sprite[] ___hudCollectibleSprites)
+        {           
+            // If the selected stage is one that doesn't have any chests, then remove the collectable sprites and return.
+            if (___currentTile is 7 or 10 or 13 or 22 or 25 or 29 or 30 or 31 or 32 or 33)
+            {
+                ___hudCollectibles[1].sprite = null;
+                ___hudCollectibles[2].sprite = null;
+                return;
+            }
+
+            // Set the chest and vinyl sprites to the unobtained chest icon.
+            ___hudCollectibles[1].sprite = ___hudCollectibleSprites[4];
+            ___hudCollectibles[2].sprite = ___hudCollectibleSprites[4];
+
+            // Handle highlighting the sprites depending on the ID of the selected tile.
+            switch (___currentTile)
+            {
+                case 0: GetChests(0, ChestLineTables.DragonValley, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 1: GetChests(1, ChestLineTables.ShenlinPark, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 2: GetChests(2, ChestLineTables.AvianMuseum, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 3: GetChests(3, ChestLineTables.AirshipSigwada, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 4: GetChests(4, ChestLineTables.TigerFalls, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 5: GetChests(5, ChestLineTables.RobotGraveyard, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 6: GetChests(6, ChestLineTables.ShadeArmory, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 8: GetChests(7, ChestLineTables.PhoenixHighway, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 9: GetChests(8, ChestLineTables.ZaoLand, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 11: GetChests(9, ChestLineTables.GlobeOpera1, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 12: GetChests(10, ChestLineTables.GlobeOpera2, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 14: GetChests(11, ChestLineTables.PalaceCourtyard, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 15: GetChests(12, ChestLineTables.TidalGate, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 16: GetChests(13, ChestLineTables.ZulonJungle, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 17: GetChests(14, ChestLineTables.NalaoLake, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 18: GetChests(15, ChestLineTables.SkyBridge, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 19: GetChests(16, ChestLineTables.LightningTower, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 20: GetChests(17, ChestLineTables.AncestralForge, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 21: GetChests(18, ChestLineTables.MagmaStarscape, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 23: GetChests(19, ChestLineTables.GravityBubble, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 24: GetChests(20, ChestLineTables.BakunawaRush, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 26: GetChests(21, ChestLineTables.ClockworkArboretum, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 27: GetChests(22, ChestLineTables.InversionDynamo, ___hudCollectibles, ___hudCollectibleSprites); break;
+                case 28: GetChests(23, ChestLineTables.LunarCannon, ___hudCollectibles, ___hudCollectibleSprites); break;
+            }
+
+            // Local function to check the chest locations from the look up tables and handle the sprites accordingly.
+            void GetChests(int stageIndex, Dictionary<string, Vector3> table, SpriteRenderer[] ___hudCollectibles, Sprite[] ___hudCollectibleSprites)
+            {
+                // If this stage's Chest Tracer is obtained, then highlight it.
+                if (Plugin.APSave.ChestTracers[stageIndex])
+                    ___hudCollectibles[1].sprite = ___hudCollectibleSprites[5];
+
+                // Loop through each entry in the given table.
+                foreach (KeyValuePair<string, Vector3> entry in table)
+                {
+                    // Get the location for this entry.
+                    Location location = Array.Find(Plugin.APSave.Locations, location => location.Name == entry.Key);
+
+                    // Check that the location exists. If it does, but hasn't been checked, then return.
+                    if (location != null)
+                        if (!location.Checked)
+                            return;
+                }
+
+                // Set the sprite of the second chest icon to the collected chest icon.
+                ___hudCollectibles[2].sprite = ___hudCollectibleSprites[5];
+            }
         }
     }
 }

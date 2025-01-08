@@ -23,6 +23,7 @@ namespace Freedom_Planet_2_Archipelago
     // TODO: RingLink packet sending and release collecting can "crash" the game (it keeps running, but the item receiving seems to die). Track this issue down and sort it.
     // TODO: Actually write the last used host, slot and password to the config file.
     // TODO: Maybe change the Atlas references to an array now that I have more than one.
+    // TODO: Change some chests to logically require the Super Feather potion?
     public class APSave()
     {
         /// <summary>
