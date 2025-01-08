@@ -1,5 +1,6 @@
 ﻿using Rewired;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Freedom_Planet_2_Archipelago.Patchers
 {
@@ -47,6 +48,48 @@ namespace Freedom_Planet_2_Archipelago.Patchers
 
             // Set the width of our line renderer.
             lineRenderer.widthMultiplier = 1f;
+
+            // Set up a colour to set the line renderer to.
+            Color tracerColour = Color.white;
+
+            // Check what the tracer colour value is set to in our slot data and return the approriate colour.
+            switch ((long)Plugin.SlotData["chest_tracer_colour"])
+            {
+                case 1: tracerColour = Color.black; break;
+                case 2: tracerColour = Color.blue; break;
+                case 3: tracerColour = Color.cyan; break;
+                case 4: tracerColour = Color.green; break;
+                case 5: tracerColour = Color.grey; break;
+                case 6: tracerColour = Color.magenta; break;
+                case 7: tracerColour = Color.red; break;
+                case 8: tracerColour = Color.yellow; break;
+
+                // Check if the value is set to custom rather than a predefined one.
+                case 9:
+                    // Read our hex value into a string.
+                    string hexValue = (string)Plugin.SlotData["chest_tracer_customcolour"];
+
+                    // Check if this colour has the # at the start and accomadate for it.
+                    int startPos = 0;
+                    if (hexValue.StartsWith("#"))
+                        startPos = 1;
+
+                    // Read each colour's byte.
+                    string r = hexValue.Substring(0 + startPos, 2);
+                    string g = hexValue.Substring(2 + startPos, 2);
+                    string b = hexValue.Substring(4 + startPos, 2);
+
+                    // Create and return our custom colour.
+                    tracerColour = new Color(int.Parse(r, NumberStyles.HexNumber) / 255f,
+                                             int.Parse(g, NumberStyles.HexNumber) / 255f,
+                                             int.Parse(b, NumberStyles.HexNumber) / 255f,
+                                             1);
+                    break;
+            }
+
+            // Set the start and end colours of our line renderer to our tracer colour.
+            lineRenderer.startColor = tracerColour;
+            lineRenderer.endColor = tracerColour;
 
             // Clear the default position count.
             lineRenderer.positionCount = 0;
