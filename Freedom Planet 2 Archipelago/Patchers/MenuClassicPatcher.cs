@@ -11,6 +11,11 @@ namespace Freedom_Planet_2_Archipelago.Patchers
         static UnityEngine.Sprite[] tileSprites = [];
 
         /// <summary>
+        /// The sprite for the locked panel, stored so we don't keep getting it over and over.
+        /// </summary>
+        static Sprite lockedSprite;
+
+        /// <summary>
         /// Overwrite the value from the Stage Reveal Check function to always return -1. This stops the map from unlocking stages in its normal progression.
         /// </summary>
         [HarmonyPrefix]
@@ -283,6 +288,10 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // If the selected stage is one that doesn't have any chests, then remove the collectable sprites and return.
             if (___currentTile is 7 or 10 or 13 or 22 or 25 or 29 or 30 or 31 or 32 or 33)
             {
+                // If this is the Battlesphere, then remove the Star Card icon too.
+                if (___currentTile == 10)
+                    ___hudCollectibles[0].sprite = null;
+
                 ___hudCollectibles[1].sprite = null;
                 ___hudCollectibles[2].sprite = null;
                 return;
@@ -343,6 +352,56 @@ namespace Freedom_Planet_2_Archipelago.Patchers
                 // Set the sprite of the second chest icon to the collected chest icon.
                 ___hudCollectibles[2].sprite = ___hudCollectibleSprites[5];
             }
+        }
+
+        /// <summary>
+        /// Changes all the Star Card requirements for the shops for better check count distribution.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(MenuClassic), "Start")]
+        private static void ShopRequirements(ref int[] ___starCardRequirements, ref int[] ___musicStarCardRequirements)
+        {
+            if ((long)Plugin.SlotData["milla_shop"] == 1)
+                ___starCardRequirements = [1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 15, 16, 17, 18, 20, 21, 22, 23, 25, 26, 27, 28, 30];
+
+            if ((long)Plugin.SlotData["vinyl_shop"] == 1)
+                ___musicStarCardRequirements =
+                [
+                    1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14,
+                    15, 15, 16, 16, 17, 17, 18, 18, 19, 19, 20, 20, 20, 21, 21, 22, 22, 23, 23, 24, 24, 25, 25, 26, 26,
+                    27, 27, 28, 28, 29, 29, 30, 30, 30, 31, 31
+                ];
+        }
+
+        /// <summary>
+        /// Locks the shops that aren't in use.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(MenuClassicShopHub), "Start")]
+        private static void LockShops(ref MenuOption[] ___menuOptions)
+        {
+            // If we haven't yet stored a locked sprite, then find the texture atlas from the OptionItems buttons and crop the sprite out of it.
+            if (lockedSprite == null)
+            {
+                Texture2D textureAtlas = UnityEngine.GameObject.Find("ClassicShopMenu(Clone)").transform.GetChild(0).transform.GetChild(1).GetComponent<SpriteRenderer>().sprite.texture;
+                lockedSprite = Sprite.Create(textureAtlas, new Rect(1439, textureAtlas.height - (402 + 26), 48, 26), new Vector2(0.5f, 0.5f), 1);
+            }
+            
+            // Find and set the locked sprite on the three buttons.
+            UnityEngine.GameObject.Find("ClassicShopMenu(Clone)").transform.GetChild(0).transform.GetChild(1).GetComponent<MenuOption>().lockedSprite = lockedSprite;
+            UnityEngine.GameObject.Find("ClassicShopMenu(Clone)").transform.GetChild(0).transform.GetChild(2).GetComponent<MenuOption>().lockedSprite = lockedSprite;
+            UnityEngine.GameObject.Find("ClassicShopMenu(Clone)").transform.GetChild(0).transform.GetChild(3).GetComponent<MenuOption>().lockedSprite = lockedSprite;
+
+            // If Milla's Shop is off, then lock the Buy Items and Gold Gem Exchange buttons.
+            if ((long)Plugin.SlotData["milla_shop"] == 0)
+            {
+                ___menuOptions[0].locked = true;
+                ___menuOptions[2].locked = true;
+            }
+
+            // If the Vinyl Shop is off, then lock the Buy Music button.
+            if ((long)Plugin.SlotData["vinyl_shop"] == 0)
+                ___menuOptions[1].locked = true;
         }
     }
 }

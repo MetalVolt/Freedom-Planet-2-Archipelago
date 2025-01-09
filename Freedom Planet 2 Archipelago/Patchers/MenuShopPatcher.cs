@@ -26,168 +26,100 @@ namespace Freedom_Planet_2_Archipelago.Patchers
             // Send out the hints for the items that are unlocked.
             if (isItemShop && (long)Plugin.SlotData["milla_shop"] == 1)
             {
-                SendHint("Shop - Element Burst");
-                SendHint("Shop - Crystals To Petals");
-                SendHint("Shop - Petal Armor");
-                SendHint("Shop - Extra Stock");
-                SendHint("Shop - Strong Revivals");
-                SendHint("Shop - Cheaper Stocks");
-                SendHint("Shop - Healing Strike");
-                SendHint("Shop - Attack Up");
-
-                if (FPSaveManager.TotalStarCards() >= 2)
-                {
-                    SendHint("Shop - Strong Shields");
-                    SendHint("Shop - Accelerator");
-                    SendHint("Shop - Super Feather");
-                }
-
-                if (FPSaveManager.TotalStarCards() >= 11)
-                {
-                    SendHint("Shop - Max Life Up");
-                    SendHint("Shop - One Hit KO");
-                    SendHint("Shop - Life Oscillation");
-                    SendHint("Shop - Items To Bombs");
-                    SendHint("Shop - Powerup Start");
-                    SendHint("Shop - Shadow Guard");
-                    SendHint("Shop - Payback Ring");
-                }
-
-                if (FPSaveManager.TotalStarCards() >= 15)
-                {
-                    SendHint("Shop - Wood Charm");
-                    SendHint("Shop - Earth Charm");
-                    SendHint("Shop - Water Charm");
-                    SendHint("Shop - Fire Charm");
-                    SendHint("Shop - Metal Charm");
-                    SendHint("Shop - Rainbow Charm");
-                }
+                if (FPSaveManager.TotalStarCards() >= 1) SendHint("Shop - Element Burst");
+                if (FPSaveManager.TotalStarCards() >= 2) SendHint("Shop - Crystals To Petals");
+                if (FPSaveManager.TotalStarCards() >= 3) SendHint("Shop - Petal Armor");
+                if (FPSaveManager.TotalStarCards() >= 5) SendHint("Shop - Extra Stock");
+                if (FPSaveManager.TotalStarCards() >= 6) SendHint("Shop - Strong Revivals");
+                if (FPSaveManager.TotalStarCards() >= 7) SendHint("Shop - Cheaper Stocks");
+                if (FPSaveManager.TotalStarCards() >= 8) SendHint("Shop - Healing Strike");
+                if (FPSaveManager.TotalStarCards() >= 10) SendHint("Shop - Attack Up");
+                if (FPSaveManager.TotalStarCards() >= 11) SendHint("Shop - Strong Shields");
+                if (FPSaveManager.TotalStarCards() >= 12) SendHint("Shop - Accelerator");
+                if (FPSaveManager.TotalStarCards() >= 13) SendHint("Shop - Super Feather");
+                if (FPSaveManager.TotalStarCards() >= 15) SendHint("Shop - Max Life Up");
+                if (FPSaveManager.TotalStarCards() >= 16) SendHint("Shop - One Hit KO");
+                if (FPSaveManager.TotalStarCards() >= 17) SendHint("Shop - Life Oscillation");
+                if (FPSaveManager.TotalStarCards() >= 18) SendHint("Shop - Items To Bombs");
+                if (FPSaveManager.TotalStarCards() >= 20) SendHint("Shop - Powerup Start");
+                if (FPSaveManager.TotalStarCards() >= 21) SendHint("Shop - Shadow Guard");
+                if (FPSaveManager.TotalStarCards() >= 22) SendHint("Shop - Payback Ring");
+                if (FPSaveManager.TotalStarCards() >= 23) SendHint("Shop - Wood Charm");
+                if (FPSaveManager.TotalStarCards() >= 25) SendHint("Shop - Earth Charm");
+                if (FPSaveManager.TotalStarCards() >= 26) SendHint("Shop - Water Charm");
+                if (FPSaveManager.TotalStarCards() >= 27) SendHint("Shop - Fire Charm");
+                if (FPSaveManager.TotalStarCards() >= 28) SendHint("Shop - Metal Charm");
+                if (FPSaveManager.TotalStarCards() >= 30) SendHint("Shop - Rainbow Charm");
             }
             
             if (!isItemShop && (long)Plugin.SlotData["vinyl_shop"] == 1)
             {
-                SendHint("Shop - Vinyl - Title Screen");
-                SendHint("Shop - Vinyl - Main Menu");
-                SendHint("Shop - Vinyl - Basic Tutorial");
-                SendHint("Shop - Vinyl - Bonus Stage");
-                SendHint("Shop - Vinyl - Speed Gate");
-                SendHint("Shop - Vinyl - Shopping");
-                SendHint("Shop - Vinyl - Map - Shang Tu");
-
-                if (FPSaveManager.TotalStarCards() >= 1)
-                {
-                    SendHint("Shop - Vinyl - Stage Clear");
-                    SendHint("Shop - Vinyl - Results - Lilac");
-                    SendHint("Shop - Vinyl - Results - Carol");
-                    SendHint("Shop - Vinyl - Results - Milla");
-                    SendHint("Shop - Vinyl - Results - Neera");
-                    SendHint("Shop - Vinyl - Singing Water Temple");
-                    SendHint("Shop - Vinyl - Cutscene - Generic");
-                }
-
-                if (FPSaveManager.TotalStarCards() >= 2)
-                {
-                    SendHint("Shop - Vinyl - Map - Shang Mu");
-                    SendHint("Shop - Vinyl - Map - Shuigang");
-                    SendHint("Shop - Vinyl - Royal Palace");
-                    SendHint("Shop - Vinyl - Audio Log B");
-                }
-
-                if (FPSaveManager.TotalStarCards() >= 11)
-                {
-                    SendHint("Shop - Vinyl - Boss - Robot A");
-                    SendHint("Shop - Vinyl - Boss - Robot B");
-                    SendHint("Shop - Vinyl - Boss - Aaa");
-                    SendHint("Shop - Vinyl - Boss - Phoenix Highway");
-                    SendHint("Shop - Vinyl - Boss - Zao Land");
-                    SendHint("Shop - Vinyl - Boss - Arena");
-                    SendHint("Shop - Vinyl - Boss - Serpentine A");
-                    SendHint("Shop - Vinyl - Boss - Serpentine B");
-                    SendHint("Shop - Vinyl - Map - Opera");
-                    SendHint("Shop - Vinyl - Battlesphere Commercial");
-                    SendHint("Shop - Vinyl - Battlesphere Lobby");
-                    SendHint("Shop - Vinyl - Battlesphere Course");
-                    SendHint("Shop - Vinyl - Captain Kalaw's Theme");
-                    SendHint("Shop - Vinyl - Gallery");
-                    SendHint("Shop - Vinyl - Shuigang");
-                    SendHint("Shop - Vinyl - Corazon's Theme");
-                    SendHint("Shop - Vinyl - Serpentine's Theme");
-                    SendHint("Shop - Vinyl - Audio Log A");
-                }
-
-                if (FPSaveManager.TotalStarCards() >= 14)
-                {
-                    SendHint("Shop - Vinyl - Globe Opera 2A");
-                    SendHint("Shop - Vinyl - Boss - Beast One/Two");
-                    SendHint("Shop - Vinyl - Cutscene - Call to Arms");
-                }
-
-                if (FPSaveManager.TotalStarCards() >= 15)
-                {
-                    SendHint("Shop - Vinyl - Map - Parusa");
-                    SendHint("Shop - Vinyl - Cutscene - Big Mood A");
-                    SendHint("Shop - Vinyl - Cutscene - Big Mood B");
-                    SendHint("Shop - Vinyl - Merga's Theme");
-                    SendHint("Shop - Vinyl - Audio Log C");
-                }
-
-                if (FPSaveManager.TotalStarCards() >= 16)
-                {
-                    SendHint("Shop - Vinyl - Map - Floating Island");
-                    SendHint("Shop - Vinyl - Map - Volcano");
-                    SendHint("Shop - Vinyl - City Hall");
-                    SendHint("Shop - Vinyl - Adventure Square");
-                }
-
-                if (FPSaveManager.TotalStarCards() >= 17)
-                {
-                    SendHint("Shop - Vinyl - Paradise Prime");
-                }
-
-                if (FPSaveManager.TotalStarCards() >= 22)
-                {
-                    SendHint("Shop - Vinyl - Boss - Beast Three");
-                    SendHint("Shop - Vinyl - Boss - BFF2000");
-                }
-
-                if (FPSaveManager.TotalStarCards() >= 23)
-                {
-                    SendHint("Shop - Vinyl - Boss - Captain Kalaw");
-                    SendHint("Shop - Vinyl - Boss - Diamond Point");
-                }
-
-                if (FPSaveManager.TotalStarCards() >= 24)
-                {
-                    SendHint("Shop - Vinyl - Cutscene - Heroic");
-                    SendHint("Shop - Vinyl - Cutscene - Preparation");
-                    SendHint("Shop - Vinyl - Cutscene - Bakunawa");
-                }
-
-                if (FPSaveManager.TotalStarCards() >= 25)
-                {
-                    SendHint("Shop - Vinyl - Map - Bakunawa");
-                }
-
-                if (FPSaveManager.TotalStarCards() >= 28)
-                {
-                    SendHint("Shop - Vinyl - Boss - Arboretum");
-                }
-
-                if (FPSaveManager.TotalStarCards() >= 31)
-                {
-                    SendHint("Shop - Vinyl - Boss - Merga");
-                    SendHint("Shop - Vinyl - Boss - Merga (Pinch)");
-                    SendHint("Shop - Vinyl - Lilac's Theme");
-                    SendHint("Shop - Vinyl - Carol's Theme");
-                    SendHint("Shop - Vinyl - Milla's Theme");
-                    SendHint("Shop - Vinyl - Neera's Theme");
-                }
-
-                if (FPSaveManager.TotalStarCards() >= 32)
-                {
-                    SendHint("Shop - Vinyl - Weapon's Core");
-                    SendHint("Shop - Vinyl - Boss - Weapon's Core");
-                }
+                if (FPSaveManager.TotalStarCards() >= 1) SendHint("Shop - Vinyl - Title Screen");
+                if (FPSaveManager.TotalStarCards() >= 1) SendHint("Shop - Vinyl - Main Menu");
+                if (FPSaveManager.TotalStarCards() >= 1) SendHint("Shop - Vinyl - Basic Tutorial");
+                if (FPSaveManager.TotalStarCards() >= 2) SendHint("Shop - Vinyl - Bonus Stage");
+                if (FPSaveManager.TotalStarCards() >= 2) SendHint("Shop - Vinyl - Speed Gate");
+                if (FPSaveManager.TotalStarCards() >= 3) SendHint("Shop - Vinyl - Shopping");
+                if (FPSaveManager.TotalStarCards() >= 3) SendHint("Shop - Vinyl - Map - Shang Tu");
+                if (FPSaveManager.TotalStarCards() >= 4) SendHint("Shop - Vinyl - Stage Clear");
+                if (FPSaveManager.TotalStarCards() >= 4) SendHint("Shop - Vinyl - Results - Lilac");
+                if (FPSaveManager.TotalStarCards() >= 5) SendHint("Shop - Vinyl - Results - Carol");
+                if (FPSaveManager.TotalStarCards() >= 5) SendHint("Shop - Vinyl - Results - Milla");
+                if (FPSaveManager.TotalStarCards() >= 6) SendHint("Shop - Vinyl - Results - Neera");
+                if (FPSaveManager.TotalStarCards() >= 6) SendHint("Shop - Vinyl - Singing Water Temple");
+                if (FPSaveManager.TotalStarCards() >= 7) SendHint("Shop - Vinyl - Cutscene - Generic");
+                if (FPSaveManager.TotalStarCards() >= 7) SendHint("Shop - Vinyl - Map - Shang Mu");
+                if (FPSaveManager.TotalStarCards() >= 8) SendHint("Shop - Vinyl - Map - Shuigang");
+                if (FPSaveManager.TotalStarCards() >= 8) SendHint("Shop - Vinyl - Royal Palace");
+                if (FPSaveManager.TotalStarCards() >= 9) SendHint("Shop - Vinyl - Audio Log B");
+                if (FPSaveManager.TotalStarCards() >= 9) SendHint("Shop - Vinyl - Boss - Robot A");
+                if (FPSaveManager.TotalStarCards() >= 10) SendHint("Shop - Vinyl - Boss - Robot B");
+                if (FPSaveManager.TotalStarCards() >= 10) SendHint("Shop - Vinyl - Boss - Aaa");
+                if (FPSaveManager.TotalStarCards() >= 10) SendHint("Shop - Vinyl - Boss - Phoenix Highway");
+                if (FPSaveManager.TotalStarCards() >= 11) SendHint("Shop - Vinyl - Boss - Zao Land");
+                if (FPSaveManager.TotalStarCards() >= 11) SendHint("Shop - Vinyl - Boss - Arena");
+                if (FPSaveManager.TotalStarCards() >= 12) SendHint("Shop - Vinyl - Boss - Serpentine A");
+                if (FPSaveManager.TotalStarCards() >= 12) SendHint("Shop - Vinyl - Boss - Serpentine B");
+                if (FPSaveManager.TotalStarCards() >= 13) SendHint("Shop - Vinyl - Map - Opera");
+                if (FPSaveManager.TotalStarCards() >= 13) SendHint("Shop - Vinyl - Battlesphere Commercial");
+                if (FPSaveManager.TotalStarCards() >= 14) SendHint("Shop - Vinyl - Battlesphere Lobby");
+                if (FPSaveManager.TotalStarCards() >= 14) SendHint("Shop - Vinyl - Battlesphere Course");
+                if (FPSaveManager.TotalStarCards() >= 15) SendHint("Shop - Vinyl - Captain Kalaw's Theme");
+                if (FPSaveManager.TotalStarCards() >= 15) SendHint("Shop - Vinyl - Gallery");
+                if (FPSaveManager.TotalStarCards() >= 16) SendHint("Shop - Vinyl - Shuigang");
+                if (FPSaveManager.TotalStarCards() >= 16) SendHint("Shop - Vinyl - Corazon's Theme");
+                if (FPSaveManager.TotalStarCards() >= 17) SendHint("Shop - Vinyl - Serpentine's Theme");
+                if (FPSaveManager.TotalStarCards() >= 17) SendHint("Shop - Vinyl - Audio Log A");
+                if (FPSaveManager.TotalStarCards() >= 18) SendHint("Shop - Vinyl - Globe Opera 2A");
+                if (FPSaveManager.TotalStarCards() >= 18) SendHint("Shop - Vinyl - Boss - Beast One/Two");
+                if (FPSaveManager.TotalStarCards() >= 19) SendHint("Shop - Vinyl - Cutscene - Call to Arms");
+                if (FPSaveManager.TotalStarCards() >= 19) SendHint("Shop - Vinyl - Map - Parusa");
+                if (FPSaveManager.TotalStarCards() >= 20) SendHint("Shop - Vinyl - Cutscene - Big Mood A");
+                if (FPSaveManager.TotalStarCards() >= 20) SendHint("Shop - Vinyl - Cutscene - Big Mood B");
+                if (FPSaveManager.TotalStarCards() >= 20) SendHint("Shop - Vinyl - Merga's Theme");
+                if (FPSaveManager.TotalStarCards() >= 21) SendHint("Shop - Vinyl - Audio Log C");
+                if (FPSaveManager.TotalStarCards() >= 21) SendHint("Shop - Vinyl - Map - Floating Island");
+                if (FPSaveManager.TotalStarCards() >= 22) SendHint("Shop - Vinyl - Map - Volcano");
+                if (FPSaveManager.TotalStarCards() >= 22) SendHint("Shop - Vinyl - City Hall");
+                if (FPSaveManager.TotalStarCards() >= 23) SendHint("Shop - Vinyl - Adventure Square");
+                if (FPSaveManager.TotalStarCards() >= 23) SendHint("Shop - Vinyl - Paradise Prime");
+                if (FPSaveManager.TotalStarCards() >= 24) SendHint("Shop - Vinyl - Boss - Beast Three");
+                if (FPSaveManager.TotalStarCards() >= 24) SendHint("Shop - Vinyl - Boss - BFF2000");
+                if (FPSaveManager.TotalStarCards() >= 25) SendHint("Shop - Vinyl - Boss - Captain Kalaw");
+                if (FPSaveManager.TotalStarCards() >= 25) SendHint("Shop - Vinyl - Boss - Diamond Point");
+                if (FPSaveManager.TotalStarCards() >= 26) SendHint("Shop - Vinyl - Cutscene - Heroic");
+                if (FPSaveManager.TotalStarCards() >= 26) SendHint("Shop - Vinyl - Cutscene - Preparation");
+                if (FPSaveManager.TotalStarCards() >= 27) SendHint("Shop - Vinyl - Cutscene - Bakunawa");
+                if (FPSaveManager.TotalStarCards() >= 27) SendHint("Shop - Vinyl - Map - Bakunawa");
+                if (FPSaveManager.TotalStarCards() >= 28) SendHint("Shop - Vinyl - Boss - Arboretum");
+                if (FPSaveManager.TotalStarCards() >= 28) SendHint("Shop - Vinyl - Boss - Merga");
+                if (FPSaveManager.TotalStarCards() >= 29) SendHint("Shop - Vinyl - Boss - Merga (Pinch)");
+                if (FPSaveManager.TotalStarCards() >= 29) SendHint("Shop - Vinyl - Lilac's Theme");
+                if (FPSaveManager.TotalStarCards() >= 30) SendHint("Shop - Vinyl - Carol's Theme");
+                if (FPSaveManager.TotalStarCards() >= 30) SendHint("Shop - Vinyl - Milla's Theme");
+                if (FPSaveManager.TotalStarCards() >= 30) SendHint("Shop - Vinyl - Neera's Theme");
+                if (FPSaveManager.TotalStarCards() >= 31) SendHint("Shop - Vinyl - Weapon's Core");
+                if (FPSaveManager.TotalStarCards() >= 31) SendHint("Shop - Vinyl - Boss - Weapon's Core");
             }
         }
 
