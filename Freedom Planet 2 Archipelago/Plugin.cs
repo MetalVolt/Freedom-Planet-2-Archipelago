@@ -229,8 +229,8 @@ namespace Freedom_Planet_2_Archipelago
             SceneManager.LoadScene("StageDebugMenu");
 
             // Set the server values to the ones in the config.
-            serverAddress = Config.Bind("Archipelago Server Settings", "Host", "localhost:62746", "The host to connect to.").Value;
-            slotName = Config.Bind("Archipelago Server Settings", "Slot", "Knux", "The name of the slot to connect to.").Value;
+            serverAddress = Config.Bind("Archipelago Server Settings", "Host", "", "The host to connect to.").Value;
+            slotName = Config.Bind("Archipelago Server Settings", "Slot", "", "The name of the slot to connect to.").Value;
             password = Config.Bind("Archipelago Server Settings", "Password", "", "The server password (if it has one).").Value;
 
             // Set up Harmony.
