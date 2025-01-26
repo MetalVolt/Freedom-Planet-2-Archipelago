@@ -169,8 +169,8 @@ namespace Freedom_Planet_2_Archipelago
         public static Dictionary<string, object> SlotData = [];
 
         // Set up the values for the connection menu.
-        public static string serverAddress = "localhost:62746";
-        public static string slotName = "Knux";
+        public static string serverAddress = "";
+        public static string slotName = "";
         public static string password = "";
 
         // Set up the value for the received item text.
